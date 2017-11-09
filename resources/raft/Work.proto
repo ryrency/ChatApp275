@@ -1,5 +1,6 @@
 syntax="proto2";
-//option java_package = "gash.router.server.raft";
+
+package raft.proto;
 
 import "AppendEntries.proto";
 import "HeartBeat.proto";

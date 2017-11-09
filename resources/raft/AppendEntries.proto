@@ -1,5 +1,7 @@
 syntax="proto2";
-//option java_package = "generated";
+
+package raft.proto;
+
 
 option optimize_for = SPEED;
 

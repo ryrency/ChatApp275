@@ -1,9 +1,9 @@
 syntax="proto2";
-//option java_package = "gash.router.server.raft";
+package raft.proto;
 
 // HeartBeat Request
 
-message HeartBeat{
+message HeartBeatMsg{
 	required int32 term = 1; 	 
 	required int32 leaderId = 2;
 	required int64 timeStampOnLatestUpdate = 3;
@@ -13,7 +13,7 @@ message HeartBeat{
 
 message HeartBeatPacket{
 	required int64 unixTimestamp  = 1;
-	required HeartBeat heartbeat = 2;
+	required HeartBeatMsg heartbeat = 2;
 }
 
 
