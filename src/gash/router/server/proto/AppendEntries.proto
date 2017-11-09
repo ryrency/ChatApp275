@@ -1,0 +1,46 @@
+syntax="proto2";
+option optimize_for = SPEED;
+
+
+
+//	AppendEntries
+
+
+message AppendEntries{
+	required int32 leaderId = 1;
+	required string clientMsg = 2;
+	required int32 termid = 3;
+	required int64 timeStampOnLatestUpdate = 4;
+}
+
+//	AppendEntriesResponse
+
+message AppendEntriesResponse{
+	required IsUpdated isUpdated = 1;
+	
+	enum IsUpdated{
+	
+	YES = 0;
+	NO = 1;
+	
+	}
+}
+
+
+
+message AppendEntriesPacket{
+
+	required int64 unixTimeStamp = 1;
+
+	
+	 oneof payload{							
+		 AppendEntries appendEntries = 2;
+		 AppendEntriesResponse appendEntriesResponse = 3;		
+	} 
+
+
+}
+
+
+
+
