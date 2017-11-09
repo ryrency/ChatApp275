@@ -10,7 +10,9 @@ public class TopologyStat {
 	private String host;
 	private int port;
 	boolean active;
-	Channel channel;
+	 Channel channel;
+	 
+	 
 	 
 	 TopologyStat(int ref, String host, int port){
 		 this.ref = ref;
@@ -49,6 +51,6 @@ public class TopologyStat {
 		this.port = port;
 	}
 	 
-	
+	 
 
 }

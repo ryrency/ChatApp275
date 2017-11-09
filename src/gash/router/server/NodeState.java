@@ -1,4 +1,4 @@
-package gash.router.server.raft;
+package gash.router.server;
 
 import java.sql.Timestamp;
 import gash.router.server.raft.Follower;
