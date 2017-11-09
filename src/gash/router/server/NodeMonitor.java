@@ -17,12 +17,12 @@ import io.netty.util.CharsetUtil;
 
 public class NodeMonitor implements Runnable {
 	
+	//outbound list
 	HashMap<Integer, TopologyStat> statMap = new HashMap<Integer, TopologyStat>();
 	
 	boolean forever = true;
 	
 //	List<RoutingEntry> entryList;
-	
 	
 	NodeMonitor(NodeConf nc){
 		for(NodeConf.RoutingEntry re : nc.getRouting()) {
