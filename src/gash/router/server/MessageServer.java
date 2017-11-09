@@ -73,19 +73,19 @@ public class MessageServer {
 		//Add logic to start consumer server request e.g. 4167
 		comm =  new StartCommunication(nodeconf);
 		//Always need to run in background
-		comm.run();
-//		Thread cthread = new Thread(comm);
-//		cthread.start();
+//		comm.run();
+		Thread cthread = new Thread(comm);
+		cthread.start();
 		
 		
 		//Starting Consumer for client services e.g. 4267(routing.conf)
-//		comm =  new StartCommunication(conf);
-//		if (background) {
-//			cthread = new Thread(comm);
-//			cthread.start();
-//		} else {
-//			comm.run();
-//		}
+		comm =  new StartCommunication(conf);
+		if (background) {
+			cthread = new Thread(comm);
+			cthread.start();
+		} else {
+			comm.run();
+		}
 		
 
 	}
