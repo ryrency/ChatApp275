@@ -26,7 +26,7 @@ public class MessageApp {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) { //test
 //		if (args.length == 0) {
 //			System.out.println("usage: server <config file 1> <config file 2>");
 //			System.exit(1);
