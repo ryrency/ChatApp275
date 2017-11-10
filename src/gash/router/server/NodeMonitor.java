@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import gash.router.container.NodeConf;
-
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -22,7 +21,13 @@ public class NodeMonitor implements Runnable {
 	boolean forever = true;
 	
 //	List<RoutingEntry> entryList;
-	
+	public static NodeMonitor nodeMonitor;
+	public static NodeMonitor getInstance(NodeConf nodeConf) {
+		if (nodeMonitor == null) {
+			nodeMonitor = new NodeMonitor(nodeConf);
+		}
+		return nodeMonitor;
+	}
 	
 	NodeMonitor(NodeConf nc){
 		for(NodeConf.RoutingEntry re : nc.getRouting()) {
@@ -32,6 +37,10 @@ public class NodeMonitor implements Runnable {
 		statMap.put(re.getId(),ts);
 		}
 		
+	}
+	
+	public HashMap<Integer, TopologyStat> getStatMap() {
+		return statMap;
 	}
 
 	@Override
