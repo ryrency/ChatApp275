@@ -1,7 +1,11 @@
 package gash.router.server.raft;
 
 import java.sql.Timestamp;
+
+import gash.router.server.NodeMonitor;
 import gash.router.server.raft.Follower;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NodeState {
 
@@ -14,6 +18,8 @@ public class NodeState {
 	private static int state = 2;
 	
 	public static int currentTerm = 0;
+	protected static Logger logger = (Logger) LoggerFactory.getLogger("NODESTATE");
+
 
 //	private static Timestamp timeStampOnLatestUpdate=null;
 	private static Long timeStampOnLatestUpdate = null;
@@ -82,10 +88,15 @@ public class NodeState {
 			service = Follower.getInstance();
 			service.startService(service);
 		}
-		else if (newState == NodeState.LEADER) 
-			service = Leader.getInstance();
-		else if (newState == NodeState.CANDIDATE) 
+		else if (newState == NodeState.LEADER)
+			logger.info(
+					NodeMonitor.nodeMonitor.getNodeConf().getNodeId() + " is the leader!!.");
+//			service = Leader.getInstance();
+		else if (newState == NodeState.CANDIDATE) {
+			service.stopService();
 			service = Candidate.getInstance();
+			service.startService(service);
+		}
 		}
 	
 

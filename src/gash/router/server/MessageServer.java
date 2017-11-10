@@ -35,7 +35,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-
+import gash.router.server.raft.NodeState;
 public class MessageServer {
 	protected static Logger logger = LoggerFactory.getLogger("server");
 
@@ -144,6 +144,7 @@ public class MessageServer {
 				}
 			}
 		}
+		NodeState.getInstance().setState(NodeState.FOLLOWER);	
 	}
 
 

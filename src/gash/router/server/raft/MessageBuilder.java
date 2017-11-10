@@ -16,7 +16,7 @@ import raft.proto.Work.WorkMessage;
 
 public class MessageBuilder {
 
-	public static WorkMessage prepareRequestVoteRPC() {
+	public static WorkMessage prepareRequestVote() {
 		WorkMessage.Builder work = WorkMessage.newBuilder();
 		work.setUnixTimeStamp(TimerRoutine.getCurrentUnixTimeStamp());
 

@@ -20,6 +20,8 @@ public class Follower extends Service implements Runnable {
 	Thread followerThread = null;
 	private static Follower INSTANCE = null;
 	TimerRoutine getTimer;
+	public static boolean voted = false;
+	public static int lastVotedTerm = 0;
 
 	public static Follower getInstance() {
 		if (INSTANCE == null) {
@@ -52,6 +54,9 @@ public class Follower extends Service implements Runnable {
 	private void initFollower() {
 		// TODO Auto-generated method stub
 
+		if(NodeState.currentTerm > lastVotedTerm)
+			voted=false;
+		
 		timer = new NodeTimer();
 
 		timer.schedule(new Runnable() {
@@ -78,7 +83,14 @@ public class Follower extends Service implements Runnable {
 
 		}
 //		Logger.DEBUG(NodeState.getInstance().getServerState().getConf().getNodeId() + " has replied YES");
-		return MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
+		if (workMessage.getVoteRPCPacket().getResponseVote().getTerm() >= NodeState.currentTerm && voted) {
+			lastVotedTerm = NodeState.currentTerm;
+			voted = true;
+			return MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
+		}
+		else
+			return MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
+
 
 	}
 	
