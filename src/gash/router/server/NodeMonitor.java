@@ -80,11 +80,11 @@ public class NodeMonitor implements Runnable {
 					else {
 						onAdd(ts);
 					}
-//					for(TopologyStat ts1 : this.statMap.values()) {
-//						
-//						System.out.println("TOPO STat after On Add :"+ ts1.getHost()+ "--" +ts1.getPort()+ "--"+ts1.isActive());
-//					}
-//					
+					for(TopologyStat ts1 : this.statMap.values()) {
+						
+						System.out.println("TOPO STat after On Add :"+ ts1.getHost()+ "--" +ts1.getPort()+ "--"+ts1.isActive());
+					}
+					
 				}
 				
 			}
@@ -98,11 +98,11 @@ public class NodeMonitor implements Runnable {
 	}
 	
 	public void onAdd(TopologyStat ts) {
-		EventLoopGroup group = new NioEventLoopGroup();
+		
 		try {
 			System.out.println("/t***Node Monitor****fn:onAdd***");
 			System.out.println(ts.getRef() + "," + ts.getHost() + ","  + ts.getPort());
-			
+			EventLoopGroup group = new NioEventLoopGroup();
 			Bootstrap b = new Bootstrap();
 			b.handler(new WorkHandler());
 //			b.group(group).channel(NioSocketChannel.class).handler(new WorkInit(state, false));
@@ -111,23 +111,15 @@ public class NodeMonitor implements Runnable {
 			b.option(ChannelOption.TCP_NODELAY, true);
 			b.option(ChannelOption.SO_KEEPALIVE, true);
 
-			System.out.println("Host **" + ts.getHost());
-			System.out.println("Port ** " + ts.getPort());
 			
 			ChannelFuture cf = b.connect(ts.getHost(), ts.getPort()).syncUninterruptibly();
 
 			ts.setChannel(cf.channel());
-			
-			
-			if (ts.getChannel()==null) System.out.println("Chanel is null");
 			ts.setActive(true);
 			cf.channel().closeFuture();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		}
-		finally {
-			if(group!=null)
-				group =null;
+			
 		}
 		
 	}

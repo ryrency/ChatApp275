@@ -71,7 +71,6 @@ public class Follower extends Service implements Runnable {
 	
 	
 	public void onReceivingHeartBeatPacket() {
-		System.out.println("Heartbeat recieved");
 		timer.reschedule(getTimer.getElectionTimeout());
 	}
 	
