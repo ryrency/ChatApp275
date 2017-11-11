@@ -3,41 +3,42 @@ package gash.router.server.raft;
 import java.util.List;
 import java.util.Map;
 
-import common.ConfigurationReader;
-import deven.monitor.client.MonitorClient;
-import deven.monitor.client.MonitorClientApp;
+//import common.ConfigurationReader;
+//import deven.monitor.client.MonitorClient;
+//import deven.monitor.client.MonitorClientApp;
 import gash.router.server.NodeMonitor;
 import gash.router.server.TopologyStat;
 import io.netty.channel.ChannelFuture;
-import logger.Logger;
-import raft.proto.AppendEntriesRPC.AppendEntries.RequestType;
-import raft.proto.Monitor.ClusterMonitor;
+//import logger.Logger;
+//import raft.proto.AppendEntriesRPC.AppendEntries.RequestType;
+//import raft.proto.Monitor.ClusterMonitor;
 import raft.proto.Work.WorkMessage;
-import server.db.DatabaseService;
-import server.db.Record;
-import server.edges.EdgeInfo;
-import server.queue.ServerQueueService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class LeaderService extends Service implements Runnable {
+public class Leader extends Service implements Runnable {
 
-	private static LeaderService INSTANCE = null;
+	private static Leader INSTANCE = null;
 	Thread heartBt = null;
 	int heartBeatTime = 1000;
-	private LeaderService() {
+	protected static Logger logger = (Logger) LoggerFactory.getLogger("LEADER");
+
+
+	private Leader() {
 		// TODO Auto-generated constructor stub
 
 	}
 
-	public static LeaderService getInstance() {
+	public static Leader getInstance() {
 		if (INSTANCE == null) {
-			INSTANCE = new LeaderService();
+			INSTANCE = new Leader();
 		}
 		return INSTANCE;
 	}
 
 	@Override
 	public void run() {
-		System.out.println("***Leader Started***");
+		logger.info("***Leader Started***");
 //		NodeState.currentTerm++;
 		//initLatestTimeStampOnUpdate();
 		heartBt = new Thread(){
@@ -214,7 +215,7 @@ public class LeaderService extends Service implements Runnable {
 
 	public void startService(Service service) {
 		running = Boolean.TRUE;
-		cthread = new Thread((LeaderService) service);
+		cthread = new Thread((Leader) service);
 		cthread.start();
 	}
 
