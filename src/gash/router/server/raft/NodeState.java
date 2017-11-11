@@ -16,22 +16,21 @@ public class NodeState {
 	public static final int FOLLOWER = 2;
 
 	private static int state = 2;
-	
+
 	public static int currentTerm = 0;
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("NODESTATE");
 
-
-//	private static Timestamp timeStampOnLatestUpdate=null;
+	// private static Timestamp timeStampOnLatestUpdate=null;
 	private static Long timeStampOnLatestUpdate = null;
-	
-//	private static long noTaskProcessed = 0;
-	
+
+	// private static long noTaskProcessed = 0;
+
 	public static Long getTimeStampOnLatestUpdate() {
 		if (timeStampOnLatestUpdate == null) {
-			//timeStampOnLatestUpdate = new Timestamp(System.currentTimeMillis());
+			// timeStampOnLatestUpdate = new Timestamp(System.currentTimeMillis());
 			timeStampOnLatestUpdate = System.currentTimeMillis();
- 
-//					DatabaseService.getInstance().getDb().getCurrentTimeStamp(); - 
+
+			// DatabaseService.getInstance().getDb().getCurrentTimeStamp(); -
 		}
 		return timeStampOnLatestUpdate;
 	}
@@ -40,22 +39,22 @@ public class NodeState {
 		NodeState.timeStampOnLatestUpdate = timeStampOnLatestUpdate;
 	}
 
-//	public static void updateTaskCount() {
-//		noTaskProcessed++;
-//	}
-//		
+	// public static void updateTaskCount() {
+	// noTaskProcessed++;
+	// }
+	//
 	public static Service getService() {
 		return service;
-	}	
-	
-//	public static int getupdatedTaskCount() {
-//		return (int)noTaskProcessed;
-//	}
+	}
+
+	// public static int getupdatedTaskCount() {
+	// return (int)noTaskProcessed;
+	// }
 	private static Service service;
 
 	private static NodeState instance = null;
-	
-//	private  ServerState serverState = null;
+
+	// private ServerState serverState = null;
 
 	private NodeState() {
 
@@ -69,16 +68,16 @@ public class NodeState {
 		}
 		return instance;
 	}
-//	
-//	public void setServerState(ServerState serverState){
-//		this.serverState= serverState;
-//	}
-//	
-//	public ServerState getServerState()
-//	{
-//		return serverState;
-//		
-//	}
+	//
+	// public void setServerState(ServerState serverState){
+	// this.serverState= serverState;
+	// }
+	//
+	// public ServerState getServerState()
+	// {
+	// return serverState;
+	//
+	// }
 
 	public synchronized void setState(int newState) {
 		state = newState;
@@ -87,18 +86,18 @@ public class NodeState {
 			service.stopService();
 			service = Follower.getInstance();
 			service.startService(service);
-		}
-		else if (newState == NodeState.LEADER)
-			logger.info(
-					NodeMonitor.nodeMonitor.getNodeConf().getNodeId() + " is the leader!!.");
-//			service = Leader.getInstance();
-		else if (newState == NodeState.CANDIDATE) {
+		} else if (newState == NodeState.LEADER) {
+			logger.info(NodeMonitor.nodeMonitor.getNodeConf().getNodeId() + " is the leader!!.");
+			// service = Leader.getInstance();
+			service.stopService();
+			service = Leader.getInstance();
+			service.startService(service);
+		} else if (newState == NodeState.CANDIDATE) {
 			service.stopService();
 			service = Candidate.getInstance();
 			service.startService(service);
 		}
-		}
-	
+	}
 
 	public synchronized int getState() {
 		return state;

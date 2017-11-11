@@ -10,7 +10,7 @@ public class TopologyStat {
 	private String host;
 	private int port;
 	boolean active;
-	 Channel channel;
+	private Channel channel;
 	 
 	 
 	 

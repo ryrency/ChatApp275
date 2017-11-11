@@ -63,6 +63,8 @@ public class Candidate extends Service implements Runnable {
 					logger.info("Vote request send failed!");
 				}
 			}
+					else
+					{logger.info("Channel not active ,server  is down");}
 		}
 		timer = new NodeTimer();
 		timer.schedule(new Runnable() {

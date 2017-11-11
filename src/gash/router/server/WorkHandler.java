@@ -61,7 +61,7 @@ public class WorkHandler extends SimpleChannelInboundHandler<ByteBuf>{
 //				channel.write(rb.build());
 //			}
 				try {
-					System.out.println("Message is -"+msg);
+//					System.out.println("Message is -"+msg);
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -75,7 +75,7 @@ public class WorkHandler extends SimpleChannelInboundHandler<ByteBuf>{
 		@Override
 		protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
 			// TODO Auto-generated method stub
-			System.out.println("****WorkInit*****Channel Read****");
+//			System.out.println("****WorkInit*****Channel Read****");
 			ByteBuf in = (ByteBuf) msg;
 			handleMessage(in.toString(CharsetUtil.UTF_8), ctx.channel());
 			
