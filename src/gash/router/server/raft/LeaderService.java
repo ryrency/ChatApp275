@@ -1,22 +1,24 @@
 package gash.router.server.raft;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import common.ConfigurationReader;
-import deven.monitor.client.MonitorClient;
-import deven.monitor.client.MonitorClientApp;
+//import common.ConfigurationReader;
+//import deven.monitor.client.MonitorClient;
+//import deven.monitor.client.MonitorClientApp;
 import gash.router.server.NodeMonitor;
 import gash.router.server.TopologyStat;
 import io.netty.channel.ChannelFuture;
-import logger.Logger;
-import raft.proto.AppendEntriesRPC.AppendEntries.RequestType;
-import raft.proto.Monitor.ClusterMonitor;
+//import logger.Logger;
+//import raft.proto.AppendEntriesRPC.AppendEntries.RequestType;
+//import raft.proto.Monitor.ClusterMonitor;
 import raft.proto.Work.WorkMessage;
-import server.db.DatabaseService;
-import server.db.Record;
-import server.edges.EdgeInfo;
-import server.queue.ServerQueueService;
+//import server.db.DatabaseService;
+//import server.db.Record;
+//import server.edges.EdgeInfo;
+//import server.queue.ServerQueueService;
+import gash.database.*;
 
 public class LeaderService extends Service implements Runnable {
 
@@ -210,7 +212,19 @@ public class LeaderService extends Service implements Runnable {
 //		DatabaseService.getInstance().getDb().delete(key);
 //		WorkMessage wm = ServiceUtils.prepareAppendEntriesPacket(key, null, 0 ,RequestType.DELETE);
 //		sendAppendEntriesPacket(wm);
-//	}	
+//	}
+	
+	// What should be the key?? Currently using receiver id
+	public void handleClientRequest(String senderId, String receiverId, String payload, Date timeStamp) {
+		System.out.println("***Leader*** fn:handleGetMessage");
+		boolean isSuccess = MongoDB.getInstance().post(senderId, receiverId, payload, timeStamp);
+		
+		
+	}
+	
+	public void handleFollowerMessage() {
+		
+	}
 
 	public void startService(Service service) {
 		running = Boolean.TRUE;
