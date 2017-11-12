@@ -85,15 +85,15 @@ public class NodeMonitor implements Runnable {
 						
 //						System.out.println("***Node monitor***Write Call***");
 						System.out.println("***Node Monitor ***fn: run while loop inside IF write Ack to channel");
-//						ChannelFuture cf = ts.getChannel().writeAndFlush(Unpooled.copiedBuffer("Ack", CharsetUtil.UTF_8));
-//						
-//						if (cf.isDone() && !cf.isSuccess()) {
-//						    System.out.println("Send failed: " + cf.cause());
-//						}
-//						
-//						if(cf.isDone()&& !cf.isSuccess()) {
-//							System.out.println("Comm failed");
-//						}
+						ChannelFuture cf = ts.getChannel().writeAndFlush(Unpooled.copiedBuffer("Ack", CharsetUtil.UTF_8));
+						
+						if (cf.isDone() && !cf.isSuccess()) {
+						    System.out.println("Send failed: " + cf.cause());
+						}
+						
+						if(cf.isDone()&& !cf.isSuccess()) {
+							System.out.println("Comm failed");
+						}
 //						printStatMap();
 //						forever = false;
 						
