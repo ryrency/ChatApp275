@@ -10,7 +10,7 @@ import io.netty.handler.codec.compression.ZlibCodecFactory;
 import io.netty.handler.codec.compression.ZlibWrapper;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
-import routing.Pipe.Route;
+import routing.Payload.Route1;
 
 public class ServerInit extends ChannelInitializer<SocketChannel> {
 	boolean compress = false;
@@ -42,7 +42,7 @@ public class ServerInit extends ChannelInitializer<SocketChannel> {
 		pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(67108864, 0, 4, 0, 4));
 
 		// decoder must be first
-		pipeline.addLast("protobufDecoder", new ProtobufDecoder(Route.getDefaultInstance()));
+		pipeline.addLast("protobufDecoder", new ProtobufDecoder(Route1.getDefaultInstance()));
 		pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
 		pipeline.addLast("protobufEncoder", new ProtobufEncoder());
 

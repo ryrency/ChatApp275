@@ -26,7 +26,7 @@ import gash.router.server.resources.RouteResource;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import routing.Pipe.Route;
+import routing.Payload.Route1;
 
 /**
  * The message handler processes json messages that are delimited by a 'newline'
@@ -36,7 +36,7 @@ import routing.Pipe.Route;
  * @author gash
  * 
  */
-public class ServerHandler extends SimpleChannelInboundHandler<Route> {
+public class ServerHandler extends SimpleChannelInboundHandler<Route1> {
 	protected static Logger logger = LoggerFactory.getLogger("connect");
 
 	private HashMap<String, String> routing;
@@ -53,41 +53,41 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 * 
 	 * @param msg
 	 */
-	public void handleMessage(Route msg, Channel channel) {
+	public void handleMessage(Route1 msg, Channel channel) {
 		if (msg == null) {
 			// TODO add logging
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
 		}
 
-		System.out.println("---> " + msg.getId() + ": " + msg.getPath() + ", " + msg.getPayload());
-
-		try {
-			String clazz = routing.get(msg.getPath().toLowerCase());
-			if (clazz != null) {
-				RouteResource rsc = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
-				try {
-					String reply = rsc.process(msg.getPayload());
-					System.out.println("---> reply: " + reply);
-					if (reply != null) {
-						Route.Builder rb = Route.newBuilder(msg);
-						rb.setPayload(reply);
-						channel.write(rb.build());
-					}
-				} catch (Exception e) {
-					// TODO add logging
-					Route.Builder rb = Route.newBuilder(msg);
-					rb.setPayload("Error: " + e.getMessage());
-					channel.write(rb.build());
-				}
-			} else {
-				// TODO add logging
-				System.out.println("ERROR: unknown path - " + msg.getPath());
-			}
-		} catch (Exception ex) {
-			// TODO add logging
-			System.out.println("ERROR: processing request - " + ex.getMessage());
-		}
+		System.out.println("---> " + msg.getId() + ": " + msg.getPath() + ", " + msg.getMessage());
+//
+//		try {
+//			String clazz = routing.get(msg.getPath().toLowerCase());
+//			if (clazz != null) {
+//				RouteResource rsc = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
+//				try {
+//					String reply = rsc.process(msg.getPayload());
+//					System.out.println("---> reply: " + reply);
+//					if (reply != null) {
+//						Route.Builder rb = Route.newBuilder(msg);
+//						rb.setPayload(reply);
+//						channel.write(rb.build());
+//					}
+//				} catch (Exception e) {
+//					// TODO add logging
+//					Route.Builder rb = Route.newBuilder(msg);
+//					rb.setPayload("Error: " + e.getMessage());
+//					channel.write(rb.build());
+//				}
+//			} else {
+//				// TODO add logging
+//				System.out.println("ERROR: unknown path - " + msg.getPath());
+//			}
+//		} catch (Exception ex) {
+//			// TODO add logging
+//			System.out.println("ERROR: processing request - " + ex.getMessage());
+//		}
 
 		System.out.flush();
 	}
@@ -103,8 +103,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 *            The message
 	 */
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, Route msg) throws Exception {
-		System.out.println("------------");
+	protected void channelRead0(ChannelHandlerContext ctx, Route1 msg) throws Exception {
+		System.out.println("-------Jsingh-----");
 		handleMessage(msg, ctx.channel());
 	}
 
