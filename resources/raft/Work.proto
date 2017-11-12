@@ -5,6 +5,7 @@ package raft.proto;
 import "AppendEntries.proto";
 import "HeartBeat.proto";
 import "Vote.proto";
+import "InternalNodeAdd.proto";
 
 
 //	WorkMessage//
@@ -15,7 +16,9 @@ message WorkMessage{
 	oneof payload{ 
 	 AppendEntriesPacket appendEntriesPacket = 2;
 	 HeartBeatPacket heartBeatPacket = 3;
-	 VotePacket	voteRPCPacket =4;	 
+	 VotePacket	voteRPCPacket =4;
+	 InternalNodeAddPacket internalNodeAddPacket = 5;
+	 	 
 	}
 
 }

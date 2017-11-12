@@ -1,5 +1,6 @@
 package gash.router.server;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,6 +13,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup; 
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;
+import gash.router.server.raft.MessageBuilder;
+import raft.proto.Work.WorkMessage;
 
 
 public class NodeMonitor implements Runnable {
@@ -22,10 +25,16 @@ public class NodeMonitor implements Runnable {
 	
 //	List<RoutingEntry> entryList;
 	public static NodeMonitor nodeMonitor;
+	
+	
 	public static NodeMonitor getInstance(NodeConf nodeConf) {
 		if (nodeMonitor == null) {
 			nodeMonitor = new NodeMonitor(nodeConf);
 		}
+		return nodeMonitor;
+	}
+	
+	public static NodeMonitor getInstance() {
 		return nodeMonitor;
 	}
 	
@@ -44,18 +53,27 @@ public class NodeMonitor implements Runnable {
 		return statMap;
 	}
 	
+	public void setStatMap(TopologyStat ts) {
+		this.statMap.put(ts.getRef(), ts);
+	}
+	
 	public NodeConf getNodeConf() {
 		return this.nodeConf;
+	}
+	
+	public void printStatMap() {
+		System.out.println("***Printing stat map****");
+		for(TopologyStat ts : this.statMap.values()) {
+			
+			System.out.println("TOPO STat :"+ ts.getHost()+ "--" +ts.getPort()+ "--"+ts.isActive());
+		}
 	}
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println("***Node monitor***fn:run***");
-		for(TopologyStat ts : this.statMap.values()) {
-			
-			System.out.println("TOPO STat :"+ ts.getHost()+ "--" +ts.getPort()+ "--"+ts.isActive());
-		}
+//		
 		
 		
 		while(forever)
@@ -66,24 +84,27 @@ public class NodeMonitor implements Runnable {
 					if(ts.isActive() && ts.getChannel() !=null) {
 						
 //						System.out.println("***Node monitor***Write Call***");
-						ChannelFuture cf = ts.getChannel().writeAndFlush(Unpooled.copiedBuffer("Ack", CharsetUtil.UTF_8));
-						
-						if (cf.isDone() && !cf.isSuccess()) {
-						    System.out.println("Send failed: " + cf.cause());
-						}
-						
-						if(cf.isDone()&& !cf.isSuccess()) {
-							System.out.println("Comm failed");
-						}
+						System.out.println("***Node Monitor ***fn: run while loop inside IF write Ack to channel");
+//						ChannelFuture cf = ts.getChannel().writeAndFlush(Unpooled.copiedBuffer("Ack", CharsetUtil.UTF_8));
+//						
+//						if (cf.isDone() && !cf.isSuccess()) {
+//						    System.out.println("Send failed: " + cf.cause());
+//						}
+//						
+//						if(cf.isDone()&& !cf.isSuccess()) {
+//							System.out.println("Comm failed");
+//						}
+//						printStatMap();
+//						forever = false;
 						
 					}
 					else {
 						onAdd(ts);
 					}
-					for(TopologyStat ts1 : this.statMap.values()) {
-						
-						System.out.println("TOPO STat after On Add :"+ ts1.getHost()+ "--" +ts1.getPort()+ "--"+ts1.isActive());
-					}
+//					for(TopologyStat ts1 : this.statMap.values()) {
+//						
+//						System.out.println("TOPO STat after On Add :"+ ts1.getHost()+ "--" +ts1.getPort()+ "--"+ts1.isActive());
+//					}
 					
 				}
 				
@@ -98,11 +119,11 @@ public class NodeMonitor implements Runnable {
 	}
 	
 	public void onAdd(TopologyStat ts) {
+		EventLoopGroup group = new NioEventLoopGroup();
 		
 		try {
 			System.out.println("/t***Node Monitor****fn:onAdd***");
 			System.out.println(ts.getRef() + "," + ts.getHost() + ","  + ts.getPort());
-			EventLoopGroup group = new NioEventLoopGroup();
 			Bootstrap b = new Bootstrap();
 			b.handler(new WorkHandler());
 //			b.group(group).channel(NioSocketChannel.class).handler(new WorkInit(state, false));
@@ -117,9 +138,37 @@ public class NodeMonitor implements Runnable {
 			ts.setChannel(cf.channel());
 			ts.setActive(true);
 			cf.channel().closeFuture();
+			sendAddRequestToExistingNode(ts);
+			
+			
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			
+		}
+		finally {
+			if(group!=null) {
+				group = null;
+			}
+		}
+		
+	}
+	
+	public void sendAddRequestToExistingNode(TopologyStat ts) {
+		System.out.println("***Node Monitor fn:sendAddRequestToExistingNode ");
+		try {
+			WorkMessage workMessage = MessageBuilder.prepareInternalNodeAddRequest(nodeConf.getNodeId(), InetAddress.getLocalHost().getHostAddress(), nodeConf.getWorkPort());
+			ChannelFuture cf = ts.getChannel().writeAndFlush(workMessage);
+			
+			if (cf.isDone() && !cf.isSuccess()) {
+			    System.out.println("Send failed: " + cf.cause());
+			}
+			
+			if(cf.isDone()&& !cf.isSuccess()) {
+				System.out.println("Comm failed");
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
 		}
 		
 	}

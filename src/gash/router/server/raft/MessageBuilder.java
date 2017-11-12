@@ -1,5 +1,7 @@
 package gash.router.server.raft;
 
+import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
+
 //import com.google.protobuf.ByteString;
 
 import gash.router.server.NodeMonitor;
@@ -13,6 +15,7 @@ import raft.proto.Vote.*;
 import raft.proto.Vote.ResponseVote.IsVoteGranted;
 import raft.proto.Work.WorkMessage;
 //import server.db.DatabaseService;
+import raft.proto.InternalNodeAdd.*;
 
 public class MessageBuilder {
 
@@ -146,5 +149,22 @@ public class MessageBuilder {
 		work.setVoteRPCPacket(voteRPCPacket);
 
 		return work.build();
+	}
+	
+	public static WorkMessage prepareInternalNodeAddRequest(int id, String host, int port) {
+		WorkMessage.Builder work = WorkMessage.newBuilder();
+		work.setUnixTimeStamp(TimerRoutine.getCurrentUnixTimeStamp());
+		
+		InternalNodeAddPacket.Builder internalNodeAddPacket = InternalNodeAddPacket.newBuilder();
+		
+		InternalNodeAddRequest.Builder internalNodeAddRequest = InternalNodeAddRequest.newBuilder();
+		internalNodeAddRequest.setId(id);
+		internalNodeAddRequest.setHost(host);
+		internalNodeAddRequest.setPort(port);
+		
+		internalNodeAddPacket.setInternalNodeAddRequest(internalNodeAddRequest);
+		work.setInternalNodeAddPacket(internalNodeAddPacket);
+		return work.build();
+		
 	}
 }

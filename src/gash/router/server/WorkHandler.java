@@ -1,27 +1,58 @@
 package gash.router.server;
 
+import gash.router.server.raft.Follower;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import raft.proto.InternalNodeAdd.InternalNodeAddRequest;
 //import pipe.work.Work.WorkMessage; For now msg is coming as string
 //import pipe.common.Common.Failure;
 //import pipe.work.Work.Heartbeat;
 //import pipe.work.Work.Task;
 //import pipe.work.Work.WorkMessage;
 //import pipe.work.Work.WorkState;
+import raft.proto.Work.WorkMessage;
 
-public class WorkHandler extends SimpleChannelInboundHandler<ByteBuf>{
+public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage>{
 		WorkHandler(){
 			
 		}
 		
-		public void handleMessage(String msg, Channel channel) {
-			if (msg == null) {
+		Follower foll = new Follower();
+		public void handleMessage(WorkMessage wm, Channel channel) {
+//			if (msg == null) {
+//				// TODO add logging
+//				System.out.println("ERROR: Unexpected content - " + msg);
+//				return;
+//			}
+			try {
+			if (wm == null) {
 				// TODO add logging
-				System.out.println("ERROR: Unexpected content - " + msg);
+				System.out.println("ERROR: Unexpected content - " + wm);
 				return;
+			}
+
+			System.out.println("Into handleMessage : Message - "+wm);
+			if (wm.hasHeartBeatPacket() ) {
+				foll.handleHeartBeat(wm);
+			}
+			if (wm.hasAppendEntriesPacket())
+			{
+//                foll.getWorkQueue();
+			}
+			if(wm.hasInternalNodeAddPacket())
+			{
+				if(wm.getInternalNodeAddPacket().hasInternalNodeAddRequest()) {
+					InternalNodeAddRequest internalNodeAddRequest = wm.getInternalNodeAddPacket().getInternalNodeAddRequest();
+					NodeMonitor nodeMonitor = NodeMonitor.getInstance();
+					nodeMonitor.setStatMap(new TopologyStat(internalNodeAddRequest.getId(), internalNodeAddRequest.getHost(), internalNodeAddRequest.getPort()));
+				}
+			}
+			}catch(Exception ex) {
+				ex.printStackTrace();
+				
 			}
 
 //			if (debug)
@@ -60,12 +91,6 @@ public class WorkHandler extends SimpleChannelInboundHandler<ByteBuf>{
 //				rb.setSecret(1);
 //				channel.write(rb.build());
 //			}
-				try {
-//					System.out.println("Message is -"+msg);
-				}
-				catch(Exception e) {
-					e.printStackTrace();
-				}
 
 			System.out.flush();
 
@@ -73,11 +98,11 @@ public class WorkHandler extends SimpleChannelInboundHandler<ByteBuf>{
 
 
 		@Override
-		protected void channelRead0(ChannelHandlerContext ctx, ByteBuf msg) throws Exception {
+		protected void channelRead0(ChannelHandlerContext ctx, WorkMessage workMessage) throws Exception {
 			// TODO Auto-generated method stub
 //			System.out.println("****WorkInit*****Channel Read****");
-			ByteBuf in = (ByteBuf) msg;
-			handleMessage(in.toString(CharsetUtil.UTF_8), ctx.channel());
+//			ByteBuf in = (ByteBuf) msg;
+			handleMessage(workMessage, ctx.channel());
 			
 		}
 		

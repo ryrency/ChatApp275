@@ -66,6 +66,19 @@ public final class Work {
      */
     raft.proto.Vote.VotePacketOrBuilder getVoteRPCPacketOrBuilder();
 
+    /**
+     * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+     */
+    boolean hasInternalNodeAddPacket();
+    /**
+     * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+     */
+    raft.proto.InternalNodeAdd.InternalNodeAddPacket getInternalNodeAddPacket();
+    /**
+     * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+     */
+    raft.proto.InternalNodeAdd.InternalNodeAddPacketOrBuilder getInternalNodeAddPacketOrBuilder();
+
     public raft.proto.Work.WorkMessage.PayloadCase getPayloadCase();
   }
   /**
@@ -159,6 +172,20 @@ public final class Work {
               payloadCase_ = 4;
               break;
             }
+            case 42: {
+              raft.proto.InternalNodeAdd.InternalNodeAddPacket.Builder subBuilder = null;
+              if (payloadCase_ == 5) {
+                subBuilder = ((raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_).toBuilder();
+              }
+              payload_ =
+                  input.readMessage(raft.proto.InternalNodeAdd.InternalNodeAddPacket.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 5;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -191,6 +218,7 @@ public final class Work {
       APPENDENTRIESPACKET(2),
       HEARTBEATPACKET(3),
       VOTERPCPACKET(4),
+      INTERNALNODEADDPACKET(5),
       PAYLOAD_NOT_SET(0);
       private final int value;
       private PayloadCase(int value) {
@@ -209,6 +237,7 @@ public final class Work {
           case 2: return APPENDENTRIESPACKET;
           case 3: return HEARTBEATPACKET;
           case 4: return VOTERPCPACKET;
+          case 5: return INTERNALNODEADDPACKET;
           case 0: return PAYLOAD_NOT_SET;
           default: return null;
         }
@@ -317,6 +346,32 @@ public final class Work {
       return raft.proto.Vote.VotePacket.getDefaultInstance();
     }
 
+    public static final int INTERNALNODEADDPACKET_FIELD_NUMBER = 5;
+    /**
+     * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+     */
+    public boolean hasInternalNodeAddPacket() {
+      return payloadCase_ == 5;
+    }
+    /**
+     * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+     */
+    public raft.proto.InternalNodeAdd.InternalNodeAddPacket getInternalNodeAddPacket() {
+      if (payloadCase_ == 5) {
+         return (raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_;
+      }
+      return raft.proto.InternalNodeAdd.InternalNodeAddPacket.getDefaultInstance();
+    }
+    /**
+     * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+     */
+    public raft.proto.InternalNodeAdd.InternalNodeAddPacketOrBuilder getInternalNodeAddPacketOrBuilder() {
+      if (payloadCase_ == 5) {
+         return (raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_;
+      }
+      return raft.proto.InternalNodeAdd.InternalNodeAddPacket.getDefaultInstance();
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -345,6 +400,12 @@ public final class Work {
           return false;
         }
       }
+      if (hasInternalNodeAddPacket()) {
+        if (!getInternalNodeAddPacket().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -362,6 +423,9 @@ public final class Work {
       }
       if (payloadCase_ == 4) {
         output.writeMessage(4, (raft.proto.Vote.VotePacket) payload_);
+      }
+      if (payloadCase_ == 5) {
+        output.writeMessage(5, (raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_);
       }
       unknownFields.writeTo(output);
     }
@@ -386,6 +450,10 @@ public final class Work {
       if (payloadCase_ == 4) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(4, (raft.proto.Vote.VotePacket) payload_);
+      }
+      if (payloadCase_ == 5) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(5, (raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -424,6 +492,10 @@ public final class Work {
           result = result && getVoteRPCPacket()
               .equals(other.getVoteRPCPacket());
           break;
+        case 5:
+          result = result && getInternalNodeAddPacket()
+              .equals(other.getInternalNodeAddPacket());
+          break;
         case 0:
         default:
       }
@@ -455,6 +527,10 @@ public final class Work {
         case 4:
           hash = (37 * hash) + VOTERPCPACKET_FIELD_NUMBER;
           hash = (53 * hash) + getVoteRPCPacket().hashCode();
+          break;
+        case 5:
+          hash = (37 * hash) + INTERNALNODEADDPACKET_FIELD_NUMBER;
+          hash = (53 * hash) + getInternalNodeAddPacket().hashCode();
           break;
         case 0:
         default:
@@ -641,6 +717,13 @@ public final class Work {
             result.payload_ = voteRPCPacketBuilder_.build();
           }
         }
+        if (payloadCase_ == 5) {
+          if (internalNodeAddPacketBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = internalNodeAddPacketBuilder_.build();
+          }
+        }
         result.bitField0_ = to_bitField0_;
         result.payloadCase_ = payloadCase_;
         onBuilt();
@@ -700,6 +783,10 @@ public final class Work {
             mergeVoteRPCPacket(other.getVoteRPCPacket());
             break;
           }
+          case INTERNALNODEADDPACKET: {
+            mergeInternalNodeAddPacket(other.getInternalNodeAddPacket());
+            break;
+          }
           case PAYLOAD_NOT_SET: {
             break;
           }
@@ -725,6 +812,11 @@ public final class Work {
         }
         if (hasVoteRPCPacket()) {
           if (!getVoteRPCPacket().isInitialized()) {
+            return false;
+          }
+        }
+        if (hasInternalNodeAddPacket()) {
+          if (!getInternalNodeAddPacket().isInitialized()) {
             return false;
           }
         }
@@ -1204,6 +1296,142 @@ public final class Work {
         onChanged();;
         return voteRPCPacketBuilder_;
       }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          raft.proto.InternalNodeAdd.InternalNodeAddPacket, raft.proto.InternalNodeAdd.InternalNodeAddPacket.Builder, raft.proto.InternalNodeAdd.InternalNodeAddPacketOrBuilder> internalNodeAddPacketBuilder_;
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      public boolean hasInternalNodeAddPacket() {
+        return payloadCase_ == 5;
+      }
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      public raft.proto.InternalNodeAdd.InternalNodeAddPacket getInternalNodeAddPacket() {
+        if (internalNodeAddPacketBuilder_ == null) {
+          if (payloadCase_ == 5) {
+            return (raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_;
+          }
+          return raft.proto.InternalNodeAdd.InternalNodeAddPacket.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 5) {
+            return internalNodeAddPacketBuilder_.getMessage();
+          }
+          return raft.proto.InternalNodeAdd.InternalNodeAddPacket.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      public Builder setInternalNodeAddPacket(raft.proto.InternalNodeAdd.InternalNodeAddPacket value) {
+        if (internalNodeAddPacketBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          internalNodeAddPacketBuilder_.setMessage(value);
+        }
+        payloadCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      public Builder setInternalNodeAddPacket(
+          raft.proto.InternalNodeAdd.InternalNodeAddPacket.Builder builderForValue) {
+        if (internalNodeAddPacketBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          internalNodeAddPacketBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      public Builder mergeInternalNodeAddPacket(raft.proto.InternalNodeAdd.InternalNodeAddPacket value) {
+        if (internalNodeAddPacketBuilder_ == null) {
+          if (payloadCase_ == 5 &&
+              payload_ != raft.proto.InternalNodeAdd.InternalNodeAddPacket.getDefaultInstance()) {
+            payload_ = raft.proto.InternalNodeAdd.InternalNodeAddPacket.newBuilder((raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 5) {
+            internalNodeAddPacketBuilder_.mergeFrom(value);
+          }
+          internalNodeAddPacketBuilder_.setMessage(value);
+        }
+        payloadCase_ = 5;
+        return this;
+      }
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      public Builder clearInternalNodeAddPacket() {
+        if (internalNodeAddPacketBuilder_ == null) {
+          if (payloadCase_ == 5) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 5) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          internalNodeAddPacketBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      public raft.proto.InternalNodeAdd.InternalNodeAddPacket.Builder getInternalNodeAddPacketBuilder() {
+        return getInternalNodeAddPacketFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      public raft.proto.InternalNodeAdd.InternalNodeAddPacketOrBuilder getInternalNodeAddPacketOrBuilder() {
+        if ((payloadCase_ == 5) && (internalNodeAddPacketBuilder_ != null)) {
+          return internalNodeAddPacketBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 5) {
+            return (raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_;
+          }
+          return raft.proto.InternalNodeAdd.InternalNodeAddPacket.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .raft.proto.InternalNodeAddPacket internalNodeAddPacket = 5;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          raft.proto.InternalNodeAdd.InternalNodeAddPacket, raft.proto.InternalNodeAdd.InternalNodeAddPacket.Builder, raft.proto.InternalNodeAdd.InternalNodeAddPacketOrBuilder> 
+          getInternalNodeAddPacketFieldBuilder() {
+        if (internalNodeAddPacketBuilder_ == null) {
+          if (!(payloadCase_ == 5)) {
+            payload_ = raft.proto.InternalNodeAdd.InternalNodeAddPacket.getDefaultInstance();
+          }
+          internalNodeAddPacketBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              raft.proto.InternalNodeAdd.InternalNodeAddPacket, raft.proto.InternalNodeAdd.InternalNodeAddPacket.Builder, raft.proto.InternalNodeAdd.InternalNodeAddPacketOrBuilder>(
+                  (raft.proto.InternalNodeAdd.InternalNodeAddPacket) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 5;
+        onChanged();;
+        return internalNodeAddPacketBuilder_;
+      }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
@@ -1268,13 +1496,15 @@ public final class Work {
   static {
     java.lang.String[] descriptorData = {
       "\n\nWork.proto\022\nraft.proto\032\023AppendEntries." +
-      "proto\032\017HeartBeat.proto\032\nVote.proto\"\330\001\n\013W" +
-      "orkMessage\022\025\n\runixTimeStamp\030\001 \002(\003\022>\n\023app" +
-      "endEntriesPacket\030\002 \001(\0132\037.raft.proto.Appe" +
-      "ndEntriesPacketH\000\0226\n\017heartBeatPacket\030\003 \001" +
-      "(\0132\033.raft.proto.HeartBeatPacketH\000\022/\n\rvot" +
-      "eRPCPacket\030\004 \001(\0132\026.raft.proto.VotePacket" +
-      "H\000B\t\n\007payload"
+      "proto\032\017HeartBeat.proto\032\nVote.proto\032\025Inte" +
+      "rnalNodeAdd.proto\"\234\002\n\013WorkMessage\022\025\n\runi" +
+      "xTimeStamp\030\001 \002(\003\022>\n\023appendEntriesPacket\030" +
+      "\002 \001(\0132\037.raft.proto.AppendEntriesPacketH\000" +
+      "\0226\n\017heartBeatPacket\030\003 \001(\0132\033.raft.proto.H" +
+      "eartBeatPacketH\000\022/\n\rvoteRPCPacket\030\004 \001(\0132" +
+      "\026.raft.proto.VotePacketH\000\022B\n\025internalNod" +
+      "eAddPacket\030\005 \001(\0132!.raft.proto.InternalNo" +
+      "deAddPacketH\000B\t\n\007payload"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1290,16 +1520,18 @@ public final class Work {
           raft.proto.AppendEntries.getDescriptor(),
           raft.proto.HeartBeat.getDescriptor(),
           raft.proto.Vote.getDescriptor(),
+          raft.proto.InternalNodeAdd.getDescriptor(),
         }, assigner);
     internal_static_raft_proto_WorkMessage_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_raft_proto_WorkMessage_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_WorkMessage_descriptor,
-        new java.lang.String[] { "UnixTimeStamp", "AppendEntriesPacket", "HeartBeatPacket", "VoteRPCPacket", "Payload", });
+        new java.lang.String[] { "UnixTimeStamp", "AppendEntriesPacket", "HeartBeatPacket", "VoteRPCPacket", "InternalNodeAddPacket", "Payload", });
     raft.proto.AppendEntries.getDescriptor();
     raft.proto.HeartBeat.getDescriptor();
     raft.proto.Vote.getDescriptor();
+    raft.proto.InternalNodeAdd.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)
