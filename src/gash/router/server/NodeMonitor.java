@@ -93,17 +93,18 @@ public class NodeMonitor implements Runnable {
 			ts.setChannel(cf.channel());
 			ts.setActive(true);
 			ts.setExists(true);
-			// Thread.sleep(10000);
+			
 			System.out.println(
 					"Step 3: Adjacent Node status -->" + ts.getHost() + "--" + ts.getPort() + "--" + ts.isActive());
-			// Thread.sleep(10000);
+			
 			cf.channel().closeFuture();
 			cf.channel().closeFuture().addListener(new ChannelFutureListener() {
 				@Override
 				public void operationComplete(ChannelFuture future) throws Exception {
-					scheduleConnect(ts, 1);
+					System.out.println("Error: Connection closed");
+					statMap.remove(ts.getRef());
+					//scheduleConnect(ts, 1000);
 				}
-
 			});
 			sendAddRequestToExistingNode(ts);
 			statMap.put(ts.getRef(), ts);
@@ -122,7 +123,7 @@ public class NodeMonitor implements Runnable {
 	}
 
 	private void scheduleConnect(TopologyStat ts, long millis) {
-		System.out.println("Error 1: Connection closed");
+		System.out.println("Error: Connection closed");
 		timer_.schedule(new TimerTask() {
 			@Override
 			public void run() {
