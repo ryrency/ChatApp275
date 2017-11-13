@@ -10,8 +10,8 @@ public class TopologyStat {
 	private String host;
 	private int port;
 	boolean active;
-	 Channel channel;
-	 
+	Channel channel;
+	boolean exists; 
 	 
 	 
 	 TopologyStat(int ref, String host, int port){
@@ -19,7 +19,14 @@ public class TopologyStat {
 		 this.host = host;
 		 this.port = port;
 	 }
-	
+
+	public boolean isExists() {
+		return exists;
+	}
+	public void setExists(boolean exists) {
+		this.exists = exists;
+	}
+ 
 	public boolean isActive() {
 		return active;
 	}
