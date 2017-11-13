@@ -1,6 +1,9 @@
 package gash.router.server;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,14 +56,16 @@ public class NodeMonitor implements Runnable {
 		// TODO Auto-generated method stub
 		while (forever) {
 			try {
-//				System.out.println("size of hashmap *** " + statMap.size());
+				// System.out.println("size of hashmap *** " + statMap.size());
 				for (TopologyStat ts : statMap.values()) {
-//					System.out.println("Step1: Adjacent Node status -->" + ts.getHost() + "--" + ts.getPort() + "--"
-//							+ ts.isActive() + "--" + ts.isExists());
+					// System.out.println("Step1: Adjacent Node status -->" + ts.getHost() + "--" +
+					// ts.getPort() + "--"
+					// + ts.isActive() + "--" + ts.isExists());
 					if (!ts.isActive() && ts.getChannel() == null) {
-							addAdjacentNode(ts);
-//							System.out.println("size of hashmap  after adding a new node *** " + statMap.size());
-						}
+						addAdjacentNode(ts);
+						// System.out.println("size of hashmap after adding a new node *** " +
+						// statMap.size());
+					}
 				}
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -128,11 +133,18 @@ public class NodeMonitor implements Runnable {
 
 	public void sendAddRequestToExistingNode(TopologyStat ts) {
 		try {
+			
+			String hostAddress = getLocalHostAddress();
+			
+				
+				
+			
+			
 			System.out.println("Generated request to add adjacent node" + nodeConf.getNodeId() + ","
-					+ InetAddress.getLocalHost().getHostAddress() + "," + nodeConf.getWorkPort());
+					+ hostAddress + "," + nodeConf.getWorkPort());
 
 			WorkMessage workMessage = MessageBuilder.prepareInternalNodeAddRequest(nodeConf.getNodeId(),
-					InetAddress.getLocalHost().getHostAddress(), nodeConf.getWorkPort());
+					hostAddress, nodeConf.getWorkPort());
 
 			ChannelFuture cf = ts.getChannel().writeAndFlush(workMessage);
 
@@ -169,6 +181,49 @@ public class NodeMonitor implements Runnable {
 			System.out.println("TOPO STat :" + ts.getHost() + "--" + ts.getPort() + "--" + ts.isActive() + "------"
 					+ ts.getChannel());
 		}
+	}
+	
+	public String getLocalHostAddress() {
+		System.out.println("***NodeMonitor*** fn:getLocalHostAddress***");
+		String hostAddress = null;
+		
+		try {
+		Enumeration<NetworkInterface> netInterfaceEnum = NetworkInterface.getNetworkInterfaces();
+		while(netInterfaceEnum.hasMoreElements()) {
+//			System.out.println("***NodeMonitor*** fn:getLocalHostAddress*** Inside while #1*** ");
+			NetworkInterface netInterface = netInterfaceEnum.nextElement();
+//			System.out.println("NetworkInterface = "+netInterface.toString());
+			if(!netInterface.isUp()) {
+				continue;
+			}
+			
+			Enumeration<InetAddress> inetAddrEnum = netInterface.getInetAddresses();
+			
+			while(inetAddrEnum.hasMoreElements()) {
+//				System.out.println("***NodeMonitor*** dn:getLocalHostAddress*** Inside while #2");
+				InetAddress inetAddr = inetAddrEnum.nextElement();
+//				System.out.println("***NodeMonitor*** dn:getLocalHostAddress*** InetAdress = "+inetAddr);
+				if(!inetAddr.isLoopbackAddress() && inetAddr instanceof Inet4Address) {
+					hostAddress =  inetAddr.getHostAddress().toString();
+//					System.out.println("***NodeMonitor*** dn:getLocalHostAddress*** hostAdress = "+hostAddress);
+					break;
+					
+				}
+			}
+			if(hostAddress != null) {
+				break;
+			}
+		}
+	}
+	
+	catch(Exception e) {
+		e.printStackTrace();
+		
+	}
+	finally {
+	}
+		return hostAddress;
+
 	}
 
 }
