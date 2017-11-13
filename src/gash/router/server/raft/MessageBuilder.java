@@ -169,7 +169,7 @@ public class MessageBuilder {
 		
 	}
 	
-	public static WorkMessage prepareAppendEntriesPacket(ClientRoute clientMsg, long timestamp) {
+	public static WorkMessage prepareAppendEntriesPacket(ClientRoute clientMsg, String timestamp) {
 
         WorkMessage.Builder work = WorkMessage.newBuilder();
         work.setUnixTimeStamp(TimerRoutine.getCurrentUnixTimeStamp());
@@ -183,14 +183,16 @@ public class MessageBuilder {
         appendEntries.setTimeStampOnLatestUpdate(timestamp);
         appendEntries.setLeaderId(NodeMonitor.getInstance().getNodeConf().getNodeId());
         appendEntries.setTermid(NodeState.getInstance().currentTerm);
+        
 
         clientMsgBuild.setSender(clientMsg.getMessage().getSender());
         clientMsgBuild.setPayload(clientMsg.getMessage().getPayload());
         clientMsgBuild.setTo(clientMsg.getMessage().getTo());
-        
+        clientMsgBuild.setTimestamp(timestamp);
         clientMsgBuild.setType(clientMsg.getMessage().getType().getNumber());
         clientMsgBuild.setStatus(clientMsg.getMessage().getStatus().getNumber());
         
+        appendEntries.setMessage(clientMsgBuild);
         appendEntriesPacket.setAppendEntries(appendEntries);
 
         work.setAppendEntriesPacket(appendEntriesPacket);

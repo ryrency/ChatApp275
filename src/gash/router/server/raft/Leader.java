@@ -75,6 +75,8 @@ public class Leader extends Service implements Runnable {
 
 	//Append Entries to ALL nodes 
 	private void sendAppendEntriesPacket(WorkMessage wm) {
+		
+		System.out.println("Leader****** fn:sendAppendEntriesPacket*****");
 
         for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
             if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {                    
@@ -223,7 +225,9 @@ public class Leader extends Service implements Runnable {
 	public void handleClientRequest(ClientRoute clientRoute) {
 		System.out.println("***Leader*** fn:handleClientMessage");
 		if(clientRoute.hasMessage()){
-			WorkMessage workMessage = MessageBuilder.prepareAppendEntriesPacket(clientRoute, Long.parseLong(clientRoute.getMessage().getTimestamp()));
+			System.out.println("***Leader*** fn:handleClientMessage *** Inside If client hasMessage");
+			WorkMessage workMessage = MessageBuilder.prepareAppendEntriesPacket(clientRoute, clientRoute.getMessage().getTimestamp());
+			System.out.println("***Leader*** fn:handleClientMessage *** work message returned");
 			sendAppendEntriesPacket(workMessage);
 			mongoDB.storeClientMessagetoDB(workMessage);
 		}	

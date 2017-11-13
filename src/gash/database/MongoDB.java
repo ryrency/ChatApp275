@@ -148,11 +148,12 @@ public class MongoDB {
 			Document document = new Document();
 			document.put(UNIXTIMESTAMP, workMessage.getUnixTimeStamp());
 			document.append(MESSAGETYPE,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getType());
-			document.append(TERMID,workMessage.getAppendEntriesPacket().getAppendEntries() );
+			document.append(TERMID,workMessage.getAppendEntriesPacket().getAppendEntries().getTermid() );
 			document.append(SENDER_ID,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getSender() );
 			document.append(RECEIVER_ID,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTo() );
 			document.append(PAYLOAD,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getPayload() );
-			document.append(TIMESTAMP,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTimestamp() );
+			Date date = new Date(Long.parseLong(workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTimestamp().replace(".", "")));
+			document.append(TIMESTAMP,date);
 			document.append(STATUS,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getStatus() );
 			document.append(TIMESTAMPONLATESTUPDATE,workMessage.getAppendEntriesPacket().getAppendEntries().getTimeStampOnLatestUpdate() );
 			dbCollection.insertOne(document);

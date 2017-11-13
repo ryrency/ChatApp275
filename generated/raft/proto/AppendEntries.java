@@ -50,13 +50,18 @@ public final class AppendEntries {
     int getTermid();
 
     /**
-     * <code>required int64 timeStampOnLatestUpdate = 4;</code>
+     * <code>required string timeStampOnLatestUpdate = 4;</code>
      */
     boolean hasTimeStampOnLatestUpdate();
     /**
-     * <code>required int64 timeStampOnLatestUpdate = 4;</code>
+     * <code>required string timeStampOnLatestUpdate = 4;</code>
      */
-    long getTimeStampOnLatestUpdate();
+    java.lang.String getTimeStampOnLatestUpdate();
+    /**
+     * <code>required string timeStampOnLatestUpdate = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getTimeStampOnLatestUpdateBytes();
   }
   /**
    * Protobuf type {@code raft.proto.AppendEntriesMsg}
@@ -73,7 +78,7 @@ public final class AppendEntries {
     private AppendEntriesMsg() {
       leaderId_ = 0;
       termid_ = 0;
-      timeStampOnLatestUpdate_ = 0L;
+      timeStampOnLatestUpdate_ = "";
     }
 
     @java.lang.Override
@@ -127,9 +132,10 @@ public final class AppendEntries {
               termid_ = input.readInt32();
               break;
             }
-            case 32: {
+            case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000008;
-              timeStampOnLatestUpdate_ = input.readInt64();
+              timeStampOnLatestUpdate_ = bs;
               break;
             }
           }
@@ -209,18 +215,45 @@ public final class AppendEntries {
     }
 
     public static final int TIMESTAMPONLATESTUPDATE_FIELD_NUMBER = 4;
-    private long timeStampOnLatestUpdate_;
+    private volatile java.lang.Object timeStampOnLatestUpdate_;
     /**
-     * <code>required int64 timeStampOnLatestUpdate = 4;</code>
+     * <code>required string timeStampOnLatestUpdate = 4;</code>
      */
     public boolean hasTimeStampOnLatestUpdate() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required int64 timeStampOnLatestUpdate = 4;</code>
+     * <code>required string timeStampOnLatestUpdate = 4;</code>
      */
-    public long getTimeStampOnLatestUpdate() {
-      return timeStampOnLatestUpdate_;
+    public java.lang.String getTimeStampOnLatestUpdate() {
+      java.lang.Object ref = timeStampOnLatestUpdate_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          timeStampOnLatestUpdate_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string timeStampOnLatestUpdate = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTimeStampOnLatestUpdateBytes() {
+      java.lang.Object ref = timeStampOnLatestUpdate_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        timeStampOnLatestUpdate_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
     }
 
     private byte memoizedIsInitialized = -1;
@@ -265,7 +298,7 @@ public final class AppendEntries {
         output.writeInt32(3, termid_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt64(4, timeStampOnLatestUpdate_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, timeStampOnLatestUpdate_);
       }
       unknownFields.writeTo(output);
     }
@@ -288,8 +321,7 @@ public final class AppendEntries {
           .computeInt32Size(3, termid_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(4, timeStampOnLatestUpdate_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, timeStampOnLatestUpdate_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -324,8 +356,8 @@ public final class AppendEntries {
       }
       result = result && (hasTimeStampOnLatestUpdate() == other.hasTimeStampOnLatestUpdate());
       if (hasTimeStampOnLatestUpdate()) {
-        result = result && (getTimeStampOnLatestUpdate()
-            == other.getTimeStampOnLatestUpdate());
+        result = result && getTimeStampOnLatestUpdate()
+            .equals(other.getTimeStampOnLatestUpdate());
       }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
@@ -352,8 +384,7 @@ public final class AppendEntries {
       }
       if (hasTimeStampOnLatestUpdate()) {
         hash = (37 * hash) + TIMESTAMPONLATESTUPDATE_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getTimeStampOnLatestUpdate());
+        hash = (53 * hash) + getTimeStampOnLatestUpdate().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -495,7 +526,7 @@ public final class AppendEntries {
         bitField0_ = (bitField0_ & ~0x00000002);
         termid_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
-        timeStampOnLatestUpdate_ = 0L;
+        timeStampOnLatestUpdate_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -593,7 +624,9 @@ public final class AppendEntries {
           setTermid(other.getTermid());
         }
         if (other.hasTimeStampOnLatestUpdate()) {
-          setTimeStampOnLatestUpdate(other.getTimeStampOnLatestUpdate());
+          bitField0_ |= 0x00000008;
+          timeStampOnLatestUpdate_ = other.timeStampOnLatestUpdate_;
+          onChanged();
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -820,34 +853,78 @@ public final class AppendEntries {
         return this;
       }
 
-      private long timeStampOnLatestUpdate_ ;
+      private java.lang.Object timeStampOnLatestUpdate_ = "";
       /**
-       * <code>required int64 timeStampOnLatestUpdate = 4;</code>
+       * <code>required string timeStampOnLatestUpdate = 4;</code>
        */
       public boolean hasTimeStampOnLatestUpdate() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required int64 timeStampOnLatestUpdate = 4;</code>
+       * <code>required string timeStampOnLatestUpdate = 4;</code>
        */
-      public long getTimeStampOnLatestUpdate() {
-        return timeStampOnLatestUpdate_;
+      public java.lang.String getTimeStampOnLatestUpdate() {
+        java.lang.Object ref = timeStampOnLatestUpdate_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            timeStampOnLatestUpdate_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
       }
       /**
-       * <code>required int64 timeStampOnLatestUpdate = 4;</code>
+       * <code>required string timeStampOnLatestUpdate = 4;</code>
        */
-      public Builder setTimeStampOnLatestUpdate(long value) {
-        bitField0_ |= 0x00000008;
+      public com.google.protobuf.ByteString
+          getTimeStampOnLatestUpdateBytes() {
+        java.lang.Object ref = timeStampOnLatestUpdate_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          timeStampOnLatestUpdate_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string timeStampOnLatestUpdate = 4;</code>
+       */
+      public Builder setTimeStampOnLatestUpdate(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
         timeStampOnLatestUpdate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required int64 timeStampOnLatestUpdate = 4;</code>
+       * <code>required string timeStampOnLatestUpdate = 4;</code>
        */
       public Builder clearTimeStampOnLatestUpdate() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        timeStampOnLatestUpdate_ = 0L;
+        timeStampOnLatestUpdate_ = getDefaultInstance().getTimeStampOnLatestUpdate();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string timeStampOnLatestUpdate = 4;</code>
+       */
+      public Builder setTimeStampOnLatestUpdateBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        timeStampOnLatestUpdate_ = value;
         onChanged();
         return this;
       }
@@ -3874,7 +3951,7 @@ public final class AppendEntries {
       "pendEntriesMsg\022\020\n\010leaderId\030\001 \002(\005\022*\n\007mess" +
       "age\030\002 \002(\0132\031.raft.proto.ClientMessage\022\016\n\006" +
       "termid\030\003 \002(\005\022\037\n\027timeStampOnLatestUpdate\030" +
-      "\004 \002(\003\"m\n\rClientMessage\022\014\n\004type\030\001 \002(\005\022\016\n\006" +
+      "\004 \002(\t\"m\n\rClientMessage\022\014\n\004type\030\001 \002(\005\022\016\n\006" +
       "sender\030\002 \002(\t\022\017\n\007payload\030\003 \002(\t\022\n\n\002to\030\004 \002(" +
       "\t\022\021\n\ttimestamp\030\005 \002(\t\022\016\n\006status\030\006 \002(\005\"u\n\025" +
       "AppendEntriesResponse\022>\n\tisUpdated\030\001 \002(\016" +

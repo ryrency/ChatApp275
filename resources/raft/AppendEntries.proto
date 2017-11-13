@@ -15,7 +15,7 @@ message AppendEntriesMsg{
     required int32 leaderId = 1;
     required  ClientMessage message  = 2;
     required int32 termid = 3;
-    required int64 timeStampOnLatestUpdate = 4;
+    required string timeStampOnLatestUpdate = 4;
 }
 
 
