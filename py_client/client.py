@@ -1,14 +1,13 @@
 # -*- coding: utf8 -*-
 import sys
 import socket
-from pipe_pb2 import Route
 from payload_pb2 import Route1
 from payload_pb2 import Message
 from encoder_decoder import LengthFieldProtoEncoder
 from multiprocessing import Process
 import urllib2
 from time import time
-import datetime
+# import datetime
 
 
 # This is currently port and IP oof Nginx server
@@ -29,8 +28,8 @@ class MessageClient:
         #todo - should fail if the http connection fails here, then should not continue
         # socket_address = self.__get_server_socket_address()
         # parts = socket_address.split(":")
-        self.host = "127.0.0.1"
-        self.port = 4267
+        self.host = "10.0.0.10"
+        self.port = 4467
         
         self.connect()
 
@@ -40,7 +39,7 @@ class MessageClient:
         return socket_address
 
     def connect(self):
-        print "JSingh  --- 1"
+        print "connect  --- 1"
         self.s = socket.socket()
         self.s.connect((self.host, self.port))
         print "client connected to server: " + self.__get_server_path()
@@ -82,7 +81,7 @@ class MessageClient:
         message.sender = "123"
         message.to = "345"
         message.payload = "Hi"
-        ts = datetime.datetime.now()
+        ts = time.time();
         message.timestamp = str(ts)
         message.status = message.ACTIVE
 
@@ -92,13 +91,13 @@ class MessageClient:
         self.send(route)
 
 
-    def post_message(self, message):
-        r = Route()
-        r.id = "1"
-        r.path = "/message"
-        r.payload = message
-
-        self.send(r)
+#     def post_message(self, message):
+#         r = Route()
+#         r.id = "1"
+#         r.path = "/message"
+#         r.payload = message
+# 
+#         self.send(r)
 
     def send(self, route):
         message = self.encoder.encode(route)

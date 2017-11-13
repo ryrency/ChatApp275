@@ -11,6 +11,8 @@ import raft.proto.Vote.ResponseVote;
 import raft.proto.Vote.VotePacket;
 import raft.proto.Work.WorkMessage;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +26,7 @@ public class Candidate extends Service implements Runnable {
 
 	private static Candidate INSTANCE = null;
 	private int numberOfYESResponses;
-	private int TotalResponses;
+	private int TotalResponses = 0;
 	NodeTimer timer = new NodeTimer();
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("CANDIDATE");
 	HashMap<Integer, TopologyStat> statMap = new HashMap<Integer, TopologyStat>();
@@ -54,30 +56,20 @@ public class Candidate extends Service implements Runnable {
 		numberOfYESResponses = 0;
 		TotalResponses = 0;
 		NodeState.currentTerm++;
-		for (TopologyStat ts : this.statMap.values()) {
-					if (ts.isActive() && ts.getChannel() != null) {
-				WorkMessage workMessage = MessageBuilder.prepareRequestVote();
-				logger.info("Sent VoteRequestRPC to " + ts.getRef());
-				ChannelFuture cf = ts.getChannel().writeAndFlush(workMessage);
-				if (cf.isDone() && !cf.isSuccess()) {
-					logger.info("Vote request send failed!");
-				}
-			}
-					else
-					{logger.info("Channel not active ,server  is down");}
-		}
+		System.out.println("Candiate:StartElection Current term " + NodeState.currentTerm);
+		WorkMessage workMessage = MessageBuilder.prepareRequestVote();
+		handleRequestVote(workMessage);
+		
 		timer = new NodeTimer();
 		timer.schedule(new Runnable() {
 			@Override
 			public void run() {
 
 				if (isWinner()) {
-					logger.info(
-							NodeMonitor.getInstance().getNodeConf().getNodeId() + " has won the election.");
+					logger.info(NodeMonitor.getInstance().getNodeConf().getNodeId() + " has won the election.");
 					NodeState.getInstance().setState(NodeState.LEADER);
 				} else {
-					logger.info(
-							NodeMonitor.getInstance().getNodeConf().getNodeId() + " has lost the election.");
+					logger.info(NodeMonitor.getInstance().getNodeConf().getNodeId() + " has lost the election.");
 					NodeState.getInstance().setState(NodeState.FOLLOWER);
 				}
 			}
@@ -101,37 +93,52 @@ public class Candidate extends Service implements Runnable {
 	public void handleResponseVote(WorkMessage workMessage) {
 		TotalResponses++;
 
-		if (workMessage.getVoteRPCPacket().getResponseVote()
-				.getIsVoteGranted() == ResponseVote.IsVoteGranted.YES) {
+		if (workMessage.getVoteRPCPacket().getResponseVote().getIsVoteGranted() == ResponseVote.IsVoteGranted.YES) {
 
-			logger.info("Vote 'YES' is granted from Node Id "
-					+ workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+			logger.info(
+					"Vote 'YES' is granted from Node Id " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
 			numberOfYESResponses++;
 
 		} else {
-			logger.info("Vote 'NO' is granted from Node Id "
-					+ workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+			logger.info(
+					"Vote 'NO' is granted from Node Id " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
 		}
 
 	}
-// NEED TO CHECK THE NEED FOR THIS**************************************************
+
+	// NEED TO CHECK THE NEED FOR
+	// THIS**************************************************
 	@Override
-	public WorkMessage handleRequestVote(WorkMessage workMessage) {
-		if (workMessage.getVoteRPCPacket().getRequestVote().getTimeStampOnLatestUpdate() < NodeState
-				.getTimeStampOnLatestUpdate()) {
-			return MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
-
+	public void handleRequestVote(WorkMessage workMessage) {
+		WorkMessage voteRequest;
+//		if (workMessage.getVoteRPCPacket().getRequestVote().getTimeStampOnLatestUpdate() < NodeState
+//				.getTimeStampOnLatestUpdate()) {
+//			voteRequest = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
+//
+//		}
+//		voteRequest = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
+		for (TopologyStat ts : this.statMap.values()) {
+			if (ts.isActive() && ts.getChannel() != null) {
+				logger.info("Sent VoteRequestRPC to " + ts.getRef());
+				ChannelFuture cf = ts.getChannel().writeAndFlush(workMessage);
+				if (cf.isDone() && !cf.isSuccess()) {
+					logger.info("Vote request send failed!");
+				}
+			} else {
+				logger.info("Channel not active ,server  is down");
+			}
 		}
-		return MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
 	}
+
+	
 
 	@Override
 	public void handleHeartBeat(WorkMessage wm) {
 		if (wm.getHeartBeatPacket().getHeartbeat().getTerm() >= NodeState.currentTerm) {
-			logger.info("HeartbeatPacket received from leader :" + wm.getHeartBeatPacket().getHeartbeat().getLeaderId());
+			logger.info(
+					"HeartbeatPacket received from leader :" + wm.getHeartBeatPacket().getHeartbeat().getLeaderId());
 			NodeState.getInstance().setState(NodeState.FOLLOWER);
-		}
-		else
+		} else
 			logger.info("Heartbeat recieved for prev term.. so ignored!!");
 
 	}

@@ -28,18 +28,13 @@ public final class Vote {
     int getTerm();
 
     /**
-     * <code>required string candidateId = 2;</code>
+     * <code>required int32 candidateId = 2;</code>
      */
     boolean hasCandidateId();
     /**
-     * <code>required string candidateId = 2;</code>
+     * <code>required int32 candidateId = 2;</code>
      */
-    java.lang.String getCandidateId();
-    /**
-     * <code>required string candidateId = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getCandidateIdBytes();
+    int getCandidateId();
 
     /**
      * <code>required int64 timeStampOnLatestUpdate = 3;</code>
@@ -64,7 +59,7 @@ public final class Vote {
     }
     private RequestVote() {
       term_ = 0;
-      candidateId_ = "";
+      candidateId_ = 0;
       timeStampOnLatestUpdate_ = 0L;
     }
 
@@ -101,10 +96,9 @@ public final class Vote {
               term_ = input.readInt32();
               break;
             }
-            case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+            case 16: {
               bitField0_ |= 0x00000002;
-              candidateId_ = bs;
+              candidateId_ = input.readInt32();
               break;
             }
             case 24: {
@@ -153,45 +147,18 @@ public final class Vote {
     }
 
     public static final int CANDIDATEID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object candidateId_;
+    private int candidateId_;
     /**
-     * <code>required string candidateId = 2;</code>
+     * <code>required int32 candidateId = 2;</code>
      */
     public boolean hasCandidateId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required string candidateId = 2;</code>
+     * <code>required int32 candidateId = 2;</code>
      */
-    public java.lang.String getCandidateId() {
-      java.lang.Object ref = candidateId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          candidateId_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string candidateId = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getCandidateIdBytes() {
-      java.lang.Object ref = candidateId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        candidateId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public int getCandidateId() {
+      return candidateId_;
     }
 
     public static final int TIMESTAMPONLATESTUPDATE_FIELD_NUMBER = 3;
@@ -237,7 +204,7 @@ public final class Vote {
         output.writeInt32(1, term_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, candidateId_);
+        output.writeInt32(2, candidateId_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt64(3, timeStampOnLatestUpdate_);
@@ -255,7 +222,8 @@ public final class Vote {
           .computeInt32Size(1, term_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, candidateId_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, candidateId_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
@@ -284,8 +252,8 @@ public final class Vote {
       }
       result = result && (hasCandidateId() == other.hasCandidateId());
       if (hasCandidateId()) {
-        result = result && getCandidateId()
-            .equals(other.getCandidateId());
+        result = result && (getCandidateId()
+            == other.getCandidateId());
       }
       result = result && (hasTimeStampOnLatestUpdate() == other.hasTimeStampOnLatestUpdate());
       if (hasTimeStampOnLatestUpdate()) {
@@ -309,7 +277,7 @@ public final class Vote {
       }
       if (hasCandidateId()) {
         hash = (37 * hash) + CANDIDATEID_FIELD_NUMBER;
-        hash = (53 * hash) + getCandidateId().hashCode();
+        hash = (53 * hash) + getCandidateId();
       }
       if (hasTimeStampOnLatestUpdate()) {
         hash = (37 * hash) + TIMESTAMPONLATESTUPDATE_FIELD_NUMBER;
@@ -447,7 +415,7 @@ public final class Vote {
         super.clear();
         term_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        candidateId_ = "";
+        candidateId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
         timeStampOnLatestUpdate_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -533,9 +501,7 @@ public final class Vote {
           setTerm(other.getTerm());
         }
         if (other.hasCandidateId()) {
-          bitField0_ |= 0x00000002;
-          candidateId_ = other.candidateId_;
-          onChanged();
+          setCandidateId(other.getCandidateId());
         }
         if (other.hasTimeStampOnLatestUpdate()) {
           setTimeStampOnLatestUpdate(other.getTimeStampOnLatestUpdate());
@@ -609,78 +575,34 @@ public final class Vote {
         return this;
       }
 
-      private java.lang.Object candidateId_ = "";
+      private int candidateId_ ;
       /**
-       * <code>required string candidateId = 2;</code>
+       * <code>required int32 candidateId = 2;</code>
        */
       public boolean hasCandidateId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string candidateId = 2;</code>
+       * <code>required int32 candidateId = 2;</code>
        */
-      public java.lang.String getCandidateId() {
-        java.lang.Object ref = candidateId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            candidateId_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
+      public int getCandidateId() {
+        return candidateId_;
       }
       /**
-       * <code>required string candidateId = 2;</code>
+       * <code>required int32 candidateId = 2;</code>
        */
-      public com.google.protobuf.ByteString
-          getCandidateIdBytes() {
-        java.lang.Object ref = candidateId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          candidateId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string candidateId = 2;</code>
-       */
-      public Builder setCandidateId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+      public Builder setCandidateId(int value) {
+        bitField0_ |= 0x00000002;
         candidateId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string candidateId = 2;</code>
+       * <code>required int32 candidateId = 2;</code>
        */
       public Builder clearCandidateId() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        candidateId_ = getDefaultInstance().getCandidateId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string candidateId = 2;</code>
-       */
-      public Builder setCandidateIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        candidateId_ = value;
+        candidateId_ = 0;
         onChanged();
         return this;
       }
@@ -2479,7 +2401,7 @@ public final class Vote {
   static {
     java.lang.String[] descriptorData = {
       "\n\nVote.proto\022\nraft.proto\"Q\n\013RequestVote\022" +
-      "\014\n\004term\030\001 \002(\005\022\023\n\013candidateId\030\002 \002(\t\022\037\n\027ti" +
+      "\014\n\004term\030\001 \002(\005\022\023\n\013candidateId\030\002 \002(\005\022\037\n\027ti" +
       "meStampOnLatestUpdate\030\003 \002(\003\"}\n\014ResponseV" +
       "ote\022\014\n\004term\030\001 \002(\005\022=\n\risVoteGranted\030\002 \002(\016" +
       "2&.raft.proto.ResponseVote.IsVoteGranted" +

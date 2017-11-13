@@ -21,9 +21,8 @@ public class Service {
 
 	}
 
-	public WorkMessage handleRequestVote(WorkMessage workMessage) {
+	public void handleRequestVote(WorkMessage workMessage) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public void sendHeartBeat() {

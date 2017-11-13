@@ -1,4 +1,3 @@
-from pipe_pb2 import Route
 
 class LengthFieldProtoEncoder:
     def __init__(self):

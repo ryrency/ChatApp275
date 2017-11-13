@@ -7,7 +7,7 @@ package raft.proto;
 message RequestVote{
 
     required int32 term = 1;
-    required string candidateId = 2;	
+    required int32 candidateId = 2;	
     required int64 timeStampOnLatestUpdate = 3;
 }
 

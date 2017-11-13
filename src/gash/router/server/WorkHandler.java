@@ -1,5 +1,6 @@
 package gash.router.server;
 
+import gash.router.server.raft.Candidate;
 import gash.router.server.raft.Follower;
 import gash.router.server.raft.Leader;
 import gash.router.server.raft.NodeState;
@@ -21,9 +22,12 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage>{
 	
 	Follower foll;
 	Leader leader;
+	
+	Candidate candidate;
 		WorkHandler(){
 			foll = Follower.getInstance();
 			leader = Leader.getInstance();
+			candidate = Candidate.getInstance();
 		}
 		
 		
@@ -49,6 +53,13 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage>{
 				                else if (NodeState.getInstance().getState() == NodeState.LEADER)
 				                    leader.handleHeartBeat(wm);
 				            }
+				if (wm.hasVoteRPCPacket()) {
+					if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
+						foll.handleRequestVote(wm);
+					else if (NodeState.getInstance().getState() == NodeState.CANDIDATE)
+						candidate.handleResponseVote(wm);
+						
+				}
 			if (wm.hasAppendEntriesPacket())
 			{
 //                foll.getWorkQueue();

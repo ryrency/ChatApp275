@@ -27,8 +27,10 @@ public class MessageBuilder {
 		RequestVote.Builder requestVote = RequestVote.newBuilder();
 		
 		requestVote.setTerm(NodeMonitor.getInstance().getNodeConf().getNodeId());
-		requestVote.setCandidateId("" + NodeMonitor.getInstance().getNodeConf().getNodeId());
+		requestVote.setCandidateId(NodeMonitor.getInstance().getNodeConf().getNodeId());
 		requestVote.setTerm(NodeState.currentTerm);
+		System.out.println("MssageBuilder: Current term "+NodeState.currentTerm);
+
 		requestVote.setTimeStampOnLatestUpdate(NodeState.getTimeStampOnLatestUpdate());
 		// requestVoteRPC.setTimeStampOnLatestUpdate(DatabaseService.getInstance().getDb().getCurrentTimeStamp());
 
@@ -188,13 +190,12 @@ public class MessageBuilder {
         clientMsgBuild.setSender(clientMsg.getMessage().getSender());
         clientMsgBuild.setPayload(clientMsg.getMessage().getPayload());
         clientMsgBuild.setTo(clientMsg.getMessage().getTo());
-        clientMsgBuild.setTimestamp(timestamp);
+        
         clientMsgBuild.setType(clientMsg.getMessage().getType().getNumber());
         clientMsgBuild.setStatus(clientMsg.getMessage().getStatus().getNumber());
         
-        appendEntries.setMessage(clientMsgBuild);
         appendEntriesPacket.setAppendEntries(appendEntries);
-
+        
         work.setAppendEntriesPacket(appendEntriesPacket);
 
         return work.build();

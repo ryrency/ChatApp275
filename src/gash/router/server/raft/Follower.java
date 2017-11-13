@@ -1,5 +1,7 @@
 package gash.router.server.raft;
 
+import java.util.Map;
+
 //import gash.router.server.*;
 //import server.ServerUtils;
 
@@ -10,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import raft.proto.Vote.ResponseVote;
 import raft.proto.Work.WorkMessage;
 import gash.database.MongoDB;
+import gash.router.server.NodeMonitor;
+import gash.router.server.TopologyStat;
 import gash.router.server.raft.TimerRoutine;
 import io.netty.channel.ChannelFuture;
 
@@ -82,29 +86,46 @@ public class Follower extends Service implements Runnable {
 	}
 	
 	@Override
-	public WorkMessage handleRequestVote(WorkMessage workMessage) {
+	public void handleRequestVote(WorkMessage workMessage) {
+		WorkMessage voteResponse;
 
 		if (workMessage.getVoteRPCPacket().getRequestVote().getTimeStampOnLatestUpdate() < NodeState.getTimeStampOnLatestUpdate()) {
 //			logger.info((NodeState.getInstance().getServerState().getConf().getNodeId()) + " has replied NO");
-			return MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
+			voteResponse =  MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
 
 		}
 //		Logger.DEBUG(NodeState.getInstance().getServerState().getConf().getNodeId() + " has replied YES");
+		System.out.println("Follower : wm term: "+workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+		System.out.println("Follower:  term : "+NodeState.currentTerm);
 		if (workMessage.getVoteRPCPacket().getResponseVote().getTerm() >= NodeState.currentTerm && voted) {
 			lastVotedTerm = NodeState.currentTerm;
 			voted = true;
-			return MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
+			voteResponse =  MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
 		}
 		else
-			return MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
-
+			voteResponse = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
+		
+		sendResponseVote(voteResponse, workMessage);
 
 	}
+	
+	public static void sendResponseVote(WorkMessage voteResponse, WorkMessage wm) {
+		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
+			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
+				if (entry.getValue().getRef() == wm.getVoteRPCPacket().getRequestVote().getCandidateId()) {
+					ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(voteResponse);
+					if (cf.isDone() && !cf.isSuccess()) {
+						System.out.println("Fail to send heart beat message to other server");
+				}
+			}
+				}
+			}
+		}
 	
 	@Override
 	public void handleHeartBeat(WorkMessage wm) {
 //		Logger.DEBUG("HeartbeatPacket received from leader :" + wm.getHeartBeatPacket().getHeartbeat().getLeaderId());
-		NodeState.currentTerm = wm.getHeartBeatPacket().getHeartbeat().getTerm();
+			NodeState.currentTerm = wm.getHeartBeatPacket().getHeartbeat().getTerm();
 		onReceivingHeartBeatPacket();
 		logger.info("Heartbeat recieved");
 

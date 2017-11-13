@@ -52,6 +52,8 @@ public class Leader extends Service implements Runnable {
 	@Override
 	public void run() {
 		logger.info("***Leader Started***");
+		System.out.println("Leader: Current term "+NodeState.currentTerm);
+
 //		NodeState.currentTerm++;
 		//initLatestTimeStampOnUpdate();
 		heartBt = new Thread(){
@@ -142,6 +144,8 @@ public class Leader extends Service implements Runnable {
 //
 	@Override
 	public void sendHeartBeat() {
+		
+		System.out.println("Leader:  term -> "+NodeState.currentTerm);
 		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				WorkMessage workMessage = MessageBuilder.prepareHeartBeat();
@@ -152,6 +156,7 @@ public class Leader extends Service implements Runnable {
 				}
 			}
 		}
+		
 		//Removing monitor??
 //		if (ConfigurationReader.getInstance().getMonitorHost() != null && ConfigurationReader.getInstance().getMonitorPort() != null) {
 //			sendClusterMonitor(ConfigurationReader.getInstance().getMonitorHost(), ConfigurationReader.getInstance().getMonitorPort());
