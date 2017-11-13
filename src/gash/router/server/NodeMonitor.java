@@ -8,6 +8,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 import gash.router.container.NodeConf;
 import gash.router.server.raft.MessageBuilder;
 import io.netty.bootstrap.Bootstrap;
@@ -73,7 +75,7 @@ public class NodeMonitor implements Runnable {
 		}
 	}
 
-	public void addAdjacentNode(TopologyStat ts) {
+	public synchronized void addAdjacentNode(TopologyStat ts) {
 		EventLoopGroup group = new NioEventLoopGroup();
 
 		try {
@@ -122,7 +124,7 @@ public class NodeMonitor implements Runnable {
 
 	}
 
-	private void scheduleConnect(TopologyStat ts, long millis) {
+	private synchronized void scheduleConnect(TopologyStat ts, long millis) {
 		System.out.println("Error: Connection closed");
 		timer_.schedule(new TimerTask() {
 			@Override
@@ -136,10 +138,6 @@ public class NodeMonitor implements Runnable {
 		try {
 			
 			String hostAddress = getLocalHostAddress();
-			
-				
-				
-			
 			
 			System.out.println("Generated request to add adjacent node" + nodeConf.getNodeId() + ","
 					+ hostAddress + "," + nodeConf.getWorkPort());
