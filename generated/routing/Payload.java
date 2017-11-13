@@ -14,8 +14,8 @@ public final class Payload {
     registerAllExtensions(
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface Route1OrBuilder extends
-      // @@protoc_insertion_point(interface_extends:Route1)
+  public interface ClientRouteOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:ClientRoute)
       com.google.protobuf.MessageOrBuilder {
 
     /**
@@ -41,7 +41,7 @@ public final class Payload {
      *     required string payload = 3; 
      * </pre>
      *
-     * <code>optional .Route1.Path path = 2;</code>
+     * <code>optional .ClientRoute.Path path = 2;</code>
      */
     boolean hasPath();
     /**
@@ -50,9 +50,9 @@ public final class Payload {
      *     required string payload = 3; 
      * </pre>
      *
-     * <code>optional .Route1.Path path = 2;</code>
+     * <code>optional .ClientRoute.Path path = 2;</code>
      */
-    routing.Payload.Route1.Path getPath();
+    routing.Payload.ClientRoute.Path getPath();
 
     /**
      * <code>optional .NetworkDiscoveryPacket networkDiscoveryPacket = 3;</code>
@@ -93,21 +93,21 @@ public final class Payload {
      */
     routing.Payload.MessageOrBuilder getMessageOrBuilder();
 
-    public routing.Payload.Route1.PayloadCase getPayloadCase();
+    public routing.Payload.ClientRoute.PayloadCase getPayloadCase();
   }
   /**
-   * Protobuf type {@code Route1}
+   * Protobuf type {@code ClientRoute}
    */
-  public  static final class Route1 extends
+  public  static final class ClientRoute extends
       com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:Route1)
-      Route1OrBuilder {
+      // @@protoc_insertion_point(message_implements:ClientRoute)
+      ClientRouteOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use Route1.newBuilder() to construct.
-    private Route1(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    // Use ClientRoute.newBuilder() to construct.
+    private ClientRoute(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
-    private Route1() {
+    private ClientRoute() {
       id_ = 0L;
       path_ = 0;
     }
@@ -117,7 +117,7 @@ public final class Payload {
     getUnknownFields() {
       return this.unknownFields;
     }
-    private Route1(
+    private ClientRoute(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -147,7 +147,7 @@ public final class Payload {
             }
             case 16: {
               int rawValue = input.readEnum();
-              routing.Payload.Route1.Path value = routing.Payload.Route1.Path.valueOf(rawValue);
+              routing.Payload.ClientRoute.Path value = routing.Payload.ClientRoute.Path.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(2, rawValue);
               } else {
@@ -212,18 +212,18 @@ public final class Payload {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return routing.Payload.internal_static_Route1_descriptor;
+      return routing.Payload.internal_static_ClientRoute_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return routing.Payload.internal_static_Route1_fieldAccessorTable
+      return routing.Payload.internal_static_ClientRoute_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              routing.Payload.Route1.class, routing.Payload.Route1.Builder.class);
+              routing.Payload.ClientRoute.class, routing.Payload.ClientRoute.Builder.class);
     }
 
     /**
-     * Protobuf enum {@code Route1.Path}
+     * Protobuf enum {@code ClientRoute.Path}
      */
     public enum Path
         implements com.google.protobuf.ProtocolMessageEnum {
@@ -316,7 +316,7 @@ public final class Payload {
       }
       public static final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptor() {
-        return routing.Payload.Route1.getDescriptor().getEnumTypes().get(0);
+        return routing.Payload.ClientRoute.getDescriptor().getEnumTypes().get(0);
       }
 
       private static final Path[] VALUES = values();
@@ -336,7 +336,7 @@ public final class Payload {
         this.value = value;
       }
 
-      // @@protoc_insertion_point(enum_scope:Route1.Path)
+      // @@protoc_insertion_point(enum_scope:ClientRoute.Path)
     }
 
     private int bitField0_;
@@ -411,7 +411,7 @@ public final class Payload {
      *     required string payload = 3; 
      * </pre>
      *
-     * <code>optional .Route1.Path path = 2;</code>
+     * <code>optional .ClientRoute.Path path = 2;</code>
      */
     public boolean hasPath() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -422,11 +422,11 @@ public final class Payload {
      *     required string payload = 3; 
      * </pre>
      *
-     * <code>optional .Route1.Path path = 2;</code>
+     * <code>optional .ClientRoute.Path path = 2;</code>
      */
-    public routing.Payload.Route1.Path getPath() {
-      routing.Payload.Route1.Path result = routing.Payload.Route1.Path.valueOf(path_);
-      return result == null ? routing.Payload.Route1.Path.PING : result;
+    public routing.Payload.ClientRoute.Path getPath() {
+      routing.Payload.ClientRoute.Path result = routing.Payload.ClientRoute.Path.valueOf(path_);
+      return result == null ? routing.Payload.ClientRoute.Path.PING : result;
     }
 
     public static final int NETWORKDISCOVERYPACKET_FIELD_NUMBER = 3;
@@ -594,10 +594,10 @@ public final class Payload {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof routing.Payload.Route1)) {
+      if (!(obj instanceof routing.Payload.ClientRoute)) {
         return super.equals(obj);
       }
-      routing.Payload.Route1 other = (routing.Payload.Route1) obj;
+      routing.Payload.ClientRoute other = (routing.Payload.ClientRoute) obj;
 
       boolean result = true;
       result = result && (hasId() == other.hasId());
@@ -669,69 +669,69 @@ public final class Payload {
       return hash;
     }
 
-    public static routing.Payload.Route1 parseFrom(
+    public static routing.Payload.ClientRoute parseFrom(
         java.nio.ByteBuffer data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static routing.Payload.Route1 parseFrom(
+    public static routing.Payload.ClientRoute parseFrom(
         java.nio.ByteBuffer data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static routing.Payload.Route1 parseFrom(
+    public static routing.Payload.ClientRoute parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static routing.Payload.Route1 parseFrom(
+    public static routing.Payload.ClientRoute parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static routing.Payload.Route1 parseFrom(byte[] data)
+    public static routing.Payload.ClientRoute parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static routing.Payload.Route1 parseFrom(
+    public static routing.Payload.ClientRoute parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static routing.Payload.Route1 parseFrom(java.io.InputStream input)
+    public static routing.Payload.ClientRoute parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static routing.Payload.Route1 parseFrom(
+    public static routing.Payload.ClientRoute parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static routing.Payload.Route1 parseDelimitedFrom(java.io.InputStream input)
+    public static routing.Payload.ClientRoute parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static routing.Payload.Route1 parseDelimitedFrom(
+    public static routing.Payload.ClientRoute parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static routing.Payload.Route1 parseFrom(
+    public static routing.Payload.ClientRoute parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static routing.Payload.Route1 parseFrom(
+    public static routing.Payload.ClientRoute parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -743,7 +743,7 @@ public final class Payload {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(routing.Payload.Route1 prototype) {
+    public static Builder newBuilder(routing.Payload.ClientRoute prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() {
@@ -758,25 +758,25 @@ public final class Payload {
       return builder;
     }
     /**
-     * Protobuf type {@code Route1}
+     * Protobuf type {@code ClientRoute}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:Route1)
-        routing.Payload.Route1OrBuilder {
+        // @@protoc_insertion_point(builder_implements:ClientRoute)
+        routing.Payload.ClientRouteOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return routing.Payload.internal_static_Route1_descriptor;
+        return routing.Payload.internal_static_ClientRoute_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return routing.Payload.internal_static_Route1_fieldAccessorTable
+        return routing.Payload.internal_static_ClientRoute_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                routing.Payload.Route1.class, routing.Payload.Route1.Builder.class);
+                routing.Payload.ClientRoute.class, routing.Payload.ClientRoute.Builder.class);
       }
 
-      // Construct using routing.Payload.Route1.newBuilder()
+      // Construct using routing.Payload.ClientRoute.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -804,23 +804,23 @@ public final class Payload {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return routing.Payload.internal_static_Route1_descriptor;
+        return routing.Payload.internal_static_ClientRoute_descriptor;
       }
 
-      public routing.Payload.Route1 getDefaultInstanceForType() {
-        return routing.Payload.Route1.getDefaultInstance();
+      public routing.Payload.ClientRoute getDefaultInstanceForType() {
+        return routing.Payload.ClientRoute.getDefaultInstance();
       }
 
-      public routing.Payload.Route1 build() {
-        routing.Payload.Route1 result = buildPartial();
+      public routing.Payload.ClientRoute build() {
+        routing.Payload.ClientRoute result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public routing.Payload.Route1 buildPartial() {
-        routing.Payload.Route1 result = new routing.Payload.Route1(this);
+      public routing.Payload.ClientRoute buildPartial() {
+        routing.Payload.ClientRoute result = new routing.Payload.ClientRoute(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -885,16 +885,16 @@ public final class Payload {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof routing.Payload.Route1) {
-          return mergeFrom((routing.Payload.Route1)other);
+        if (other instanceof routing.Payload.ClientRoute) {
+          return mergeFrom((routing.Payload.ClientRoute)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(routing.Payload.Route1 other) {
-        if (other == routing.Payload.Route1.getDefaultInstance()) return this;
+      public Builder mergeFrom(routing.Payload.ClientRoute other) {
+        if (other == routing.Payload.ClientRoute.getDefaultInstance()) return this;
         if (other.hasId()) {
           setId(other.getId());
         }
@@ -949,11 +949,11 @@ public final class Payload {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        routing.Payload.Route1 parsedMessage = null;
+        routing.Payload.ClientRoute parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (routing.Payload.Route1) e.getUnfinishedMessage();
+          parsedMessage = (routing.Payload.ClientRoute) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1034,7 +1034,7 @@ public final class Payload {
        *     required string payload = 3; 
        * </pre>
        *
-       * <code>optional .Route1.Path path = 2;</code>
+       * <code>optional .ClientRoute.Path path = 2;</code>
        */
       public boolean hasPath() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
@@ -1045,11 +1045,11 @@ public final class Payload {
        *     required string payload = 3; 
        * </pre>
        *
-       * <code>optional .Route1.Path path = 2;</code>
+       * <code>optional .ClientRoute.Path path = 2;</code>
        */
-      public routing.Payload.Route1.Path getPath() {
-        routing.Payload.Route1.Path result = routing.Payload.Route1.Path.valueOf(path_);
-        return result == null ? routing.Payload.Route1.Path.PING : result;
+      public routing.Payload.ClientRoute.Path getPath() {
+        routing.Payload.ClientRoute.Path result = routing.Payload.ClientRoute.Path.valueOf(path_);
+        return result == null ? routing.Payload.ClientRoute.Path.PING : result;
       }
       /**
        * <pre>
@@ -1057,9 +1057,9 @@ public final class Payload {
        *     required string payload = 3; 
        * </pre>
        *
-       * <code>optional .Route1.Path path = 2;</code>
+       * <code>optional .ClientRoute.Path path = 2;</code>
        */
-      public Builder setPath(routing.Payload.Route1.Path value) {
+      public Builder setPath(routing.Payload.ClientRoute.Path value) {
         if (value == null) {
           throw new NullPointerException();
         }
@@ -1074,7 +1074,7 @@ public final class Payload {
        *     required string payload = 3; 
        * </pre>
        *
-       * <code>optional .Route1.Path path = 2;</code>
+       * <code>optional .ClientRoute.Path path = 2;</code>
        */
       public Builder clearPath() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -1501,39 +1501,39 @@ public final class Payload {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:Route1)
+      // @@protoc_insertion_point(builder_scope:ClientRoute)
     }
 
-    // @@protoc_insertion_point(class_scope:Route1)
-    private static final routing.Payload.Route1 DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:ClientRoute)
+    private static final routing.Payload.ClientRoute DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new routing.Payload.Route1();
+      DEFAULT_INSTANCE = new routing.Payload.ClientRoute();
     }
 
-    public static routing.Payload.Route1 getDefaultInstance() {
+    public static routing.Payload.ClientRoute getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Route1>
-        PARSER = new com.google.protobuf.AbstractParser<Route1>() {
-      public Route1 parsePartialFrom(
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<ClientRoute>
+        PARSER = new com.google.protobuf.AbstractParser<ClientRoute>() {
+      public ClientRoute parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-          return new Route1(input, extensionRegistry);
+          return new ClientRoute(input, extensionRegistry);
       }
     };
 
-    public static com.google.protobuf.Parser<Route1> parser() {
+    public static com.google.protobuf.Parser<ClientRoute> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public com.google.protobuf.Parser<Route1> getParserForType() {
+    public com.google.protobuf.Parser<ClientRoute> getParserForType() {
       return PARSER;
     }
 
-    public routing.Payload.Route1 getDefaultInstanceForType() {
+    public routing.Payload.ClientRoute getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -5764,10 +5764,10 @@ public final class Payload {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_Route1_descriptor;
+    internal_static_ClientRoute_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_Route1_fieldAccessorTable;
+      internal_static_ClientRoute_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Message_descriptor;
   private static final 
@@ -5792,29 +5792,29 @@ public final class Payload {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\rpayload.proto\"\365\001\n\006Route1\022\n\n\002id\030\001 \002(\003\022\032" +
-      "\n\004path\030\002 \001(\0162\014.Route1.Path\0229\n\026networkDis" +
-      "coveryPacket\030\003 \001(\0132\027.NetworkDiscoveryPac" +
-      "ketH\000\022\025\n\004user\030\004 \001(\0132\005.UserH\000\022\033\n\007message\030" +
-      "\005 \001(\0132\010.MessageH\000\"I\n\004Path\022\010\n\004PING\020\000\022\025\n\021N" +
-      "ETWORK_DISCOVERY\020\001\022\010\n\004USER\020\002\022\013\n\007MESSAGE\020" +
-      "\003\022\t\n\005GROUP\020\004B\t\n\007payload\"\307\001\n\007Message\022\033\n\004t" +
-      "ype\030\001 \002(\0162\r.Message.Type\022\016\n\006sender\030\002 \002(\t" +
-      "\022\017\n\007payload\030\003 \002(\t\022\n\n\002to\030\004 \002(\t\022\021\n\ttimesta" +
-      "mp\030\005 \002(\t\022\037\n\006status\030\006 \002(\0162\017.Message.Statu",
-      "s\"\035\n\004Type\022\n\n\006SINGLE\020\000\022\t\n\005GROUP\020\001\"\037\n\006Stat" +
-      "us\022\n\n\006ACTIVE\020\000\022\t\n\005STALE\020\001\"A\n\004User\022\r\n\005ema" +
-      "il\030\001 \002(\t\022\020\n\010password\030\002 \001(\t\022\030\n\020recentActi" +
-      "veTime\030\003 \001(\t\"\341\002\n\026NetworkDiscoveryPacket\022" +
-      "*\n\004mode\030\001 \002(\0162\034.NetworkDiscoveryPacket.M" +
-      "ode\022;\n\006sender\030\002 \002(\0162\036.NetworkDiscoveryPa" +
-      "cket.Sender:\013SERVER_NODE\022\020\n\010groupTag\030\003 \001" +
-      "(\t\022\016\n\006nodeId\030\004 \001(\t\022\023\n\013nodeAddress\030\005 \002(\t\022" +
-      "\020\n\010nodePort\030\006 \002(\t\022\016\n\006secret\030\007 \002(\t\"b\n\006Sen" +
-      "der\022\030\n\024EXTERNAL_SERVER_NODE\020\000\022\030\n\024INTERNA",
-      "L_SERVER_NODE\020\001\022\023\n\017END_USER_CLIENT\020\002\022\017\n\013" +
-      "SERVER_NODE\020\003\"!\n\004Mode\022\013\n\007REQUEST\020\000\022\014\n\010RE" +
-      "SPONSE\020\001B\013\n\007routingH\001"
+      "\n\rpayload.proto\"\377\001\n\013ClientRoute\022\n\n\002id\030\001 " +
+      "\002(\003\022\037\n\004path\030\002 \001(\0162\021.ClientRoute.Path\0229\n\026" +
+      "networkDiscoveryPacket\030\003 \001(\0132\027.NetworkDi" +
+      "scoveryPacketH\000\022\025\n\004user\030\004 \001(\0132\005.UserH\000\022\033" +
+      "\n\007message\030\005 \001(\0132\010.MessageH\000\"I\n\004Path\022\010\n\004P" +
+      "ING\020\000\022\025\n\021NETWORK_DISCOVERY\020\001\022\010\n\004USER\020\002\022\013" +
+      "\n\007MESSAGE\020\003\022\t\n\005GROUP\020\004B\t\n\007payload\"\307\001\n\007Me" +
+      "ssage\022\033\n\004type\030\001 \002(\0162\r.Message.Type\022\016\n\006se" +
+      "nder\030\002 \002(\t\022\017\n\007payload\030\003 \002(\t\022\n\n\002to\030\004 \002(\t\022" +
+      "\021\n\ttimestamp\030\005 \002(\t\022\037\n\006status\030\006 \002(\0162\017.Mes",
+      "sage.Status\"\035\n\004Type\022\n\n\006SINGLE\020\000\022\t\n\005GROUP" +
+      "\020\001\"\037\n\006Status\022\n\n\006ACTIVE\020\000\022\t\n\005STALE\020\001\"A\n\004U" +
+      "ser\022\r\n\005email\030\001 \002(\t\022\020\n\010password\030\002 \001(\t\022\030\n\020" +
+      "recentActiveTime\030\003 \001(\t\"\341\002\n\026NetworkDiscov" +
+      "eryPacket\022*\n\004mode\030\001 \002(\0162\034.NetworkDiscove" +
+      "ryPacket.Mode\022;\n\006sender\030\002 \002(\0162\036.NetworkD" +
+      "iscoveryPacket.Sender:\013SERVER_NODE\022\020\n\010gr" +
+      "oupTag\030\003 \001(\t\022\016\n\006nodeId\030\004 \001(\t\022\023\n\013nodeAddr" +
+      "ess\030\005 \002(\t\022\020\n\010nodePort\030\006 \002(\t\022\016\n\006secret\030\007 " +
+      "\002(\t\"b\n\006Sender\022\030\n\024EXTERNAL_SERVER_NODE\020\000\022",
+      "\030\n\024INTERNAL_SERVER_NODE\020\001\022\023\n\017END_USER_CL" +
+      "IENT\020\002\022\017\n\013SERVER_NODE\020\003\"!\n\004Mode\022\013\n\007REQUE" +
+      "ST\020\000\022\014\n\010RESPONSE\020\001B\013\n\007routingH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -5828,11 +5828,11 @@ public final class Payload {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_Route1_descriptor =
+    internal_static_ClientRoute_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_Route1_fieldAccessorTable = new
+    internal_static_ClientRoute_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Route1_descriptor,
+        internal_static_ClientRoute_descriptor,
         new java.lang.String[] { "Id", "Path", "NetworkDiscoveryPacket", "User", "Message", "Payload", });
     internal_static_Message_descriptor =
       getDescriptor().getMessageTypes().get(1);

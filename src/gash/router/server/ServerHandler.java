@@ -26,7 +26,7 @@ import gash.router.server.resources.RouteResource;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import routing.Payload.Route1;
+import routing.Payload.ClientRoute;
 
 /**
  * The message handler processes json messages that are delimited by a 'newline'
@@ -36,7 +36,7 @@ import routing.Payload.Route1;
  * @author gash
  * 
  */
-public class ServerHandler extends SimpleChannelInboundHandler<Route1> {
+public class ServerHandler extends SimpleChannelInboundHandler<ClientRoute> {
 	protected static Logger logger = LoggerFactory.getLogger("connect");
 
 	private HashMap<String, String> routing;
@@ -53,7 +53,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route1> {
 	 * 
 	 * @param msg
 	 */
-	public void handleMessage(Route1 msg, Channel channel) {
+	public void handleMessage(ClientRoute msg, Channel channel) {
 		if (msg == null) {
 			// TODO add logging
 			System.out.println("ERROR: Unexpected content - " + msg);
@@ -103,7 +103,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route1> {
 	 *            The message
 	 */
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, Route1 msg) throws Exception {
+	protected void channelRead0(ChannelHandlerContext ctx, ClientRoute msg) throws Exception {
 		System.out.println("-------Jsingh-----");
 		handleMessage(msg, ctx.channel());
 	}
