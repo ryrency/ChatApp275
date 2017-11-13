@@ -73,11 +73,11 @@ public class Candidate extends Service implements Runnable {
 
 				if (isWinner()) {
 					logger.info(
-							NodeMonitor.nodeMonitor.getNodeConf().getNodeId() + " has won the election.");
+							NodeMonitor.getInstance().getNodeConf().getNodeId() + " has won the election.");
 					NodeState.getInstance().setState(NodeState.LEADER);
 				} else {
 					logger.info(
-							NodeMonitor.nodeMonitor.getNodeConf().getNodeId() + " has lost the election.");
+							NodeMonitor.getInstance().getNodeConf().getNodeId() + " has lost the election.");
 					NodeState.getInstance().setState(NodeState.FOLLOWER);
 				}
 			}

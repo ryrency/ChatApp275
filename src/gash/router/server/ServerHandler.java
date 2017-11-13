@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gash.router.container.RoutingConf;
+import gash.router.server.raft.Leader;
+import gash.router.server.raft.NodeState;
 import gash.router.server.resources.RouteResource;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -61,6 +63,12 @@ public class ServerHandler extends SimpleChannelInboundHandler<ClientRoute> {
 		}
 
 		System.out.println("---> " + msg.getId() + ": " + msg.getPath() + ", " + msg.getMessage());
+		if(NodeState.getInstance().getState() == NodeState.LEADER) {
+			Leader.getInstance().handleClientRequest(msg);
+		}
+		else if(NodeState.getInstance().getState() == NodeState.FOLLOWER) {
+			// TO be implemented later ******************
+		}
 //
 //		try {
 //			String clazz = routing.get(msg.getPath().toLowerCase());

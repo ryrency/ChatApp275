@@ -58,7 +58,7 @@ public class NodeState {
 
 	private NodeState() {
 
-		service = Follower.getInstance();
+		service = Follower.getInstance(); // Service starting as follower
 
 	}
 
@@ -87,7 +87,7 @@ public class NodeState {
 			service = Follower.getInstance();
 			service.startService(service);
 		} else if (newState == NodeState.LEADER) {
-			logger.info(NodeMonitor.nodeMonitor.getNodeConf().getNodeId() + " is the leader!!.");
+			logger.info(NodeMonitor.getInstance().getNodeConf().getNodeId() + " is the leader!!.");
 			// service = Leader.getInstance();
 			service.stopService();
 			service = Leader.getInstance();

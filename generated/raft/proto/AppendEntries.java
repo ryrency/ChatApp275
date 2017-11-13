@@ -28,18 +28,17 @@ public final class AppendEntries {
     int getLeaderId();
 
     /**
-     * <code>required string clientMsg = 2;</code>
+     * <code>required .raft.proto.ClientMessage message = 2;</code>
      */
-    boolean hasClientMsg();
+    boolean hasMessage();
     /**
-     * <code>required string clientMsg = 2;</code>
+     * <code>required .raft.proto.ClientMessage message = 2;</code>
      */
-    java.lang.String getClientMsg();
+    raft.proto.AppendEntries.ClientMessage getMessage();
     /**
-     * <code>required string clientMsg = 2;</code>
+     * <code>required .raft.proto.ClientMessage message = 2;</code>
      */
-    com.google.protobuf.ByteString
-        getClientMsgBytes();
+    raft.proto.AppendEntries.ClientMessageOrBuilder getMessageOrBuilder();
 
     /**
      * <code>required int32 termid = 3;</code>
@@ -73,7 +72,6 @@ public final class AppendEntries {
     }
     private AppendEntriesMsg() {
       leaderId_ = 0;
-      clientMsg_ = "";
       termid_ = 0;
       timeStampOnLatestUpdate_ = 0L;
     }
@@ -112,9 +110,16 @@ public final class AppendEntries {
               break;
             }
             case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              raft.proto.AppendEntries.ClientMessage.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = message_.toBuilder();
+              }
+              message_ = input.readMessage(raft.proto.AppendEntries.ClientMessage.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(message_);
+                message_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000002;
-              clientMsg_ = bs;
               break;
             }
             case 24: {
@@ -167,46 +172,25 @@ public final class AppendEntries {
       return leaderId_;
     }
 
-    public static final int CLIENTMSG_FIELD_NUMBER = 2;
-    private volatile java.lang.Object clientMsg_;
+    public static final int MESSAGE_FIELD_NUMBER = 2;
+    private raft.proto.AppendEntries.ClientMessage message_;
     /**
-     * <code>required string clientMsg = 2;</code>
+     * <code>required .raft.proto.ClientMessage message = 2;</code>
      */
-    public boolean hasClientMsg() {
+    public boolean hasMessage() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required string clientMsg = 2;</code>
+     * <code>required .raft.proto.ClientMessage message = 2;</code>
      */
-    public java.lang.String getClientMsg() {
-      java.lang.Object ref = clientMsg_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          clientMsg_ = s;
-        }
-        return s;
-      }
+    public raft.proto.AppendEntries.ClientMessage getMessage() {
+      return message_ == null ? raft.proto.AppendEntries.ClientMessage.getDefaultInstance() : message_;
     }
     /**
-     * <code>required string clientMsg = 2;</code>
+     * <code>required .raft.proto.ClientMessage message = 2;</code>
      */
-    public com.google.protobuf.ByteString
-        getClientMsgBytes() {
-      java.lang.Object ref = clientMsg_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        clientMsg_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public raft.proto.AppendEntries.ClientMessageOrBuilder getMessageOrBuilder() {
+      return message_ == null ? raft.proto.AppendEntries.ClientMessage.getDefaultInstance() : message_;
     }
 
     public static final int TERMID_FIELD_NUMBER = 3;
@@ -249,7 +233,7 @@ public final class AppendEntries {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasClientMsg()) {
+      if (!hasMessage()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -258,6 +242,10 @@ public final class AppendEntries {
         return false;
       }
       if (!hasTimeStampOnLatestUpdate()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getMessage().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -271,7 +259,7 @@ public final class AppendEntries {
         output.writeInt32(1, leaderId_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, clientMsg_);
+        output.writeMessage(2, getMessage());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt32(3, termid_);
@@ -292,7 +280,8 @@ public final class AppendEntries {
           .computeInt32Size(1, leaderId_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, clientMsg_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getMessage());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
@@ -323,10 +312,10 @@ public final class AppendEntries {
         result = result && (getLeaderId()
             == other.getLeaderId());
       }
-      result = result && (hasClientMsg() == other.hasClientMsg());
-      if (hasClientMsg()) {
-        result = result && getClientMsg()
-            .equals(other.getClientMsg());
+      result = result && (hasMessage() == other.hasMessage());
+      if (hasMessage()) {
+        result = result && getMessage()
+            .equals(other.getMessage());
       }
       result = result && (hasTermid() == other.hasTermid());
       if (hasTermid()) {
@@ -353,9 +342,9 @@ public final class AppendEntries {
         hash = (37 * hash) + LEADERID_FIELD_NUMBER;
         hash = (53 * hash) + getLeaderId();
       }
-      if (hasClientMsg()) {
-        hash = (37 * hash) + CLIENTMSG_FIELD_NUMBER;
-        hash = (53 * hash) + getClientMsg().hashCode();
+      if (hasMessage()) {
+        hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+        hash = (53 * hash) + getMessage().hashCode();
       }
       if (hasTermid()) {
         hash = (37 * hash) + TERMID_FIELD_NUMBER;
@@ -491,13 +480,18 @@ public final class AppendEntries {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getMessageFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         leaderId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        clientMsg_ = "";
+        if (messageBuilder_ == null) {
+          message_ = null;
+        } else {
+          messageBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
         termid_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -534,7 +528,11 @@ public final class AppendEntries {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.clientMsg_ = clientMsg_;
+        if (messageBuilder_ == null) {
+          result.message_ = message_;
+        } else {
+          result.message_ = messageBuilder_.build();
+        }
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
@@ -588,10 +586,8 @@ public final class AppendEntries {
         if (other.hasLeaderId()) {
           setLeaderId(other.getLeaderId());
         }
-        if (other.hasClientMsg()) {
-          bitField0_ |= 0x00000002;
-          clientMsg_ = other.clientMsg_;
-          onChanged();
+        if (other.hasMessage()) {
+          mergeMessage(other.getMessage());
         }
         if (other.hasTermid()) {
           setTermid(other.getTermid());
@@ -608,13 +604,16 @@ public final class AppendEntries {
         if (!hasLeaderId()) {
           return false;
         }
-        if (!hasClientMsg()) {
+        if (!hasMessage()) {
           return false;
         }
         if (!hasTermid()) {
           return false;
         }
         if (!hasTimeStampOnLatestUpdate()) {
+          return false;
+        }
+        if (!getMessage().isInitialized()) {
           return false;
         }
         return true;
@@ -671,80 +670,122 @@ public final class AppendEntries {
         return this;
       }
 
-      private java.lang.Object clientMsg_ = "";
+      private raft.proto.AppendEntries.ClientMessage message_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          raft.proto.AppendEntries.ClientMessage, raft.proto.AppendEntries.ClientMessage.Builder, raft.proto.AppendEntries.ClientMessageOrBuilder> messageBuilder_;
       /**
-       * <code>required string clientMsg = 2;</code>
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
        */
-      public boolean hasClientMsg() {
+      public boolean hasMessage() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string clientMsg = 2;</code>
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
        */
-      public java.lang.String getClientMsg() {
-        java.lang.Object ref = clientMsg_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            clientMsg_ = s;
+      public raft.proto.AppendEntries.ClientMessage getMessage() {
+        if (messageBuilder_ == null) {
+          return message_ == null ? raft.proto.AppendEntries.ClientMessage.getDefaultInstance() : message_;
+        } else {
+          return messageBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
+       */
+      public Builder setMessage(raft.proto.AppendEntries.ClientMessage value) {
+        if (messageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
           }
-          return s;
+          message_ = value;
+          onChanged();
         } else {
-          return (java.lang.String) ref;
+          messageBuilder_.setMessage(value);
         }
-      }
-      /**
-       * <code>required string clientMsg = 2;</code>
-       */
-      public com.google.protobuf.ByteString
-          getClientMsgBytes() {
-        java.lang.Object ref = clientMsg_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          clientMsg_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string clientMsg = 2;</code>
-       */
-      public Builder setClientMsg(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        clientMsg_ = value;
-        onChanged();
+        bitField0_ |= 0x00000002;
         return this;
       }
       /**
-       * <code>required string clientMsg = 2;</code>
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
        */
-      public Builder clearClientMsg() {
+      public Builder setMessage(
+          raft.proto.AppendEntries.ClientMessage.Builder builderForValue) {
+        if (messageBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          messageBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
+       */
+      public Builder mergeMessage(raft.proto.AppendEntries.ClientMessage value) {
+        if (messageBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              message_ != null &&
+              message_ != raft.proto.AppendEntries.ClientMessage.getDefaultInstance()) {
+            message_ =
+              raft.proto.AppendEntries.ClientMessage.newBuilder(message_).mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          messageBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
+       */
+      public Builder clearMessage() {
+        if (messageBuilder_ == null) {
+          message_ = null;
+          onChanged();
+        } else {
+          messageBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000002);
-        clientMsg_ = getDefaultInstance().getClientMsg();
-        onChanged();
         return this;
       }
       /**
-       * <code>required string clientMsg = 2;</code>
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
        */
-      public Builder setClientMsgBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        clientMsg_ = value;
+      public raft.proto.AppendEntries.ClientMessage.Builder getMessageBuilder() {
+        bitField0_ |= 0x00000002;
         onChanged();
-        return this;
+        return getMessageFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
+       */
+      public raft.proto.AppendEntries.ClientMessageOrBuilder getMessageOrBuilder() {
+        if (messageBuilder_ != null) {
+          return messageBuilder_.getMessageOrBuilder();
+        } else {
+          return message_ == null ?
+              raft.proto.AppendEntries.ClientMessage.getDefaultInstance() : message_;
+        }
+      }
+      /**
+       * <code>required .raft.proto.ClientMessage message = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          raft.proto.AppendEntries.ClientMessage, raft.proto.AppendEntries.ClientMessage.Builder, raft.proto.AppendEntries.ClientMessageOrBuilder> 
+          getMessageFieldBuilder() {
+        if (messageBuilder_ == null) {
+          messageBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              raft.proto.AppendEntries.ClientMessage, raft.proto.AppendEntries.ClientMessage.Builder, raft.proto.AppendEntries.ClientMessageOrBuilder>(
+                  getMessage(),
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
+        }
+        return messageBuilder_;
       }
 
       private int termid_ ;
@@ -854,6 +895,1352 @@ public final class AppendEntries {
     }
 
     public raft.proto.AppendEntries.AppendEntriesMsg getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface ClientMessageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:raft.proto.ClientMessage)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <pre>
+     * a node should not have a value though this is not enforced
+     * </pre>
+     *
+     * <code>required int32 type = 1;</code>
+     */
+    boolean hasType();
+    /**
+     * <pre>
+     * a node should not have a value though this is not enforced
+     * </pre>
+     *
+     * <code>required int32 type = 1;</code>
+     */
+    int getType();
+
+    /**
+     * <code>required string sender = 2;</code>
+     */
+    boolean hasSender();
+    /**
+     * <code>required string sender = 2;</code>
+     */
+    java.lang.String getSender();
+    /**
+     * <code>required string sender = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getSenderBytes();
+
+    /**
+     * <code>required string payload = 3;</code>
+     */
+    boolean hasPayload();
+    /**
+     * <code>required string payload = 3;</code>
+     */
+    java.lang.String getPayload();
+    /**
+     * <code>required string payload = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getPayloadBytes();
+
+    /**
+     * <pre>
+     * would be groupId if the type is GROUP or else userId if the type is SINGLE
+     * </pre>
+     *
+     * <code>required string to = 4;</code>
+     */
+    boolean hasTo();
+    /**
+     * <pre>
+     * would be groupId if the type is GROUP or else userId if the type is SINGLE
+     * </pre>
+     *
+     * <code>required string to = 4;</code>
+     */
+    java.lang.String getTo();
+    /**
+     * <pre>
+     * would be groupId if the type is GROUP or else userId if the type is SINGLE
+     * </pre>
+     *
+     * <code>required string to = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getToBytes();
+
+    /**
+     * <code>required string timestamp = 5;</code>
+     */
+    boolean hasTimestamp();
+    /**
+     * <code>required string timestamp = 5;</code>
+     */
+    java.lang.String getTimestamp();
+    /**
+     * <code>required string timestamp = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getTimestampBytes();
+
+    /**
+     * <code>required int32 status = 6;</code>
+     */
+    boolean hasStatus();
+    /**
+     * <code>required int32 status = 6;</code>
+     */
+    int getStatus();
+  }
+  /**
+   * Protobuf type {@code raft.proto.ClientMessage}
+   */
+  public  static final class ClientMessage extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:raft.proto.ClientMessage)
+      ClientMessageOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use ClientMessage.newBuilder() to construct.
+    private ClientMessage(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private ClientMessage() {
+      type_ = 0;
+      sender_ = "";
+      payload_ = "";
+      to_ = "";
+      timestamp_ = "";
+      status_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ClientMessage(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              type_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              sender_ = bs;
+              break;
+            }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000004;
+              payload_ = bs;
+              break;
+            }
+            case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000008;
+              to_ = bs;
+              break;
+            }
+            case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000010;
+              timestamp_ = bs;
+              break;
+            }
+            case 48: {
+              bitField0_ |= 0x00000020;
+              status_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return raft.proto.AppendEntries.internal_static_raft_proto_ClientMessage_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return raft.proto.AppendEntries.internal_static_raft_proto_ClientMessage_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              raft.proto.AppendEntries.ClientMessage.class, raft.proto.AppendEntries.ClientMessage.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int TYPE_FIELD_NUMBER = 1;
+    private int type_;
+    /**
+     * <pre>
+     * a node should not have a value though this is not enforced
+     * </pre>
+     *
+     * <code>required int32 type = 1;</code>
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <pre>
+     * a node should not have a value though this is not enforced
+     * </pre>
+     *
+     * <code>required int32 type = 1;</code>
+     */
+    public int getType() {
+      return type_;
+    }
+
+    public static final int SENDER_FIELD_NUMBER = 2;
+    private volatile java.lang.Object sender_;
+    /**
+     * <code>required string sender = 2;</code>
+     */
+    public boolean hasSender() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string sender = 2;</code>
+     */
+    public java.lang.String getSender() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          sender_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string sender = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getSenderBytes() {
+      java.lang.Object ref = sender_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        sender_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int PAYLOAD_FIELD_NUMBER = 3;
+    private volatile java.lang.Object payload_;
+    /**
+     * <code>required string payload = 3;</code>
+     */
+    public boolean hasPayload() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required string payload = 3;</code>
+     */
+    public java.lang.String getPayload() {
+      java.lang.Object ref = payload_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          payload_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string payload = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getPayloadBytes() {
+      java.lang.Object ref = payload_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        payload_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TO_FIELD_NUMBER = 4;
+    private volatile java.lang.Object to_;
+    /**
+     * <pre>
+     * would be groupId if the type is GROUP or else userId if the type is SINGLE
+     * </pre>
+     *
+     * <code>required string to = 4;</code>
+     */
+    public boolean hasTo() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <pre>
+     * would be groupId if the type is GROUP or else userId if the type is SINGLE
+     * </pre>
+     *
+     * <code>required string to = 4;</code>
+     */
+    public java.lang.String getTo() {
+      java.lang.Object ref = to_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          to_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <pre>
+     * would be groupId if the type is GROUP or else userId if the type is SINGLE
+     * </pre>
+     *
+     * <code>required string to = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getToBytes() {
+      java.lang.Object ref = to_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        to_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TIMESTAMP_FIELD_NUMBER = 5;
+    private volatile java.lang.Object timestamp_;
+    /**
+     * <code>required string timestamp = 5;</code>
+     */
+    public boolean hasTimestamp() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>required string timestamp = 5;</code>
+     */
+    public java.lang.String getTimestamp() {
+      java.lang.Object ref = timestamp_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          timestamp_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string timestamp = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTimestampBytes() {
+      java.lang.Object ref = timestamp_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        timestamp_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int STATUS_FIELD_NUMBER = 6;
+    private int status_;
+    /**
+     * <code>required int32 status = 6;</code>
+     */
+    public boolean hasStatus() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>required int32 status = 6;</code>
+     */
+    public int getStatus() {
+      return status_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasType()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasSender()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasPayload()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTo()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasTimestamp()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasStatus()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, type_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, sender_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, payload_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, to_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, timestamp_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeInt32(6, status_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, type_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, sender_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, payload_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, to_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, timestamp_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(6, status_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof raft.proto.AppendEntries.ClientMessage)) {
+        return super.equals(obj);
+      }
+      raft.proto.AppendEntries.ClientMessage other = (raft.proto.AppendEntries.ClientMessage) obj;
+
+      boolean result = true;
+      result = result && (hasType() == other.hasType());
+      if (hasType()) {
+        result = result && (getType()
+            == other.getType());
+      }
+      result = result && (hasSender() == other.hasSender());
+      if (hasSender()) {
+        result = result && getSender()
+            .equals(other.getSender());
+      }
+      result = result && (hasPayload() == other.hasPayload());
+      if (hasPayload()) {
+        result = result && getPayload()
+            .equals(other.getPayload());
+      }
+      result = result && (hasTo() == other.hasTo());
+      if (hasTo()) {
+        result = result && getTo()
+            .equals(other.getTo());
+      }
+      result = result && (hasTimestamp() == other.hasTimestamp());
+      if (hasTimestamp()) {
+        result = result && getTimestamp()
+            .equals(other.getTimestamp());
+      }
+      result = result && (hasStatus() == other.hasStatus());
+      if (hasStatus()) {
+        result = result && (getStatus()
+            == other.getStatus());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      if (hasType()) {
+        hash = (37 * hash) + TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + getType();
+      }
+      if (hasSender()) {
+        hash = (37 * hash) + SENDER_FIELD_NUMBER;
+        hash = (53 * hash) + getSender().hashCode();
+      }
+      if (hasPayload()) {
+        hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
+        hash = (53 * hash) + getPayload().hashCode();
+      }
+      if (hasTo()) {
+        hash = (37 * hash) + TO_FIELD_NUMBER;
+        hash = (53 * hash) + getTo().hashCode();
+      }
+      if (hasTimestamp()) {
+        hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
+        hash = (53 * hash) + getTimestamp().hashCode();
+      }
+      if (hasStatus()) {
+        hash = (37 * hash) + STATUS_FIELD_NUMBER;
+        hash = (53 * hash) + getStatus();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static raft.proto.AppendEntries.ClientMessage parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(raft.proto.AppendEntries.ClientMessage prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code raft.proto.ClientMessage}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:raft.proto.ClientMessage)
+        raft.proto.AppendEntries.ClientMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return raft.proto.AppendEntries.internal_static_raft_proto_ClientMessage_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return raft.proto.AppendEntries.internal_static_raft_proto_ClientMessage_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                raft.proto.AppendEntries.ClientMessage.class, raft.proto.AppendEntries.ClientMessage.Builder.class);
+      }
+
+      // Construct using raft.proto.AppendEntries.ClientMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        type_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        sender_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        payload_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        to_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        timestamp_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
+        status_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000020);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return raft.proto.AppendEntries.internal_static_raft_proto_ClientMessage_descriptor;
+      }
+
+      public raft.proto.AppendEntries.ClientMessage getDefaultInstanceForType() {
+        return raft.proto.AppendEntries.ClientMessage.getDefaultInstance();
+      }
+
+      public raft.proto.AppendEntries.ClientMessage build() {
+        raft.proto.AppendEntries.ClientMessage result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public raft.proto.AppendEntries.ClientMessage buildPartial() {
+        raft.proto.AppendEntries.ClientMessage result = new raft.proto.AppendEntries.ClientMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.type_ = type_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.sender_ = sender_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.payload_ = payload_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.to_ = to_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.timestamp_ = timestamp_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.status_ = status_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof raft.proto.AppendEntries.ClientMessage) {
+          return mergeFrom((raft.proto.AppendEntries.ClientMessage)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(raft.proto.AppendEntries.ClientMessage other) {
+        if (other == raft.proto.AppendEntries.ClientMessage.getDefaultInstance()) return this;
+        if (other.hasType()) {
+          setType(other.getType());
+        }
+        if (other.hasSender()) {
+          bitField0_ |= 0x00000002;
+          sender_ = other.sender_;
+          onChanged();
+        }
+        if (other.hasPayload()) {
+          bitField0_ |= 0x00000004;
+          payload_ = other.payload_;
+          onChanged();
+        }
+        if (other.hasTo()) {
+          bitField0_ |= 0x00000008;
+          to_ = other.to_;
+          onChanged();
+        }
+        if (other.hasTimestamp()) {
+          bitField0_ |= 0x00000010;
+          timestamp_ = other.timestamp_;
+          onChanged();
+        }
+        if (other.hasStatus()) {
+          setStatus(other.getStatus());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasType()) {
+          return false;
+        }
+        if (!hasSender()) {
+          return false;
+        }
+        if (!hasPayload()) {
+          return false;
+        }
+        if (!hasTo()) {
+          return false;
+        }
+        if (!hasTimestamp()) {
+          return false;
+        }
+        if (!hasStatus()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        raft.proto.AppendEntries.ClientMessage parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (raft.proto.AppendEntries.ClientMessage) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int type_ ;
+      /**
+       * <pre>
+       * a node should not have a value though this is not enforced
+       * </pre>
+       *
+       * <code>required int32 type = 1;</code>
+       */
+      public boolean hasType() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <pre>
+       * a node should not have a value though this is not enforced
+       * </pre>
+       *
+       * <code>required int32 type = 1;</code>
+       */
+      public int getType() {
+        return type_;
+      }
+      /**
+       * <pre>
+       * a node should not have a value though this is not enforced
+       * </pre>
+       *
+       * <code>required int32 type = 1;</code>
+       */
+      public Builder setType(int value) {
+        bitField0_ |= 0x00000001;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * a node should not have a value though this is not enforced
+       * </pre>
+       *
+       * <code>required int32 type = 1;</code>
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        type_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object sender_ = "";
+      /**
+       * <code>required string sender = 2;</code>
+       */
+      public boolean hasSender() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string sender = 2;</code>
+       */
+      public java.lang.String getSender() {
+        java.lang.Object ref = sender_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            sender_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string sender = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getSenderBytes() {
+        java.lang.Object ref = sender_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          sender_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string sender = 2;</code>
+       */
+      public Builder setSender(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        sender_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string sender = 2;</code>
+       */
+      public Builder clearSender() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        sender_ = getDefaultInstance().getSender();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string sender = 2;</code>
+       */
+      public Builder setSenderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        sender_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object payload_ = "";
+      /**
+       * <code>required string payload = 3;</code>
+       */
+      public boolean hasPayload() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required string payload = 3;</code>
+       */
+      public java.lang.String getPayload() {
+        java.lang.Object ref = payload_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            payload_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string payload = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getPayloadBytes() {
+        java.lang.Object ref = payload_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          payload_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string payload = 3;</code>
+       */
+      public Builder setPayload(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        payload_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string payload = 3;</code>
+       */
+      public Builder clearPayload() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        payload_ = getDefaultInstance().getPayload();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string payload = 3;</code>
+       */
+      public Builder setPayloadBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        payload_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object to_ = "";
+      /**
+       * <pre>
+       * would be groupId if the type is GROUP or else userId if the type is SINGLE
+       * </pre>
+       *
+       * <code>required string to = 4;</code>
+       */
+      public boolean hasTo() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <pre>
+       * would be groupId if the type is GROUP or else userId if the type is SINGLE
+       * </pre>
+       *
+       * <code>required string to = 4;</code>
+       */
+      public java.lang.String getTo() {
+        java.lang.Object ref = to_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            to_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <pre>
+       * would be groupId if the type is GROUP or else userId if the type is SINGLE
+       * </pre>
+       *
+       * <code>required string to = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getToBytes() {
+        java.lang.Object ref = to_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          to_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <pre>
+       * would be groupId if the type is GROUP or else userId if the type is SINGLE
+       * </pre>
+       *
+       * <code>required string to = 4;</code>
+       */
+      public Builder setTo(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        to_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * would be groupId if the type is GROUP or else userId if the type is SINGLE
+       * </pre>
+       *
+       * <code>required string to = 4;</code>
+       */
+      public Builder clearTo() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        to_ = getDefaultInstance().getTo();
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * would be groupId if the type is GROUP or else userId if the type is SINGLE
+       * </pre>
+       *
+       * <code>required string to = 4;</code>
+       */
+      public Builder setToBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        to_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object timestamp_ = "";
+      /**
+       * <code>required string timestamp = 5;</code>
+       */
+      public boolean hasTimestamp() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>required string timestamp = 5;</code>
+       */
+      public java.lang.String getTimestamp() {
+        java.lang.Object ref = timestamp_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            timestamp_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string timestamp = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTimestampBytes() {
+        java.lang.Object ref = timestamp_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          timestamp_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string timestamp = 5;</code>
+       */
+      public Builder setTimestamp(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string timestamp = 5;</code>
+       */
+      public Builder clearTimestamp() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        timestamp_ = getDefaultInstance().getTimestamp();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string timestamp = 5;</code>
+       */
+      public Builder setTimestampBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        timestamp_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int status_ ;
+      /**
+       * <code>required int32 status = 6;</code>
+       */
+      public boolean hasStatus() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>required int32 status = 6;</code>
+       */
+      public int getStatus() {
+        return status_;
+      }
+      /**
+       * <code>required int32 status = 6;</code>
+       */
+      public Builder setStatus(int value) {
+        bitField0_ |= 0x00000020;
+        status_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 status = 6;</code>
+       */
+      public Builder clearStatus() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        status_ = 0;
+        onChanged();
+        return this;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:raft.proto.ClientMessage)
+    }
+
+    // @@protoc_insertion_point(class_scope:raft.proto.ClientMessage)
+    private static final raft.proto.AppendEntries.ClientMessage DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new raft.proto.AppendEntries.ClientMessage();
+    }
+
+    public static raft.proto.AppendEntries.ClientMessage getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<ClientMessage>
+        PARSER = new com.google.protobuf.AbstractParser<ClientMessage>() {
+      public ClientMessage parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new ClientMessage(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<ClientMessage> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ClientMessage> getParserForType() {
+      return PARSER;
+    }
+
+    public raft.proto.AppendEntries.ClientMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -2460,6 +3847,11 @@ public final class AppendEntries {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_raft_proto_AppendEntriesMsg_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_raft_proto_ClientMessage_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_raft_proto_ClientMessage_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_raft_proto_AppendEntriesResponse_descriptor;
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -2478,18 +3870,21 @@ public final class AppendEntries {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\023AppendEntries.proto\022\nraft.proto\"h\n\020App" +
-      "endEntriesMsg\022\020\n\010leaderId\030\001 \002(\005\022\021\n\tclien" +
-      "tMsg\030\002 \002(\t\022\016\n\006termid\030\003 \002(\005\022\037\n\027timeStampO" +
-      "nLatestUpdate\030\004 \002(\003\"u\n\025AppendEntriesResp" +
-      "onse\022>\n\tisUpdated\030\001 \002(\0162+.raft.proto.App" +
-      "endEntriesResponse.IsUpdated\"\034\n\tIsUpdate" +
-      "d\022\007\n\003YES\020\000\022\006\n\002NO\020\001\"\262\001\n\023AppendEntriesPack" +
-      "et\022\025\n\runixTimeStamp\030\001 \002(\003\0225\n\rappendEntri" +
-      "es\030\002 \001(\0132\034.raft.proto.AppendEntriesMsgH\000" +
-      "\022B\n\025appendEntriesResponse\030\003 \001(\0132!.raft.p",
-      "roto.AppendEntriesResponseH\000B\t\n\007payloadB" +
-      "\002H\001"
+      "\n\023AppendEntries.proto\022\nraft.proto\"\201\001\n\020Ap" +
+      "pendEntriesMsg\022\020\n\010leaderId\030\001 \002(\005\022*\n\007mess" +
+      "age\030\002 \002(\0132\031.raft.proto.ClientMessage\022\016\n\006" +
+      "termid\030\003 \002(\005\022\037\n\027timeStampOnLatestUpdate\030" +
+      "\004 \002(\003\"m\n\rClientMessage\022\014\n\004type\030\001 \002(\005\022\016\n\006" +
+      "sender\030\002 \002(\t\022\017\n\007payload\030\003 \002(\t\022\n\n\002to\030\004 \002(" +
+      "\t\022\021\n\ttimestamp\030\005 \002(\t\022\016\n\006status\030\006 \002(\005\"u\n\025" +
+      "AppendEntriesResponse\022>\n\tisUpdated\030\001 \002(\016" +
+      "2+.raft.proto.AppendEntriesResponse.IsUp" +
+      "dated\"\034\n\tIsUpdated\022\007\n\003YES\020\000\022\006\n\002NO\020\001\"\262\001\n\023",
+      "AppendEntriesPacket\022\025\n\runixTimeStamp\030\001 \002" +
+      "(\003\0225\n\rappendEntries\030\002 \001(\0132\034.raft.proto.A" +
+      "ppendEntriesMsgH\000\022B\n\025appendEntriesRespon" +
+      "se\030\003 \001(\0132!.raft.proto.AppendEntriesRespo" +
+      "nseH\000B\t\n\007payloadB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2508,15 +3903,21 @@ public final class AppendEntries {
     internal_static_raft_proto_AppendEntriesMsg_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_AppendEntriesMsg_descriptor,
-        new java.lang.String[] { "LeaderId", "ClientMsg", "Termid", "TimeStampOnLatestUpdate", });
-    internal_static_raft_proto_AppendEntriesResponse_descriptor =
+        new java.lang.String[] { "LeaderId", "Message", "Termid", "TimeStampOnLatestUpdate", });
+    internal_static_raft_proto_ClientMessage_descriptor =
       getDescriptor().getMessageTypes().get(1);
+    internal_static_raft_proto_ClientMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_raft_proto_ClientMessage_descriptor,
+        new java.lang.String[] { "Type", "Sender", "Payload", "To", "Timestamp", "Status", });
+    internal_static_raft_proto_AppendEntriesResponse_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_raft_proto_AppendEntriesResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_AppendEntriesResponse_descriptor,
         new java.lang.String[] { "IsUpdated", });
     internal_static_raft_proto_AppendEntriesPacket_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_raft_proto_AppendEntriesPacket_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_AppendEntriesPacket_descriptor,

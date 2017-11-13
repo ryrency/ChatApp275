@@ -10,11 +10,14 @@ import java.util.Map;
 import gash.router.server.NodeMonitor;
 import gash.router.server.TopologyStat;
 import io.netty.channel.ChannelFuture;
+import raft.proto.AppendEntries.AppendEntriesPacket;
 //import logger.Logger;
 //import raft.proto.AppendEntriesRPC.AppendEntries.RequestType;
 //import raft.proto.Monitor.ClusterMonitor;
 import raft.proto.Work.WorkMessage;
-
+import routing.Payload;
+import routing.Payload.ClientRoute;
+import routing.Payload.Message;
 //import server.db.DatabaseService;
 //import server.db.Record;
 //import server.edges.EdgeInfo;
@@ -30,10 +33,12 @@ public class Leader extends Service implements Runnable {
 	Thread heartBt = null;
 	int heartBeatTime = 1000;
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("LEADER");
+	MongoDB mongoDB;
 
 
 	private Leader() {
 		// TODO Auto-generated constructor stub
+		mongoDB = MongoDB.getInstance();
 
 	}
 
@@ -69,26 +74,17 @@ public class Leader extends Service implements Runnable {
 	}
 
 	//Append Entries to ALL nodes 
-	private void sendAppendEntriesPacket(WorkMessage workMessage) {
+	private void sendAppendEntriesPacket(WorkMessage wm) {
 
-			for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.nodeMonitor.getStatMap().entrySet()) {
-				System.out.println("Key = " + entry.getKey() + "Value=" + entry.getValue().getPort());
-			}
-			//Writing the workMessage on the channel 
-//			for (EdgeInfo ei : NodeState.getInstance().getServerState().getEmon().getOutboundEdges().getMap()
-//					.values()) {
-//
-//				if (ei.isActive() && ei.getChannel() != null) {
-//
-//					Logger.DEBUG("Sent AppendEntriesPacket to " + ei.getRef() + "for the key " + workMessage.getAppendEntriesPacket().getAppendEntries());
-//
-//					ChannelFuture cf = ei.getChannel().writeAndFlush(workMessage);
-//					if (cf.isDone() && !cf.isSuccess()) {
-//						System.out.println("Failed to write Append messaage");
-//					}
-//				}
-//			}
-	}
+        for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
+            if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {                    
+                ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(wm);
+                if (cf.isDone() && !cf.isSuccess()) {
+                    System.out.println("Failed to send append entries message server "+entry.getValue().getHost());
+                }
+            }
+        }
+}
 
 //	public void handleHeartBeatResponse(WorkMessage wm) {
 //
@@ -144,7 +140,7 @@ public class Leader extends Service implements Runnable {
 //
 	@Override
 	public void sendHeartBeat() {
-		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.nodeMonitor.getStatMap().entrySet()) {
+		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				WorkMessage workMessage = MessageBuilder.prepareHeartBeat();
 				
@@ -177,7 +173,7 @@ public class Leader extends Service implements Runnable {
 ////	}
 	public int countActiveNodes() {
 		int count = 0;
-		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.nodeMonitor.getStatMap().entrySet()) {
+		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
 
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {				
 				count++;
@@ -222,12 +218,24 @@ public class Leader extends Service implements Runnable {
 //	}
 	
 	// What should be the key?? Currently using receiver id
-	public void handleClientRequest(String senderId, String receiverId, String payload, Date timeStamp) {
-		System.out.println("***Leader*** fn:handleGetMessage");
-		boolean isSuccess = MongoDB.getInstance().post(senderId, receiverId, payload, timeStamp);
-		
-		
+	
+	//
+	public void handleClientRequest(ClientRoute clientRoute) {
+		System.out.println("***Leader*** fn:handleClientMessage");
+		if(clientRoute.hasMessage()){
+			WorkMessage workMessage = MessageBuilder.prepareAppendEntriesPacket(clientRoute, Long.parseLong(clientRoute.getMessage().getTimestamp()));
+			sendAppendEntriesPacket(workMessage);
+			mongoDB.storeClientMessagetoDB(workMessage);
+		}	
 	}
+	
+	public void handleHeartBeat(WorkMessage wm) {
+        if(wm.getHeartBeatPacket().getHeartbeat().getTerm()>=NodeState.currentTerm) {
+            NodeState.getInstance().setState(NodeState.FOLLOWER);
+            }
+    }
+	
+	
 	
 	public void handleFollowerMessage() {
 		

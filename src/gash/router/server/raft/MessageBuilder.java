@@ -14,6 +14,7 @@ import raft.proto.HeartBeat.*;
 import raft.proto.Vote.*;
 import raft.proto.Vote.ResponseVote.IsVoteGranted;
 import raft.proto.Work.WorkMessage;
+import routing.Payload.ClientRoute;
 //import server.db.DatabaseService;
 import raft.proto.InternalNodeAdd.*;
 
@@ -25,8 +26,8 @@ public class MessageBuilder {
 
 		RequestVote.Builder requestVote = RequestVote.newBuilder();
 		
-		requestVote.setTerm(NodeMonitor.nodeMonitor.getNodeConf().getNodeId());
-		requestVote.setCandidateId("" + NodeMonitor.nodeMonitor.getNodeConf().getNodeId());
+		requestVote.setTerm(NodeMonitor.getInstance().getNodeConf().getNodeId());
+		requestVote.setCandidateId("" + NodeMonitor.getInstance().getNodeConf().getNodeId());
 		requestVote.setTerm(NodeState.currentTerm);
 		requestVote.setTimeStampOnLatestUpdate(NodeState.getTimeStampOnLatestUpdate());
 		// requestVoteRPC.setTimeStampOnLatestUpdate(DatabaseService.getInstance().getDb().getCurrentTimeStamp());
@@ -85,7 +86,7 @@ public class MessageBuilder {
 		work.setUnixTimeStamp(TimerRoutine.getCurrentUnixTimeStamp());
 
 		HeartBeatMsg.Builder heartbeat = HeartBeatMsg.newBuilder();
-		heartbeat.setLeaderId(NodeMonitor.nodeMonitor.getNodeConf().getNodeId());
+		heartbeat.setLeaderId(NodeMonitor.getInstance().getNodeConf().getNodeId());
 		heartbeat.setTerm(NodeState.currentTerm);
 		// Optional
 
@@ -141,7 +142,7 @@ public class MessageBuilder {
 		voteRPCPacket.setUnixTimestamp(TimerRoutine.getCurrentUnixTimeStamp());
 
 		ResponseVote.Builder responseVoteRPC = ResponseVote.newBuilder();
-		responseVoteRPC.setTerm(NodeMonitor.nodeMonitor.getNodeConf().getNodeId());
+		responseVoteRPC.setTerm(NodeMonitor.getInstance().getNodeConf().getNodeId());
 		responseVoteRPC.setIsVoteGranted(decision);
 
 		voteRPCPacket.setResponseVote(responseVoteRPC);
@@ -167,4 +168,34 @@ public class MessageBuilder {
 		return work.build();
 		
 	}
+	
+	public static WorkMessage prepareAppendEntriesPacket(ClientRoute clientMsg, long timestamp) {
+
+        WorkMessage.Builder work = WorkMessage.newBuilder();
+        work.setUnixTimeStamp(TimerRoutine.getCurrentUnixTimeStamp());
+
+        AppendEntriesPacket.Builder appendEntriesPacket = AppendEntriesPacket.newBuilder();
+        appendEntriesPacket.setUnixTimeStamp(TimerRoutine.getCurrentUnixTimeStamp());
+        AppendEntries.ClientMessage.Builder clientMsgBuild = AppendEntries.ClientMessage.newBuilder();
+
+
+        AppendEntriesMsg.Builder appendEntries = AppendEntriesMsg.newBuilder();
+        appendEntries.setTimeStampOnLatestUpdate(timestamp);
+        appendEntries.setLeaderId(NodeMonitor.getInstance().getNodeConf().getNodeId());
+        appendEntries.setTermid(NodeState.getInstance().currentTerm);
+
+        clientMsgBuild.setSender(clientMsg.getMessage().getSender());
+        clientMsgBuild.setPayload(clientMsg.getMessage().getPayload());
+        clientMsgBuild.setTo(clientMsg.getMessage().getTo());
+        
+        clientMsgBuild.setType(clientMsg.getMessage().getType().getNumber());
+        clientMsgBuild.setStatus(clientMsg.getMessage().getStatus().getNumber());
+        
+        appendEntriesPacket.setAppendEntries(appendEntries);
+
+        work.setAppendEntriesPacket(appendEntriesPacket);
+
+        return work.build();
+
+    }
 }

@@ -10,6 +10,8 @@ import java.util.Date;
 import org.bson.Document;
 import com.mongodb.client.model.Filters;
 
+import raft.proto.Work.WorkMessage;
+
 
 
 
@@ -26,6 +28,11 @@ public class MongoDB {
 	final static String SENDER_ID = "senderId";
 	final static String PAYLOAD = "payload";
 	final static String TIMESTAMP = "timestamp";
+	final static String UNIXTIMESTAMP = "UnixTimeStamp";
+	final static String MESSAGETYPE = "MessageType";
+	final static String STATUS = "Status";
+	final static String TIMESTAMPONLATESTUPDATE = "TimeStampOnLatestUpdate";
+	final static String TERMID = "TermID";
 	
 	
 
@@ -132,6 +139,28 @@ public class MongoDB {
 			e.printStackTrace();
 			return false;
 		}
+		finally {}
+	}
+	
+	public boolean storeClientMessagetoDB(WorkMessage workMessage) {
+		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
+		try {
+			Document document = new Document();
+			document.put(UNIXTIMESTAMP, workMessage.getUnixTimeStamp());
+			document.append(MESSAGETYPE,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getType());
+			document.append(TERMID,workMessage.getAppendEntriesPacket().getAppendEntries() );
+			document.append(SENDER_ID,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getSender() );
+			document.append(RECEIVER_ID,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTo() );
+			document.append(PAYLOAD,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getPayload() );
+			document.append(TIMESTAMP,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTimestamp() );
+			document.append(STATUS,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getStatus() );
+			document.append(TIMESTAMPONLATESTUPDATE,workMessage.getAppendEntriesPacket().getAppendEntries().getTimeStampOnLatestUpdate() );
+			dbCollection.insertOne(document);
+	
+			return true;
+		}
+		catch(Exception e) {e.printStackTrace();
+		return false;}
 		finally {}
 	}
 	 

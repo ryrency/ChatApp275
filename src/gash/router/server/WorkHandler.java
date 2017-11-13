@@ -1,6 +1,8 @@
 package gash.router.server;
 
 import gash.router.server.raft.Follower;
+import gash.router.server.raft.Leader;
+import gash.router.server.raft.NodeState;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,11 +18,17 @@ import raft.proto.InternalNodeAdd.InternalNodeAddRequest;
 import raft.proto.Work.WorkMessage;
 
 public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage>{
+	
+	Follower foll;
+	Leader leader;
 		WorkHandler(){
-			
+			foll = Follower.getInstance();
+			leader = Leader.getInstance();
 		}
 		
-		Follower foll = new Follower();
+		
+		
+		
 		public void handleMessage(WorkMessage wm, Channel channel) {
 //			if (msg == null) {
 //				// TODO add logging
@@ -34,10 +42,13 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage>{
 				return;
 			}
 
-			System.out.println("Into handleMessage : Message - "+wm);
-			if (wm.hasHeartBeatPacket() ) {
-				foll.handleHeartBeat(wm);
-			}
+			System.out.println("Into handleMessage : Message - "+wm); 
+				if (wm.hasHeartBeatPacket() ) {
+				                if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
+				                    foll.handleHeartBeat(wm);
+				                else if (NodeState.getInstance().getState() == NodeState.LEADER)
+				                    leader.handleHeartBeat(wm);
+				            }
 			if (wm.hasAppendEntriesPacket())
 			{
 //                foll.getWorkQueue();

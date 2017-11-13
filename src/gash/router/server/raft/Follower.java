@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 //import raft.proto.AppendEntriesRPC.AppendEntries.RequestType;
 import raft.proto.Vote.ResponseVote;
 import raft.proto.Work.WorkMessage;
+import gash.database.MongoDB;
 import gash.router.server.raft.TimerRoutine;
 import io.netty.channel.ChannelFuture;
 
@@ -22,6 +23,12 @@ public class Follower extends Service implements Runnable {
 	TimerRoutine getTimer;
 	public static boolean voted = false;
 	public static int lastVotedTerm = 0;
+	MongoDB mongoDB;
+	
+	private Follower() {
+		mongoDB.getInstance();
+		
+	}
 
 	public static Follower getInstance() {
 		if (INSTANCE == null) {
@@ -118,8 +125,12 @@ public class Follower extends Service implements Runnable {
 
 	}
 	
-//	@Override
-//	public void handleAppendEntries(WorkMessage wm) {
+	@Override
+	public void handleAppendEntries(WorkMessage wm) {
+		if(NodeState.currentTerm <= wm.getAppendEntriesPacket().getAppendEntries().getTermid()) {
+			mongoDB.storeClientMessagetoDB(wm);
+		}
+		
 //		String key = wm.getAppendEntriesPacket().getAppendEntries().getImageMsg().getKey();
 //		byte[] image = wm.getAppendEntriesPacket().getAppendEntries().getImageMsg().getImageData().toByteArray();
 //		long unixTimeStamp = wm.getAppendEntriesPacket().getAppendEntries().getTimeStampOnLatestUpdate();
@@ -140,7 +151,7 @@ public class Follower extends Service implements Runnable {
 //		
 //		Logger.DEBUG("Inserted entry with key " + key + " received from "
 //				+ wm.getAppendEntriesPacket().getAppendEntries().getLeaderId());
-//	}
+	}
 
 
 	@Override
