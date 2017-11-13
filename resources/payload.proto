@@ -2,7 +2,7 @@ syntax = "proto2";
 option optimize_for = SPEED;
 option java_package = "routing";
 
-message Route1 {
+message ClientRoute {
     // a node should not have a value though this is not enforced
     required int64 id = 1;
     optional Path path = 2;
