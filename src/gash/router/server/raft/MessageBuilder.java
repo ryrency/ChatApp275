@@ -132,9 +132,9 @@ public class MessageBuilder {
         appendEntries.setTermid(NodeState.getInstance().currentTerm);
         
 
-        clientMsgBuild.setSender(clientMsg.getMessage().getFrom());
+        clientMsgBuild.setSender(clientMsg.getMessage().getSenderId());
         clientMsgBuild.setPayload(clientMsg.getMessage().getPayload());
-        clientMsgBuild.setTo(clientMsg.getMessage().getTo());
+        clientMsgBuild.setTo(clientMsg.getMessage().getReceiverId());
         clientMsgBuild.setTimestamp(timestamp);
         
         clientMsgBuild.setType(clientMsg.getMessage().getType().getNumber());
