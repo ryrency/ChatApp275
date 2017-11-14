@@ -2,13 +2,8 @@ package gash.router.server.raft;
 
 import java.util.Map;
 
-//import gash.router.server.*;
-//import server.ServerUtils;
-
-import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import raft.proto.AppendEntriesRPC.AppendEntries.RequestType;
 import raft.proto.Vote.ResponseVote;
 import raft.proto.Work.WorkMessage;
 import gash.database.MongoDB;
@@ -19,6 +14,9 @@ import io.netty.channel.ChannelFuture;
 
 public class Follower extends Service implements Runnable {
 
+	/********************************************************************************/
+	/* Initialisations */
+	/********************************************************************************/
 	public static boolean HBrecvd = false;
 	NodeTimer timer;
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("Follower");
@@ -28,12 +26,18 @@ public class Follower extends Service implements Runnable {
 	public static boolean voted = false;
 	public static int lastVotedTerm = 0;
 	MongoDB mongoDB;
-	
+
+	/********************************************************************************/
+	/* Constructor */
+	/********************************************************************************/
 	private Follower() {
 		mongoDB.getInstance();
-		
+
 	}
 
+	/********************************************************************************/
+	/* Get Instance of Follower to ensure single instance!! 						  */
+	/********************************************************************************/
 	public static Follower getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new Follower();
@@ -43,31 +47,35 @@ public class Follower extends Service implements Runnable {
 	}
 
 	@Override
-	
+	/********************************************************************************/
+	/* Starting Follower Thread!! 												  */
+	/********************************************************************************/
 	public void run() {
 		logger.info("Follower started");
 		initFollower();
 
-		followerThread = new Thread(){
-		    public void run(){
-				while (running ) {
+		followerThread = new Thread() {
+			public void run() {
+				while (running) {
 					while (NodeState.getInstance().getState() == NodeState.FOLLOWER) {
 					}
 				}
 
-		    }
-		 };
+			}
+		};
 
 		followerThread.start();
-//		ServerQueueService.getInstance().createGetQueue();
 	}
-	
-	private void initFollower() {
-		// TODO Auto-generated method stub
 
-		if(NodeState.currentTerm > lastVotedTerm)
-			voted=false;
-		
+	/********************************************************************************/
+	/* Initialising Follower State */
+	/********************************************************************************/
+
+	private void initFollower() {
+
+		if (NodeState.currentTerm > lastVotedTerm)
+			voted = false;
+
 		timer = new NodeTimer();
 
 		timer.schedule(new Runnable() {
@@ -75,105 +83,111 @@ public class Follower extends Service implements Runnable {
 			public void run() {
 				NodeState.getInstance().setState(NodeState.CANDIDATE);
 			}
-		}, getTimer. getElectionTimeout());
+		}, getTimer.getElectionTimeout());
 
 	}
-	
-	
-	
-	public void onReceivingHeartBeatPacket() {
-		timer.reschedule(getTimer.getElectionTimeout());
-	}
-	
+
+	/********************************************************************************/
+	/* Handling Voting Requests */
+	/********************************************************************************/
+
 	@Override
 	public void handleRequestVote(WorkMessage workMessage) {
 		WorkMessage voteResponse;
 
-		if (workMessage.getVoteRPCPacket().getRequestVote().getTimeStampOnLatestUpdate() < NodeState.getTimeStampOnLatestUpdate()) {
-//			logger.info((NodeState.getInstance().getServerState().getConf().getNodeId()) + " has replied NO");
-			voteResponse =  MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
+		if (workMessage.getVoteRPCPacket().getRequestVote().getTimeStampOnLatestUpdate() < NodeState
+				.getTimeStampOnLatestUpdate()) {
+			voteResponse = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
 
 		}
-//		Logger.DEBUG(NodeState.getInstance().getServerState().getConf().getNodeId() + " has replied YES");
-		System.out.println("Follower : wm term: "+workMessage.getVoteRPCPacket().getResponseVote().getTerm());
-		System.out.println("Follower:  term : "+NodeState.currentTerm);
+		System.out.println("Follower : wm term: " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+		System.out.println("Follower:  term : " + NodeState.currentTerm);
 		if (workMessage.getVoteRPCPacket().getResponseVote().getTerm() >= NodeState.currentTerm && voted) {
 			lastVotedTerm = NodeState.currentTerm;
 			voted = true;
-			voteResponse =  MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
-		}
-		else
+			voteResponse = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
+		} else
 			voteResponse = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
-		
+
 		sendResponseVote(voteResponse, workMessage);
 
 	}
-	
+
 	public static void sendResponseVote(WorkMessage voteResponse, WorkMessage wm) {
-		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, TopologyStat> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				if (entry.getValue().getRef() == wm.getVoteRPCPacket().getRequestVote().getCandidateId()) {
 					ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(voteResponse);
 					if (cf.isDone() && !cf.isSuccess()) {
 						System.out.println("Fail to send heart beat message to other server");
-				}
-			}
+					}
 				}
 			}
 		}
-	
+	}
+
+	/********************************************************************************/
+	/* Handling HeartBeat Requests */
+	/********************************************************************************/
+
 	@Override
 	public void handleHeartBeat(WorkMessage wm) {
-//		Logger.DEBUG("HeartbeatPacket received from leader :" + wm.getHeartBeatPacket().getHeartbeat().getLeaderId());
+		/*
+		 * If Current term is less than New term recieved in HB Packet, Update current
+		 * Term
+		 */
+		if (NodeState.currentTerm < wm.getHeartBeatPacket().getHeartbeat().getTerm())
 			NodeState.currentTerm = wm.getHeartBeatPacket().getHeartbeat().getTerm();
-		onReceivingHeartBeatPacket();
-		logger.info("Heartbeat recieved");
 
-//		WorkMessage heartBeatResponse = MessageBuilder.prepareHeartBeatResponse();
-//
-//		for (EdgeInfo ei : NodeState.getInstance().getServerState().getEmon().getOutboundEdges().getMap().values()) {
-//
-//			if (ei.isActive() && ei.getChannel() != null
-//					&& ei.getRef() == wm.getHeartBeatPacket().getHeartbeat().getLeaderId()) {
-//
-//				Logger.DEBUG("Sent HeartBeatResponse to " + ei.getRef());
-//				ChannelFuture cf = ei.getChannel().writeAndFlush(heartBeatResponse);
-//				if (cf.isDone() && !cf.isSuccess()) {
-//					Logger.DEBUG("failed to send message (HeartBeatResponse) to server");
-//				}
-//			}
-//		}
-
+		/*
+		 * If Current term is greater than New term recieved in HB Packet, it implies
+		 * the heartbeat
+		 */
+		/* is from incorrect leader and hence ignore */
+		if (NodeState.currentTerm > wm.getHeartBeatPacket().getHeartbeat().getTerm())
+			logger.info("Invalid Heartbeat from previous Invalid Term recieved");
+		else { /* Valid Hearbeat and Valid term so reschedule the timer */
+			logger.info("Heartbeat recieved");
+			timer.reschedule(getTimer.getElectionTimeout());
+		}
 	}
-	
+
+	/********************************************************************************/
+	/* Handling AppendEntries Requests */
+	/********************************************************************************/
+
 	@Override
 	public void handleAppendEntries(WorkMessage wm) {
-		if(NodeState.currentTerm <= wm.getAppendEntriesPacket().getAppendEntries().getTermid()) {
+		/*
+		 * If valid current term, then update the Databse with the Append Entries packet
+		 * to complete replication
+		 */
+		if (NodeState.currentTerm <= wm.getAppendEntriesPacket().getAppendEntries().getTermid()) {
 			mongoDB.storeClientMessagetoDB(wm);
+			sendAppendEntiresResponse(wm,"YES");
 		}
-		
-//		String key = wm.getAppendEntriesPacket().getAppendEntries().getImageMsg().getKey();
-//		byte[] image = wm.getAppendEntriesPacket().getAppendEntries().getImageMsg().getImageData().toByteArray();
-//		long unixTimeStamp = wm.getAppendEntriesPacket().getAppendEntries().getTimeStampOnLatestUpdate();
-//		RequestType type = wm.getAppendEntriesPacket().getAppendEntries().getRequestType();
-		
-//		if (type == RequestType.GET) {
-//			DatabaseService.getInstance().getDb().get(key);
-//		} else if (type == RequestType.POST) {
-//			NodeState.getTimeStampOnLatestUpdate();
-//			DatabaseService.getInstance().getDb().post(key, image, unixTimeStamp);
-//		} else if (type == RequestType.PUT) {
-//			NodeState.setTimeStampOnLatestUpdate(unixTimeStamp);
-//			DatabaseService.getInstance().getDb().put(key, image, unixTimeStamp);
-//		} else if (type == RequestType.DELETE) {
-//			NodeState.setTimeStampOnLatestUpdate(System.currentTimeMillis());
-//			DatabaseService.getInstance().getDb().delete(key);
-//		}
-//		
-//		Logger.DEBUG("Inserted entry with key " + key + " received from "
-//				+ wm.getAppendEntriesPacket().getAppendEntries().getLeaderId());
+		else sendAppendEntiresResponse(wm,"NO");
 	}
 
+	public void sendAppendEntiresResponse(WorkMessage wm, String response) {
+		WorkMessage wmResponse =  MessageBuilder.prepareAppendEntriesResponse(response);
+		for (Map.Entry<Integer, TopologyStat> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+
+			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
+				if (entry.getValue().getRef() == wm.getAppendEntriesPacket().getAppendEntries().getLeaderId()) {
+					ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(wmResponse);
+					if (cf.isDone() && !cf.isSuccess()) {
+						System.out.println("Failed to send AppendEntries Response message to Leader");
+					}
+					break;
+				}
+			}
+		}
+	}
+
+	/********************************************************************************/
+	/* Starting Follower Service */
+	/********************************************************************************/
 
 	@Override
 	public void startService(Service service) {
@@ -184,10 +198,13 @@ public class Follower extends Service implements Runnable {
 
 	}
 
+	/********************************************************************************/
+	/* Stoping Follower Service */
+	/********************************************************************************/
+
 	@Override
 	public void stopService() {
 		running = Boolean.FALSE;
 	}
-
 
 }
