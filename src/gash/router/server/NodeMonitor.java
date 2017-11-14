@@ -24,7 +24,8 @@ import raft.proto.Work.WorkMessage;
 public class NodeMonitor implements Runnable {
 
 	static ConcurrentHashMap<Integer, TopologyStat> statMap = new ConcurrentHashMap<Integer, TopologyStat>();
-
+	static final EventLoopGroup group = new NioEventLoopGroup();;
+	
 	NodeConf nodeConf;
 	boolean forever = true;
 	private Timer timer_;
@@ -76,8 +77,7 @@ public class NodeMonitor implements Runnable {
 	}
 
 	public synchronized void addAdjacentNode(TopologyStat ts) {
-		EventLoopGroup group = new NioEventLoopGroup();
-
+		
 		try {
 			System.out
 					.println("Step 2: Add adjacent node --> " + ts.getRef() + "," + ts.getHost() + "," + ts.getPort());
@@ -121,12 +121,7 @@ public class NodeMonitor implements Runnable {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 
-		} finally {
-			if (group != null) {
-				group = null;
-			}
-		}
-
+		} 
 	}
 
 	private synchronized void scheduleConnect(TopologyStat ts, long millis) {
