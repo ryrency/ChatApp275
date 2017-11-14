@@ -114,11 +114,7 @@ public class Follower extends Service implements Runnable {
 	}
 
 	public static void sendResponseVote(WorkMessage voteResponse, WorkMessage wm) {
-<<<<<<< HEAD
-		for (Map.Entry<Integer, RemoteNode> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
-=======
-		for (Map.Entry<Integer, TopologyStat> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
->>>>>>> 35298aa28763a321c7131143ec06deb35a011acf
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				if (entry.getValue().getRef() == wm.getVoteRPCPacket().getRequestVote().getCandidateId()) {
 					ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(voteResponse);
@@ -175,7 +171,7 @@ public class Follower extends Service implements Runnable {
 
 	public void sendAppendEntiresResponse(WorkMessage wm, String response) {
 		WorkMessage wmResponse =  MessageBuilder.prepareAppendEntriesResponse(response);
-		for (Map.Entry<Integer, TopologyStat> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
 
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				if (entry.getValue().getRef() == wm.getAppendEntriesPacket().getAppendEntries().getLeaderId()) {

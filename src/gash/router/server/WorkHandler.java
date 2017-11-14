@@ -39,22 +39,6 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage> {
 				return;
 			}
 
-<<<<<<< HEAD
-			System.out.println("Into handleMessage : Message - "+wm); 
-				if (wm.hasHeartBeatPacket() ) {
-				                if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
-				                    foll.handleHeartBeat(wm);
-				                else if (NodeState.getInstance().getState() == NodeState.LEADER)
-				                    leader.handleHeartBeat(wm);
-				            }
-				if (wm.hasVoteRPCPacket()) {
-					if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
-						foll.handleRequestVote(wm);
-					else if (NodeState.getInstance().getState() == NodeState.CANDIDATE)
-						candidate.handleResponseVote(wm);
-						
-				}
-=======
 			System.out.println("Into handleMessage : Message - " + wm);
 			if (wm.hasHeartBeatPacket()) {
 				if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
@@ -69,14 +53,13 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage> {
 					candidate.handleResponseVote(wm);
 
 			}
->>>>>>> 35298aa28763a321c7131143ec06deb35a011acf
+
 			if (wm.hasAppendEntriesPacket()) {
 				if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
 					foll.handleAppendEntries(wm);
 				else if (NodeState.getInstance().getState() == NodeState.LEADER)
 					leader.handleAppendEntries(wm);
 			}
-<<<<<<< HEAD
 			
 			if(wm.hasInternalNodeAddPacket()) {
 				if(wm.getInternalNodeAddPacket().hasInternalNodeAddRequest()) {
@@ -90,26 +73,9 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage> {
 			}
 			
 			
-			}catch(Exception ex) {
-				ex.printStackTrace();
-				
-			}
-=======
-			if (wm.hasInternalNodeAddPacket()) {
-				if (wm.getInternalNodeAddPacket().hasInternalNodeAddRequest()) {
-					InternalNodeAddRequest internalNodeAddRequest = wm.getInternalNodeAddPacket()
-							.getInternalNodeAddRequest();
-					NodeMonitor nodeMonitor = NodeMonitor.getInstance();
-					nodeMonitor.setStatMap(new TopologyStat(internalNodeAddRequest.getId(),
-							internalNodeAddRequest.getHost(), internalNodeAddRequest.getPort()));
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
->>>>>>> 35298aa28763a321c7131143ec06deb35a011acf
-
+		} catch(Exception ex) {
+			ex.printStackTrace();	
 		}
-		System.out.flush();
 
 	}
 

@@ -32,7 +32,6 @@ public class Candidate extends Service implements Runnable {
 	private int TotalResponses = 0;
 	NodeTimer timer = new NodeTimer();
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("CANDIDATE");
-	HashMap<Integer, RemoteNode> statMap = new HashMap<Integer, RemoteNode>();
 
 	/********************************************************************************/
 	/* Constructor */
@@ -124,33 +123,7 @@ public class Candidate extends Service implements Runnable {
 	public void sendRequestVote() {
 		WorkMessage voteRequest = MessageBuilder.prepareRequestVote();
 
-<<<<<<< HEAD
-			logger.info(
-					"Vote 'YES' is granted from Node Id " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
-			numberOfYESResponses++;
-
-		} else {
-			logger.info(
-					"Vote 'NO' is granted from Node Id " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
-		}
-
-	}
-
-	// NEED TO CHECK THE NEED FOR
-	// THIS**************************************************
-	@Override
-	public void handleRequestVote(WorkMessage workMessage) {
-		WorkMessage voteRequest;
-//		if (workMessage.getVoteRPCPacket().getRequestVote().getTimeStampOnLatestUpdate() < NodeState
-//				.getTimeStampOnLatestUpdate()) {
-//			voteRequest = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
-//
-//		}
-//		voteRequest = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
-		for (RemoteNode ts : this.statMap.values()) {
-=======
-		for (TopologyStat ts : this.statMap.values()) {
->>>>>>> 35298aa28763a321c7131143ec06deb35a011acf
+		for (RemoteNode ts : NodeMonitor.getInstance().getStatMap().values()) {
 			if (ts.isActive() && ts.getChannel() != null) {
 				logger.info("Sent VoteRequestRPC to " + ts.getRef());
 				ChannelFuture cf = ts.getChannel().writeAndFlush(voteRequest);

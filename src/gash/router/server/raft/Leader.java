@@ -36,7 +36,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 
 public class Leader extends Service implements Runnable {
-
+	
 	/********************************************************************************/
 	/* Initialisations 															  */
 	/********************************************************************************/
@@ -168,79 +168,9 @@ public class Leader extends Service implements Runnable {
 	// Append Entries to ALL nodes
 	private void sendAppendEntriesPacket(WorkMessage wm) {
 
-<<<<<<< HEAD
-        for (Map.Entry<Integer, RemoteNode> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
-            if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {                    
-                ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(wm);
-                if (cf.isDone() && !cf.isSuccess()) {
-                    System.out.println("Failed to send append entries message server "+entry.getValue().getHost());
-                }
-            }
-        }
-}
-
-//	public void handleHeartBeatResponse(WorkMessage wm) {
-//
-//		long timeStampOnLatestUpdate = wm.getHeartBeatPacket().getHeartBeatResponse().getTimeStampOnLatestUpdate();
-//
-//		if (DatabaseService.getInstance().getDb().getCurrentTimeStamp() > timeStampOnLatestUpdate) {
-//			List<Record> laterEntries = DatabaseService.getInstance().getDb().getNewEntries(timeStampOnLatestUpdate);
-//
-//			for (EdgeInfo ei : NodeState.getInstance().getServerState().getEmon().getOutboundEdges().getMap()
-//					.values()) {
-//
-//				if (ei.isActive() && ei.getChannel() != null
-//						&& ei.getRef() == wm.getHeartBeatPacket().getHeartBeatResponse().getNodeId()) {
-//
-//					for (Record record : laterEntries) {
-//						WorkMessage workMessage = ServiceUtils.prepareAppendEntriesPacket(record.getKey(),
-//								record.getImage(), record.getTimestamp(), RequestType.POST);
-//						Logger.DEBUG("Sent AppendEntriesPacket to " + ei.getRef() + "for the key (later Entries) "
-//								+ record.getKey());
-//						ChannelFuture cf = ei.getChannel().writeAndFlush(workMessage);
-//						if (cf.isDone() && !cf.isSuccess()) {
-//							Logger.DEBUG("failed to send message (AppendEntriesPacket) to server");
-//						}
-//					}
-//				}
-//			}
-//
-//		}
-//
-//	}
-//	
-//	public void handleHeartBeat(WorkMessage wm) {
-//		Logger.DEBUG("HeartbeatPacket received from leader :" + wm.getHeartBeatPacket().getHeartbeat().getLeaderId());
-//		//onReceivingHeartBeatPacket();
-//		WorkMessage heartBeatResponse = ServiceUtils.prepareHeartBeatResponse();
-//		
-//		for (EdgeInfo ei : NodeState.getInstance().getServerState().getEmon().getOutboundEdges().getMap().values()) {
-//
-//			if (ei.isActive() && ei.getChannel() != null
-//					&& ei.getRef() == wm.getHeartBeatPacket().getHeartbeat().getLeaderId()) {
-//					if(wm.getHeartBeatPacket().getHeartbeat().getTerm()>=NodeState.currentTerm) {
-//						NodeState.getInstance().setState(NodeState.FOLLOWER);
-//					}
-////				Logger.DEBUG("Sent HeartBeatResponse to " + ei.getRef());
-////				ChannelFuture cf = ei.getChannel().writeAndFlush(heartBeatResponse);
-////				if (cf.isDone() && !cf.isSuccess()) {
-////					Logger.DEBUG("failed to send message (HeartBeatResponse) to server");
-////				}
-//			}
-//		}
-//
-//	}
-//
-	@Override
-	public void sendHeartBeat() {
-		
-		System.out.println("Leader:  term -> "+NodeState.currentTerm);
-		for (Map.Entry<Integer, RemoteNode> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
-=======
 		System.out.println("Leader****** fn:sendAppendEntriesPacket*****");
 
-		for (Map.Entry<Integer, TopologyStat> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
->>>>>>> 35298aa28763a321c7131143ec06deb35a011acf
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(wm);
 				if (cf.isDone() && !cf.isSuccess()) {
@@ -264,14 +194,8 @@ public class Leader extends Service implements Runnable {
 	}
 	public int countActiveNodes() {
 		int count = 0;
-<<<<<<< HEAD
-		for (Map.Entry<Integer, RemoteNode> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
-
-			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {				
-=======
-		for (Map.Entry<Integer, TopologyStat> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {	
->>>>>>> 35298aa28763a321c7131143ec06deb35a011acf
 				count++;
 				
 			}
@@ -285,7 +209,7 @@ public class Leader extends Service implements Runnable {
 	@Override
 	public void sendHeartBeat() {
 		/*Sending HeartBeat to all Followers to inform them of the health of Leader */
-		for (Map.Entry<Integer, TopologyStat> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				WorkMessage workMessage = MessageBuilder.prepareHeartBeat();
 
