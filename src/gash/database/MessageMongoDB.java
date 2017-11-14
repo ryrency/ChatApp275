@@ -15,9 +15,9 @@ import raft.proto.Work.WorkMessage;
 
 
 
-public class MongoDB {
+public class MessageMongoDB {
 	
-	static MongoDB mongoDB = null;
+	static MessageMongoDB messageMongoDB = null;
 	MongoClient mongoClient = null;
 	MongoDatabase database = null;
 	MongoCollection<Document> dbCollection = null;
@@ -33,10 +33,11 @@ public class MongoDB {
 	final static String STATUS = "Status";
 	final static String TIMESTAMPONLATESTUPDATE = "TimeStampOnLatestUpdate";
 	final static String TERMID = "TermID";
+	final static String READ = "Read";
 	
 	
 
-	private MongoDB() {
+	private MessageMongoDB() {
 		// TODO Auto-generated constructor stub
 		try {
 		mongoClient = new MongoClient();
@@ -49,11 +50,11 @@ public class MongoDB {
 		}
 	}
 	
-	public static MongoDB getInstance() {
-		if(mongoDB == null) {
-			mongoDB = new MongoDB();
+	public static MessageMongoDB getInstance() {
+		if(messageMongoDB == null) {
+			messageMongoDB = new MessageMongoDB();
 		}
-		return mongoDB;
+		return messageMongoDB;
 	}
 	
 	public FindIterable<Document> get(String key) {
@@ -72,6 +73,7 @@ public class MongoDB {
 		 return result;
 		 
 	 }
+	
 	
 	public FindIterable<Document> getNewEntries(Date staleTimeStamp){
 		System.out.println("***MongoDB*** fn:getnewEntries***");
