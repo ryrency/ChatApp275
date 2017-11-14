@@ -105,6 +105,11 @@ public class NodeMonitor implements Runnable {
 				public void operationComplete(ChannelFuture future) throws Exception {
 					System.out.println("Error: Connection closed");
 					statMap.remove(ts.getRef());
+					try {
+						future.channel().close();
+					}catch(Exception ex) {
+						System.out.println("Exception" + ex.getMessage());
+					}
 					//scheduleConnect(ts, 1000);
 				}
 			});
