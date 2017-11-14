@@ -190,9 +190,11 @@ public class MessageBuilder {
         clientMsgBuild.setSender(clientMsg.getMessage().getSender());
         clientMsgBuild.setPayload(clientMsg.getMessage().getPayload());
         clientMsgBuild.setTo(clientMsg.getMessage().getTo());
+        clientMsgBuild.setTimestamp(timestamp);
         
         clientMsgBuild.setType(clientMsg.getMessage().getType().getNumber());
         clientMsgBuild.setStatus(clientMsg.getMessage().getStatus().getNumber());
+        appendEntries.setMessage(clientMsgBuild);
         
         appendEntriesPacket.setAppendEntries(appendEntries);
         
