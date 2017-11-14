@@ -71,7 +71,8 @@ public class NodeMonitor implements Runnable {
 					if (!ts.isActive() && ts.getChannel() == null) {
 						count++;
 						addAdjacentNode(ts);
-						while(ts.getChannel() == null) {
+						System.out.println("**Current state before wait - " + ts.isActive() +"," + ts.getChannel());
+						while(!ts.isActive() && ts.getChannel() == null) {
 							System.out.println("**Waiting for channel to come up for given node ID - **" + ts.getRef() );
 							Thread.sleep(10000);
 						}
