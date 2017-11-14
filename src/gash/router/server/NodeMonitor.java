@@ -22,18 +22,19 @@ import raft.proto.Work.WorkMessage;
 public class NodeMonitor implements Runnable {
 
 	static ConcurrentHashMap<Integer, TopologyStat> statMap = new ConcurrentHashMap<Integer, TopologyStat>();
-	static  EventLoopGroup group = null;
-	static Bootstrap b;
+//	EventLoopGroup group = null;
+//	static Bootstrap b;
 	
 	NodeConf nodeConf;
 	boolean forever = true;
 	private Timer timer_;
+	static int count = 0;
 
 	public static NodeMonitor nodeMonitor;
-	static {
-		 b = new Bootstrap();
-		 group = new NioEventLoopGroup();
-	}
+//	static {
+//		 b = new Bootstrap();
+//		 group = new NioEventLoopGroup();
+//	}
 
 	public static NodeMonitor getInstance(NodeConf nodeConf) {
 		if (nodeMonitor == null) {
@@ -68,6 +69,7 @@ public class NodeMonitor implements Runnable {
 					// ts.getPort() + "--"
 					// + ts.isActive() + "--" + ts.isExists());
 					if (!ts.isActive() && ts.getChannel() == null) {
+						count++;
 						addAdjacentNode(ts);
 						// System.out.println("size of hashmap after adding a new node *** " +
 						// statMap.size());
@@ -82,6 +84,9 @@ public class NodeMonitor implements Runnable {
 	public synchronized void addAdjacentNode(TopologyStat ts) {
 		
 		try {
+			System.out.println("Getting the count --> " + String.valueOf(count));
+			EventLoopGroup group = new NioEventLoopGroup();
+			Bootstrap b = new Bootstrap();
 			System.out
 					.println("Step 2: Add adjacent node --> " + ts.getRef() + "," + ts.getHost() + "," + ts.getPort());
 			
@@ -169,6 +174,7 @@ public class NodeMonitor implements Runnable {
 	}
 
 	public synchronized void setStatMap(TopologyStat ts) {
+		System.out.println("setStatMap --> " + statMap.size() + ts.getHost() + "," +ts.getPort());
 		statMap.put(ts.getRef(), ts);
 	}
 
