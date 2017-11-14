@@ -76,9 +76,9 @@ message Message {
 
     //a node should not have a value though this is not enforced
     required Type type = 1;
-    required string from = 2;
+    required string senderId = 2;
     required string payload = 3;
-    required string to = 4; //would be groupId if the type is GROUP or else userId if the type is SINGLE
+    required string receiverId = 4; //would be groupId if the type is GROUP or else userId if the type is SINGLE
     required string timestamp = 5;
     required Status status = 6;
     required ActionType action = 7;
