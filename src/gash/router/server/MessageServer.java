@@ -47,8 +47,6 @@ public class MessageServer {
 	protected RoutingConf conf;
 	protected NodeConf nodeconf;
 	protected boolean background = false;
-	
-	public NodeMonitor nodeMonitor;
 
 	//nodecf to do!!
 	public MessageServer(RoutingConf conf, NodeConf nodecf) {
@@ -65,9 +63,7 @@ public class MessageServer {
 		logger.info("Communication starting");
 		
 		//Code to implement connection to other server  
-		nodeMonitor = NodeMonitor.getInstance(nodeconf);
-		Thread t = new Thread(nodeMonitor);
-		t.start();
+		NodeMonitor.getInstance(nodeconf).start();
 		
 		//Add logic to start consumer server request e.g. 4167
 		comm =  new StartCommunication(nodeconf);

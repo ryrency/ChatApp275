@@ -60,20 +60,24 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage>{
 						candidate.handleResponseVote(wm);
 						
 				}
-			if (wm.hasAppendEntriesPacket())
-			{
+			if (wm.hasAppendEntriesPacket()) {
 				if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
 					foll.handleAppendEntries(wm);
 //                foll.getWorkQueue();
 			}
-			if(wm.hasInternalNodeAddPacket())
-			{
+			
+			if(wm.hasInternalNodeAddPacket()) {
 				if(wm.getInternalNodeAddPacket().hasInternalNodeAddRequest()) {
 					InternalNodeAddRequest internalNodeAddRequest = wm.getInternalNodeAddPacket().getInternalNodeAddRequest();
 					NodeMonitor nodeMonitor = NodeMonitor.getInstance();
-					nodeMonitor.setStatMap(new TopologyStat(internalNodeAddRequest.getId(), internalNodeAddRequest.getHost(), internalNodeAddRequest.getPort()));
+					nodeMonitor.addNode(new RemoteNode(internalNodeAddRequest.getId(), 
+							internalNodeAddRequest.getHost(), 
+							internalNodeAddRequest.getPort(), 
+							channel));
 				}
 			}
+			
+			
 			}catch(Exception ex) {
 				ex.printStackTrace();
 				

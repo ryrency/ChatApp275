@@ -7,7 +7,13 @@ import java.util.Enumeration;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
+import gash.router.client.CommConnection;
 import gash.router.container.NodeConf;
 import gash.router.server.raft.MessageBuilder;
 import io.netty.bootstrap.Bootstrap;
@@ -19,147 +25,100 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import raft.proto.Work.WorkMessage;
 
-public class NodeMonitor implements Runnable {
+public class NodeMonitor {
 
-	static ConcurrentHashMap<Integer, TopologyStat> statMap = new ConcurrentHashMap<Integer, TopologyStat>();
+	private static final long RECONNECT_DELAY = 1000;
+	
+	static ConcurrentHashMap<Integer, RemoteNode> statMap = new ConcurrentHashMap<Integer, RemoteNode>();
 //	EventLoopGroup group = null;
 //	static Bootstrap b;
 	
 	NodeConf nodeConf;
-	boolean forever = true;
-	private Timer timer_;
-	static int count = 0;
+	private EventLoopGroup workerGroup = new NioEventLoopGroup();
+	private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
 
-	public static NodeMonitor nodeMonitor;
-//	static {
-//		 b = new Bootstrap();
-//		 group = new NioEventLoopGroup();
-//	}
+	public static NodeMonitor instance;
 
 	public static NodeMonitor getInstance(NodeConf nodeConf) {
-		if (nodeMonitor == null) {
-			nodeMonitor = new NodeMonitor(nodeConf);
+		if (instance == null) {
+			instance = new NodeMonitor(nodeConf);
 		}
-		return nodeMonitor;
+		return instance;
 	}
 
 	public static NodeMonitor getInstance() {
-		return nodeMonitor;
+		return instance;
 	}
 
 	NodeMonitor(NodeConf nc) {
 		this.nodeConf = nc;
 		for (NodeConf.RoutingEntry re : nc.getRouting()) {
-			System.out
-					.println("Adding adjacent node channel -->" + re.getId() + "," + re.getHost() + "," + re.getPort());
-			TopologyStat ts = new TopologyStat(re.getId(), re.getHost(), re.getPort());
-			statMap.put(re.getId(), ts);
+			RemoteNode rm = new RemoteNode(re.getId(), re.getHost(), re.getPort());
+			addNode(rm);
 		}
 
 	}
 
-	@Override
-	public void run() {
+	public void start() {
 		// TODO Auto-generated method stub
-		while (forever) {
-			try {
-				// System.out.println("size of hashmap *** " + statMap.size());
-				for (TopologyStat ts : statMap.values()) {
-					// System.out.println("Step1: Adjacent Node status -->" + ts.getHost() + "--" +
-					// ts.getPort() + "--"
-					// + ts.isActive() + "--" + ts.isExists());
-					if (!ts.isActive() && ts.getChannel() == null) {
-						count++;
-						addAdjacentNode(ts);
-						System.out.println("**Current state before wait - " + ts.isActive() +"," + ts.getChannel());
-						while(!ts.isActive() && ts.getChannel() == null) {
-							System.out.println("**Waiting for channel to come up for given node ID - **" + ts.getRef() );
-							Thread.sleep(10000);
-						}
-						System.out.println("**Current state after wait - " + ts.isActive() +"," + ts.getChannel());
-						// System.out.println("size of hashmap after adding a new node *** " +
-						// statMap.size());
-					}
-				}
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+		for (RemoteNode rm : statMap.values()) {
+			scheduleConnect(rm, 0);
 		}
 	}
 
-	public synchronized void addAdjacentNode(TopologyStat ts) {
-		
+	public synchronized void connectWithNode(RemoteNode rm) {
 		try {
-			System.out.println("Getting the count --> " + String.valueOf(count));
-			EventLoopGroup group = new NioEventLoopGroup();
+			Logger.getGlobal().info("starting to connect with node --> " + rm.getHost() + ":" + rm.getPort());
 			Bootstrap b = new Bootstrap();
-			System.out
-					.println("Step 2: Add adjacent node --> " + ts.getRef() + "," + ts.getHost() + "," + ts.getPort());
-			
-			b.handler(new WorkHandler());
-			// b.group(group).channel(NioSocketChannel.class).handler(new WorkInit(state,
-			// false));
-			b.group(group).channel(NioSocketChannel.class).handler(new WorkInit());
+				
+			b.group(workerGroup).channel(NioSocketChannel.class).handler(new WorkInit());
 			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
 			b.option(ChannelOption.TCP_NODELAY, true);
 			b.option(ChannelOption.SO_KEEPALIVE, true);
 
-			ChannelFuture cf = b.connect(ts.getHost(), ts.getPort()).syncUninterruptibly();
-
-			ts.setChannel(cf.channel());
-			ts.setActive(true);
-			ts.setExists(true);
+			ChannelFuture cf = b.connect(rm.getHost(), rm.getPort()).syncUninterruptibly();
+			Logger.getGlobal().info("remote node status--> " + rm.getHost() + ":" + rm.getPort() + " - channel status: open: " + cf.channel().isOpen() + ", active: " + cf.channel().isActive() + ", isWritable: " + cf.channel().isWritable());
+				
+			rm.setChannel(cf.channel());
+				
+			cf.channel().closeFuture().addListener(new ChannelClosedListener(rm, this));
 			
-			System.out.println(
-					"Step 3: Adjacent Node status -->" + ts.getHost() + "--" + ts.getPort() + "--" + ts.isActive());
+			sendAddRequestToExistingNode(rm);
 			
-			cf.channel().closeFuture();
-			cf.channel().closeFuture().addListener(new ChannelFutureListener() {
-				@Override
-				public void operationComplete(ChannelFuture future) throws Exception {
-					System.out.println("Error: Connection closed");
-					statMap.remove(ts.getRef());
-					try {
-						future.channel().close();
-					}catch(Exception ex) {
-						System.out.println("Exception" + ex.getMessage());
-					}
-					//scheduleConnect(ts, 1000);
-				}
-			});
-			sendAddRequestToExistingNode(ts);
-			statMap.put(ts.getRef(), ts);
-			System.out.println("Printing hash map values");
-			printStatMap();
-
 		} catch (Exception ex) {
+			Logger.getGlobal().info("channel failed to connect with --> " + rm.getHost() + ":" + rm.getPort());
+			scheduleConnect(rm, RECONNECT_DELAY);
 			ex.printStackTrace();
-
 		} 
 	}
 
-	private synchronized void scheduleConnect(TopologyStat ts, long millis) {
-		System.out.println("Error: Connection closed");
-		timer_.schedule(new TimerTask() {
+	public synchronized void scheduleConnect(final RemoteNode rm, long millis) {
+		Logger.getGlobal().info("scheduling connect with " + rm.getHost() + ":" + rm.getPort() + " in " + millis + "ms");
+		executor.schedule(new Runnable() {
+			
 			@Override
 			public void run() {
-				addAdjacentNode(ts);
+				// TODO Auto-generated method stub
+				NodeMonitor.this.connectWithNode(rm);
+				
 			}
-		}, millis);
+		}, millis, TimeUnit.MILLISECONDS);
+	}
+	
+	public void resetConnection(RemoteNode rm) {
+		
 	}
 
-	public void sendAddRequestToExistingNode(TopologyStat ts) {
+	public void sendAddRequestToExistingNode(RemoteNode rm) {
 		try {
 			
 			String hostAddress = getLocalHostAddress();
 			
-			System.out.println("Generated request to add adjacent node" + nodeConf.getNodeId() + ","
-					+ hostAddress + "," + nodeConf.getWorkPort());
+			Logger.getGlobal().info("Generated request to add adjacent node: "  + rm.getHost() + ":" + rm.getPort());
 
-			WorkMessage workMessage = MessageBuilder.prepareInternalNodeAddRequest(nodeConf.getNodeId(),
-					hostAddress, nodeConf.getWorkPort());
+			WorkMessage workMessage = MessageBuilder.prepareInternalNodeAddRequest(nodeConf.getNodeId(), hostAddress, nodeConf.getWorkPort());
 
-			ChannelFuture cf = ts.getChannel().writeAndFlush(workMessage);
+			ChannelFuture cf = rm.getChannel().writeAndFlush(workMessage);
 
 			if (cf.isDone() && !cf.isSuccess()) {
 				System.out.println("Send failed: " + cf.cause());
@@ -175,13 +134,15 @@ public class NodeMonitor implements Runnable {
 
 	}
 
-	public ConcurrentHashMap<Integer, TopologyStat> getStatMap() {
+	public ConcurrentHashMap<Integer, RemoteNode> getStatMap() {
 		return statMap;
 	}
 
-	public synchronized void setStatMap(TopologyStat ts) {
-		System.out.println("setStatMap --> " + statMap.size() + ts.getHost() + "," +ts.getPort());
-		statMap.put(ts.getRef(), ts);
+	public synchronized void addNode(RemoteNode rm) {
+		Logger.getGlobal().info("adding new node in config " + rm.getHost() + ":" +rm.getPort());
+		if (!statMap.containsKey(rm.getRef()) || !statMap.get(rm.getRef()).isActive()) {
+			statMap.put(rm.getRef(), rm);
+		}
 	}
 
 	public NodeConf getNodeConf() {
@@ -190,15 +151,14 @@ public class NodeMonitor implements Runnable {
 
 	public void printStatMap() {
 		System.out.println("***Printing stat map****");
-		for (TopologyStat ts : statMap.values()) {
+		for (RemoteNode rm : statMap.values()) {
 
-			System.out.println("TOPO STat :" + ts.getHost() + "--" + ts.getPort() + "--" + ts.isActive() + "------"
-					+ ts.getChannel());
+			System.out.println("TOPO STat :" + rm.getHost() + "--" + rm.getPort() + "--" + rm.isActive() + "------"
+					+ rm.getChannel());
 		}
 	}
 	
 	public String getLocalHostAddress() {
-		System.out.println("***NodeMonitor*** fn:getLocalHostAddress***");
 		String hostAddress = null;
 		
 		try {
@@ -239,5 +199,24 @@ public class NodeMonitor implements Runnable {
 		return hostAddress;
 
 	}
+	
+	public static class ChannelClosedListener implements ChannelFutureListener {
+		RemoteNode rm;
+		NodeMonitor nm;
+
+		public ChannelClosedListener(RemoteNode stat, NodeMonitor monitor) {
+			rm = stat;
+			nm = monitor;
+		}
+
+		@Override
+		public void operationComplete(ChannelFuture future) throws Exception {
+			// we lost the connection or have shutdown.
+			Logger.getGlobal().info("channel closed with server: " + rm.getHost() + ":" + rm.getPort());
+			nm.scheduleConnect(rm, RECONNECT_DELAY);
+		}
+	}
+	
+	
 
 }

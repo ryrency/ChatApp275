@@ -8,7 +8,7 @@ import java.util.Map;
 //import deven.monitor.client.MonitorClient;
 //import deven.monitor.client.MonitorClientApp;
 import gash.router.server.NodeMonitor;
-import gash.router.server.TopologyStat;
+import gash.router.server.RemoteNode;
 import io.netty.channel.ChannelFuture;
 import raft.proto.AppendEntries.AppendEntriesPacket;
 //import logger.Logger;
@@ -80,7 +80,7 @@ public class Leader extends Service implements Runnable {
 		
 		System.out.println("Leader****** fn:sendAppendEntriesPacket*****");
 
-        for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
+        for (Map.Entry<Integer, RemoteNode> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
             if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {                    
                 ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(wm);
                 if (cf.isDone() && !cf.isSuccess()) {
@@ -146,7 +146,7 @@ public class Leader extends Service implements Runnable {
 	public void sendHeartBeat() {
 		
 		System.out.println("Leader:  term -> "+NodeState.currentTerm);
-		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				WorkMessage workMessage = MessageBuilder.prepareHeartBeat();
 				
@@ -180,7 +180,7 @@ public class Leader extends Service implements Runnable {
 ////	}
 	public int countActiveNodes() {
 		int count = 0;
-		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
 
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {				
 				count++;

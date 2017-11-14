@@ -13,7 +13,7 @@ import raft.proto.Vote.ResponseVote;
 import raft.proto.Work.WorkMessage;
 import gash.database.MongoDB;
 import gash.router.server.NodeMonitor;
-import gash.router.server.TopologyStat;
+import gash.router.server.RemoteNode;
 import gash.router.server.raft.TimerRoutine;
 import io.netty.channel.ChannelFuture;
 
@@ -110,7 +110,7 @@ public class Follower extends Service implements Runnable {
 	}
 	
 	public static void sendResponseVote(WorkMessage voteResponse, WorkMessage wm) {
-		for (Map.Entry<Integer, TopologyStat> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry :NodeMonitor.getInstance().getStatMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				if (entry.getValue().getRef() == wm.getVoteRPCPacket().getRequestVote().getCandidateId()) {
 					ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(voteResponse);

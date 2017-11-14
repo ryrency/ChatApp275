@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gash.router.server.NodeMonitor;
-import gash.router.server.TopologyStat;
+import gash.router.server.RemoteNode;
 
 //	import server.db.DatabaseService;
 //	import server.edges.EdgeInfo;
@@ -29,7 +29,7 @@ public class Candidate extends Service implements Runnable {
 	private int TotalResponses = 0;
 	NodeTimer timer = new NodeTimer();
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("CANDIDATE");
-	HashMap<Integer, TopologyStat> statMap = new HashMap<Integer, TopologyStat>();
+	HashMap<Integer, RemoteNode> statMap = new HashMap<Integer, RemoteNode>();
 
 	private Candidate() {
 		// TODO Auto-generated constructor stub
@@ -117,7 +117,7 @@ public class Candidate extends Service implements Runnable {
 //
 //		}
 //		voteRequest = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
-		for (TopologyStat ts : this.statMap.values()) {
+		for (RemoteNode ts : this.statMap.values()) {
 			if (ts.isActive() && ts.getChannel() != null) {
 				logger.info("Sent VoteRequestRPC to " + ts.getRef());
 				ChannelFuture cf = ts.getChannel().writeAndFlush(workMessage);

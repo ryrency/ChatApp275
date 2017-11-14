@@ -4,35 +4,33 @@ import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf.RoutingEntry;
 import io.netty.channel.Channel;
 
-public class TopologyStat {
+public class RemoteNode {
 	
 	private int ref;
 	private String host;
 	private int port;
 	boolean active;
 	Channel channel;
-	boolean exists; 
+	boolean exists;
 	 
 	 
-	 TopologyStat(int ref, String host, int port){
-		 this.ref = ref;
-		 this.host = host;
-		 this.port = port;
+	 RemoteNode(int ref, String host, int port){
+		 setRef(ref);
+		 setHost(host);
+		 setPort(port);
 	 }
-
-	public boolean isExists() {
-		return exists;
-	}
-	public void setExists(boolean exists) {
-		this.exists = exists;
-	}
+	 
+	 RemoteNode(int ref, String host, int port, Channel channel){
+		 setRef(ref);
+		 setHost(host);
+		 setPort(port);
+		 setChannel(channel);
+	 }
  
 	public boolean isActive() {
-		return active;
+		return channel != null && channel.isActive();
 	}
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+	
 	public Channel getChannel() {
 		return channel;
 	}
@@ -57,7 +55,5 @@ public class TopologyStat {
 	public void setPort(int port) {
 		this.port = port;
 	}
-	 
-	 
 
 }
