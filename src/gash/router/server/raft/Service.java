@@ -24,10 +24,15 @@ public class Service {
 	public void handleRequestVote(WorkMessage workMessage) {
 		// TODO Auto-generated method stub
 	}
-
+	
+	public void sendRequestVote() {
+		
+	}
+	
 	public void sendHeartBeat() {
 
 	}
+	
 
 	public void handleHeartBeat(WorkMessage wm) {
 

@@ -1,5 +1,6 @@
 package gash.router.server.raft;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import raft.proto.AppendEntries.AppendEntriesResponse.IsUpdated;
 //import raft.proto.Monitor.ClusterMonitor;
 import raft.proto.Work.WorkMessage;
 import routing.Pipe.Route;
+import routing.Pipe.User;
 import routing.Pipe.Message;
 //import server.db.DatabaseService;
 //import server.db.Record;
@@ -24,8 +26,14 @@ import routing.Pipe.Message;
 //import server.queue.ServerQueueService;
 import gash.database.*;
 
+import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.mongodb.DBCollection;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 
 public class Leader extends Service implements Runnable {
 
@@ -37,16 +45,25 @@ public class Leader extends Service implements Runnable {
 	int heartBeatTime = 1000;
 	private int totalResponses = 0;
 	private int yesResponses = 0;
+	
+	public static final int REGISTER = 0;
+	public static final int ACCESS = 1;
+	public static final int DELETE = 2;
+
+
+
 
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("LEADER");
-	MongoDB mongoDB;
+	MessageMongoDB mongoDB;
+	UserMongoDB userMongoDB;
 
 	/********************************************************************************/
 	/* Constructor 																  */
 	/********************************************************************************/
 	private Leader() {
 		// TODO Auto-generated constructor stub
-		mongoDB = MongoDB.getInstance();
+		mongoDB = MessageMongoDB.getInstance();
+		userMongoDB = UserMongoDB.getInstance();
 
 	}
 
@@ -88,6 +105,50 @@ public class Leader extends Service implements Runnable {
 		// Create connection to database
 	}
 
+	/********************************************************************************/
+	/* Handling Users - Registration, Access & Deletion                             */
+	/********************************************************************************/
+	
+	public void handleUsers(Route msg) {
+		User.Builder userPacket = User.newBuilder();
+
+		if (userPacket.getAction().getNumber() == REGISTER){
+			RegisterUser(msg);
+			/*New User .. so check for duplicate and if not, add entrry into DB*/
+		}
+		if (userPacket.getAction().getNumber() == ACCESS){
+			AccessUser(msg);
+		}
+		if (userPacket.getAction().getNumber() == DELETE){
+			
+		}
+	}
+	
+	/*----------------------------------------------------*/
+	/*Register New User into DB if does not exist already */
+	/*----------------------------------------------------*/
+	public void RegisterUser(Route msg) {
+		  FindIterable<Document> result =userMongoDB.get(msg.getUser().getUname());
+		  if (result == null) {
+			  userMongoDB.storeUserMessagetoDB(msg);
+		  }
+		  else {
+			  /*Rency - SEND ERROR MESSAGE TO USER*/
+		  }
+
+	}
+	
+	/*----------------------------------------------------*/
+	/*send all messages for the user                      */
+	/*----------------------------------------------------*/
+	public void AccessUser(Route msg) {
+		FindIterable<Document> result = userMongoDB.get(msg.getUser().getUname());			 
+	/*	while(result.iterator();
+			
+			
+		}*/
+	}
+	
 	/********************************************************************************/
 	/* Handling(replicating and storing) message sent by sender client              */
 	/* and send Append Entries to all Followers                                     */

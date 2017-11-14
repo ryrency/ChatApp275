@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import raft.proto.Vote.ResponseVote;
 import raft.proto.Work.WorkMessage;
-import gash.database.MongoDB;
+import gash.database.MessageMongoDB;
 import gash.router.server.NodeMonitor;
 import gash.router.server.RemoteNode;
 import gash.router.server.raft.TimerRoutine;
@@ -25,7 +25,7 @@ public class Follower extends Service implements Runnable {
 	TimerRoutine getTimer;
 	public static boolean voted = false;
 	public static int lastVotedTerm = 0;
-	MongoDB mongoDB;
+	MessageMongoDB mongoDB;
 
 	/********************************************************************************/
 	/* Constructor */
