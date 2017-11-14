@@ -8,8 +8,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 import gash.router.container.NodeConf;
 import gash.router.server.raft.MessageBuilder;
 import io.netty.bootstrap.Bootstrap;
@@ -24,13 +22,18 @@ import raft.proto.Work.WorkMessage;
 public class NodeMonitor implements Runnable {
 
 	static ConcurrentHashMap<Integer, TopologyStat> statMap = new ConcurrentHashMap<Integer, TopologyStat>();
-	static final EventLoopGroup group = new NioEventLoopGroup();;
+	static  EventLoopGroup group = null;
+	static Bootstrap b;
 	
 	NodeConf nodeConf;
 	boolean forever = true;
 	private Timer timer_;
 
 	public static NodeMonitor nodeMonitor;
+	static {
+		 b = new Bootstrap();
+		 group = new NioEventLoopGroup();
+	}
 
 	public static NodeMonitor getInstance(NodeConf nodeConf) {
 		if (nodeMonitor == null) {
@@ -81,7 +84,7 @@ public class NodeMonitor implements Runnable {
 		try {
 			System.out
 					.println("Step 2: Add adjacent node --> " + ts.getRef() + "," + ts.getHost() + "," + ts.getPort());
-			Bootstrap b = new Bootstrap();
+			
 			b.handler(new WorkHandler());
 			// b.group(group).channel(NioSocketChannel.class).handler(new WorkInit(state,
 			// false));
