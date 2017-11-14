@@ -6,13 +6,13 @@ from payload_pb2 import Message
 from encoder_decoder import LengthFieldProtoEncoder
 from multiprocessing import Process
 import urllib2
-from time import time
+import time
 # import datetime
 
 
 # This is currently port and IP oof Nginx server
-TCP_IP = 'http://10.0.0.2'
-TCP_PORT = 4267
+TCP_IP = 'http://10.0.0.10'
+TCP_PORT = 4467
 BUFFER_SIZE = 1024
 
 
@@ -80,7 +80,7 @@ class MessageClient:
         message.type = message.SINGLE
         message.sender = "123"
         message.to = "345"
-        message.payload = "Hi"
+        message.payload = "Rencyyyyyyyyyyyyyyyyy"
         ts = time.time();
         message.timestamp = str(ts)
         message.status = message.ACTIVE

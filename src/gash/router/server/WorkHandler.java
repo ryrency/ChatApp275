@@ -62,6 +62,8 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage>{
 				}
 			if (wm.hasAppendEntriesPacket())
 			{
+				if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
+					foll.handleAppendEntries(wm);
 //                foll.getWorkQueue();
 			}
 			if(wm.hasInternalNodeAddPacket())
