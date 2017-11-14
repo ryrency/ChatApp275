@@ -24,6 +24,9 @@ import gash.router.server.RemoteNode;
 //	
 public class Candidate extends Service implements Runnable {
 
+	/********************************************************************************/
+	/* Initialisations */
+	/********************************************************************************/
 	private static Candidate INSTANCE = null;
 	private int numberOfYESResponses;
 	private int TotalResponses = 0;
@@ -31,10 +34,16 @@ public class Candidate extends Service implements Runnable {
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("CANDIDATE");
 	HashMap<Integer, RemoteNode> statMap = new HashMap<Integer, RemoteNode>();
 
+	/********************************************************************************/
+	/* Constructor */
+	/********************************************************************************/
 	private Candidate() {
 		// TODO Auto-generated constructor stub
 	}
 
+	/********************************************************************************/
+	/* Get Instance of Candidate to ensure single instance!! */
+	/********************************************************************************/
 	public static Candidate getInstance() {
 		if (INSTANCE == null) {
 			INSTANCE = new Candidate();
@@ -42,6 +51,9 @@ public class Candidate extends Service implements Runnable {
 		return INSTANCE;
 	}
 
+	/********************************************************************************/
+	/* Starting Candidate Thread!! */
+	/********************************************************************************/
 	@Override
 	public void run() {
 		logger.info("Candiate started");
@@ -52,14 +64,30 @@ public class Candidate extends Service implements Runnable {
 		}
 	}
 
+	/********************************************************************************/
+	/* Election Process */
+	/********************************************************************************/
 	private void startElection() {
 		numberOfYESResponses = 0;
 		TotalResponses = 0;
 		NodeState.currentTerm++;
-		System.out.println("Candiate:StartElection Current term " + NodeState.currentTerm);
+
+		logger.info("Candiate:StartElection Current term " + NodeState.currentTerm);
+
+		/* Prepare Vote Request Packet to send to Followers(all other active nodes */
 		WorkMessage workMessage = MessageBuilder.prepareRequestVote();
-		handleRequestVote(workMessage);
-		
+		sendRequestVote();
+
+		/*--------------------------------------------------------------------------------------------------------------------*/
+		/*
+		 * Once request for votes are sent out, wait for a random time and once the
+		 * timer goes off check for the no of responses.
+		 */
+		/*
+		 * If, No of Yes Responses is more than 1/2 of the total responses, declare
+		 * yourself as a leader or else become follower
+		 */
+		/*--------------------------------------------------------------------------------------------------------------------*/
 		timer = new NodeTimer();
 		timer.schedule(new Runnable() {
 			@Override
@@ -89,12 +117,14 @@ public class Candidate extends Service implements Runnable {
 
 	}
 
+	/*------------------------------------------*/
+	/* Send Requests for Vote to all Active Nodes */
+	/*------------------------------------------*/
 	@Override
-	public void handleResponseVote(WorkMessage workMessage) {
-		TotalResponses++;
+	public void sendRequestVote() {
+		WorkMessage voteRequest = MessageBuilder.prepareRequestVote();
 
-		if (workMessage.getVoteRPCPacket().getResponseVote().getIsVoteGranted() == ResponseVote.IsVoteGranted.YES) {
-
+<<<<<<< HEAD
 			logger.info(
 					"Vote 'YES' is granted from Node Id " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
 			numberOfYESResponses++;
@@ -118,9 +148,12 @@ public class Candidate extends Service implements Runnable {
 //		}
 //		voteRequest = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
 		for (RemoteNode ts : this.statMap.values()) {
+=======
+		for (TopologyStat ts : this.statMap.values()) {
+>>>>>>> 35298aa28763a321c7131143ec06deb35a011acf
 			if (ts.isActive() && ts.getChannel() != null) {
 				logger.info("Sent VoteRequestRPC to " + ts.getRef());
-				ChannelFuture cf = ts.getChannel().writeAndFlush(workMessage);
+				ChannelFuture cf = ts.getChannel().writeAndFlush(voteRequest);
 				if (cf.isDone() && !cf.isSuccess()) {
 					logger.info("Vote request send failed!");
 				}
@@ -130,8 +163,32 @@ public class Candidate extends Service implements Runnable {
 		}
 	}
 
-	
+	/*------------------------------------------*/
+	/* Calculate Responses from other nodes */
+	/*------------------------------------------*/
 
+	@Override
+	public void handleResponseVote(WorkMessage workMessage) {
+		if (workMessage.getVoteRPCPacketOrBuilder().hasResponseVote()) {
+			TotalResponses++;
+
+			if (workMessage.getVoteRPCPacket().getResponseVote().getIsVoteGranted() == ResponseVote.IsVoteGranted.YES) {
+
+				logger.info("Vote 'YES' is granted from Node Id "
+						+ workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+				numberOfYESResponses++;
+
+			} else {
+				logger.info("Vote 'NO' is granted from Node Id "
+						+ workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+			}
+		} else
+			logger.info("Cannot vote as I am a CANDIDATE MYSELF");
+	}
+
+	/********************************************************************************/
+	/* Handle Hearbeat if recieved. It implies anpther leader may be active now!!   */
+	/********************************************************************************/
 	@Override
 	public void handleHeartBeat(WorkMessage wm) {
 		if (wm.getHeartBeatPacket().getHeartbeat().getTerm() >= NodeState.currentTerm) {
@@ -142,13 +199,18 @@ public class Candidate extends Service implements Runnable {
 			logger.info("Heartbeat recieved for prev term.. so ignored!!");
 
 	}
-
+	/********************************************************************************/
+	/* Starting Candidate Service 												  */
+	/********************************************************************************/
 	public void startService(Service service) {
 		running = Boolean.TRUE;
 		cthread = new Thread((Candidate) service);
 		cthread.start();
 	}
-
+	
+	/********************************************************************************/
+	/* Stopping Candidate Service 												  */
+	/********************************************************************************/
 	public void stopService() {
 		timer.cancel();
 		running = Boolean.FALSE;
