@@ -83,7 +83,6 @@ public class NodeMonitor {
 		} catch (Exception ex) {
 			Logger.getGlobal().info("channel failed to connect with --> " + rm.getHost() + ":" + rm.getPort());
 			scheduleConnect(rm, RECONNECT_DELAY);
-			ex.printStackTrace();
 		} 
 	}
 

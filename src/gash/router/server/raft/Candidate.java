@@ -10,8 +10,11 @@ import raft.proto.HeartBeat.HeartBeatPacket;
 import raft.proto.Vote.ResponseVote;
 import raft.proto.Vote.VotePacket;
 import raft.proto.Work.WorkMessage;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +26,16 @@ import gash.router.server.RemoteNode;
 //	import server.edges.EdgeInfo;
 //	
 public class Candidate extends Service implements Runnable {
+	
+	private ScheduledThreadPoolExecutor executor;
 
 	/********************************************************************************/
 	/* Initialisations */
 	/********************************************************************************/
 	private static Candidate INSTANCE = null;
-	private int numberOfYESResponses;
-	private int TotalResponses = 0;
+	private int yesResponses;
+	private int totalResponses = 0;
+	private int expectedResponses = 0;
 	NodeTimer timer = new NodeTimer();
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("CANDIDATE");
 
@@ -55,20 +61,18 @@ public class Candidate extends Service implements Runnable {
 	/********************************************************************************/
 	@Override
 	public void run() {
-		logger.info("Candiate started");
 		startElection();
-		while (running) {
-			while (NodeState.getInstance().getState() == NodeState.CANDIDATE) {
-			}
-		}
 	}
 
 	/********************************************************************************/
 	/* Election Process */
 	/********************************************************************************/
 	private void startElection() {
-		numberOfYESResponses = 0;
-		TotalResponses = 0;
+		logger.info("Candiate started");
+		
+		yesResponses = 0;
+		totalResponses = 0;
+		expectedResponses = 0;
 		NodeState.currentTerm++;
 
 		logger.info("Candiate:StartElection Current term " + NodeState.currentTerm);
@@ -87,32 +91,15 @@ public class Candidate extends Service implements Runnable {
 		 * yourself as a leader or else become follower
 		 */
 		/*--------------------------------------------------------------------------------------------------------------------*/
-		timer = new NodeTimer();
-		timer.schedule(new Runnable() {
-			@Override
-			public void run() {
-
-				if (isWinner()) {
-					logger.info(NodeMonitor.getInstance().getNodeConf().getNodeId() + " has won the election.");
-					NodeState.getInstance().setState(NodeState.LEADER);
-				} else {
-					logger.info(NodeMonitor.getInstance().getNodeConf().getNodeId() + " has lost the election.");
-					NodeState.getInstance().setState(NodeState.FOLLOWER);
-				}
-			}
-
-			private Boolean isWinner() {
-
-				logger.info("Total number of responses = " + TotalResponses);
-				logger.info("Total number of YES responses = " + numberOfYESResponses);
-
-				if ((numberOfYESResponses + 1) > (TotalResponses + 1) / 2) {
-					return Boolean.TRUE;
-				}
-				return Boolean.FALSE;
-
-			}
-		}, TimerRoutine.getFixedTimeout());
+		if (expectedResponses == 0) {
+			checkElectionResult();
+		} else {
+			executor.schedule(new Runnable() {
+				@Override
+				public void run() {
+						if (running) checkElectionResult();
+				}}, TimerRoutine.getFixedTimeout(), TimeUnit.MILLISECONDS);
+		}
 
 	}
 
@@ -127,9 +114,7 @@ public class Candidate extends Service implements Runnable {
 			if (ts.isActive() && ts.getChannel() != null) {
 				logger.info("Sent VoteRequestRPC to " + ts.getRef());
 				ChannelFuture cf = ts.getChannel().writeAndFlush(voteRequest);
-				if (cf.isDone() && !cf.isSuccess()) {
-					logger.info("Vote request send failed!");
-				}
+				expectedResponses++;
 			} else {
 				logger.info("Channel not active ,server  is down");
 			}
@@ -143,20 +128,43 @@ public class Candidate extends Service implements Runnable {
 	@Override
 	public void handleResponseVote(WorkMessage workMessage) {
 		if (workMessage.getVoteRPCPacketOrBuilder().hasResponseVote()) {
-			TotalResponses++;
+			totalResponses++;
 
 			if (workMessage.getVoteRPCPacket().getResponseVote().getIsVoteGranted() == ResponseVote.IsVoteGranted.YES) {
 
-				logger.info("Vote 'YES' is granted from Node Id "
-						+ workMessage.getVoteRPCPacket().getResponseVote().getTerm());
-				numberOfYESResponses++;
+				logger.info("Vote 'YES' is granted from Node Id " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+				yesResponses++;
 
 			} else {
-				logger.info("Vote 'NO' is granted from Node Id "
-						+ workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+				logger.info("Vote 'NO' is granted from Node Id " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
 			}
+			
+			if(totalResponses == expectedResponses) checkElectionResult(); 
+			
 		} else
 			logger.info("Cannot vote as I am a CANDIDATE MYSELF");
+	}
+	
+	private void checkElectionResult() {
+		if (isWinner()) {
+			logger.info(NodeMonitor.getInstance().getNodeConf().getNodeId() + " has won the election.");
+			NodeState.getInstance().setState(NodeState.LEADER);
+		} else {
+			logger.info(NodeMonitor.getInstance().getNodeConf().getNodeId() + " has lost the election.");
+			NodeState.getInstance().setState(NodeState.FOLLOWER);
+		}
+	}
+	
+	private boolean isWinner() {
+		logger.info("Total number of responses = " + totalResponses);
+		logger.info("Expected number of responses = " + expectedResponses);
+		logger.info("Total number of YES responses = " + yesResponses);
+
+		if (yesResponses > expectedResponses/2 || expectedResponses == 0) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	/********************************************************************************/
@@ -165,8 +173,7 @@ public class Candidate extends Service implements Runnable {
 	@Override
 	public void handleHeartBeat(WorkMessage wm) {
 		if (wm.getHeartBeatPacket().getHeartbeat().getTerm() >= NodeState.currentTerm) {
-			logger.info(
-					"HeartbeatPacket received from leader :" + wm.getHeartBeatPacket().getHeartbeat().getLeaderId());
+			logger.info("HeartbeatPacket received from leader :" + wm.getHeartBeatPacket().getHeartbeat().getLeaderId());
 			NodeState.getInstance().setState(NodeState.FOLLOWER);
 		} else
 			logger.info("Heartbeat recieved for prev term.. so ignored!!");
@@ -177,17 +184,16 @@ public class Candidate extends Service implements Runnable {
 	/********************************************************************************/
 	public void startService(Service service) {
 		running = Boolean.TRUE;
-		cthread = new Thread((Candidate) service);
-		cthread.start();
+		executor = new ScheduledThreadPoolExecutor(1);
+		executor.submit(this);
 	}
 	
 	/********************************************************************************/
 	/* Stopping Candidate Service 												  */
 	/********************************************************************************/
 	public void stopService() {
-		timer.cancel();
 		running = Boolean.FALSE;
-
+		executor.shutdownNow();
 	}
 
 }

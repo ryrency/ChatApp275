@@ -21,7 +21,7 @@ public class MessageBuilder {
 
 		RequestVote.Builder requestVote = RequestVote.newBuilder();
 		
-		requestVote.setTerm(NodeMonitor.getInstance().getNodeConf().getNodeId());
+		//requestVote.setTerm(NodeMonitor.getInstance().getNodeConf().getNodeId());
 		requestVote.setCandidateId(NodeMonitor.getInstance().getNodeConf().getNodeId());
 		requestVote.setTerm(NodeState.currentTerm);
 		System.out.println("MssageBuilder: Current term "+NodeState.currentTerm);
@@ -89,7 +89,7 @@ public class MessageBuilder {
 		voteRPCPacket.setUnixTimestamp(TimerRoutine.getCurrentUnixTimeStamp());
 
 		ResponseVote.Builder responseVoteRPC = ResponseVote.newBuilder();
-		responseVoteRPC.setTerm(NodeMonitor.getInstance().getNodeConf().getNodeId());
+		responseVoteRPC.setTerm(NodeState.currentTerm);
 		responseVoteRPC.setIsVoteGranted(decision);
 
 		voteRPCPacket.setResponseVote(responseVoteRPC);

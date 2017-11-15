@@ -23,7 +23,6 @@ public class Follower extends Service implements Runnable {
 	Thread followerThread = null;
 	private static Follower INSTANCE = null;
 	TimerRoutine getTimer;
-	public static boolean voted = false;
 	public static int lastVotedTerm = 0;
 	MessageMongoDB mongoDB;
 
@@ -72,10 +71,6 @@ public class Follower extends Service implements Runnable {
 	/********************************************************************************/
 
 	private void initFollower() {
-
-		if (NodeState.currentTerm > lastVotedTerm)
-			voted = false;
-
 		timer = new NodeTimer();
 
 		timer.schedule(new Runnable() {
@@ -94,21 +89,17 @@ public class Follower extends Service implements Runnable {
 	@Override
 	public void handleRequestVote(WorkMessage workMessage) {
 		WorkMessage voteResponse;
-
-		if (workMessage.getVoteRPCPacket().getRequestVote().getTimeStampOnLatestUpdate() < NodeState
-				.getTimeStampOnLatestUpdate()) {
-			voteResponse = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
-
-		}
-		System.out.println("Follower : wm term: " + workMessage.getVoteRPCPacket().getResponseVote().getTerm());
+		System.out.println("Follower : wm term: " + workMessage.getVoteRPCPacket().getRequestVote().getTerm());
 		System.out.println("Follower:  term : " + NodeState.currentTerm);
-		if (workMessage.getVoteRPCPacket().getResponseVote().getTerm() >= NodeState.currentTerm && voted) {
-			lastVotedTerm = NodeState.currentTerm;
-			voted = true;
+	
+		int newTerm = workMessage.getVoteRPCPacket().getRequestVote().getTerm();
+		
+		if (newTerm > NodeState.currentTerm && newTerm > lastVotedTerm ) {
+			lastVotedTerm = newTerm;
 			voteResponse = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.YES);
 		} else
 			voteResponse = MessageBuilder.prepareResponseVote(ResponseVote.IsVoteGranted.NO);
-
+		
 		sendResponseVote(voteResponse, workMessage);
 
 	}
@@ -119,7 +110,7 @@ public class Follower extends Service implements Runnable {
 				if (entry.getValue().getRef() == wm.getVoteRPCPacket().getRequestVote().getCandidateId()) {
 					ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(voteResponse);
 					if (cf.isDone() && !cf.isSuccess()) {
-						System.out.println("Fail to send heart beat message to other server");
+						System.out.println("Fail to send vote response message to candidate");
 					}
 				}
 			}
@@ -144,10 +135,10 @@ public class Follower extends Service implements Runnable {
 		 * the heartbeat
 		 */
 		/* is from incorrect leader and hence ignore */
-		if (NodeState.currentTerm > wm.getHeartBeatPacket().getHeartbeat().getTerm())
+		if (NodeState.currentTerm > wm.getHeartBeatPacket().getHeartbeat().getTerm()) {
 			logger.info("Invalid Heartbeat from previous Invalid Term recieved");
-		else { /* Valid Hearbeat and Valid term so reschedule the timer */
-			logger.info("Heartbeat recieved");
+		} else { /* Valid Hearbeat and Valid term so reschedule the timer */
+			logger.info("Heartbeat recieved from  Term" + wm.getHeartBeatPacket().getHeartbeat().getTerm());
 			timer.reschedule(getTimer.getElectionTimeout());
 		}
 	}

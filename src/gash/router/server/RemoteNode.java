@@ -28,7 +28,7 @@ public class RemoteNode {
 	 }
  
 	public boolean isActive() {
-		return channel != null && channel.isActive();
+		return channel != null && channel.isActive() && channel.isWritable();
 	}
 	
 	public Channel getChannel() {
