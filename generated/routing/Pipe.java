@@ -4554,18 +4554,18 @@ public final class Pipe {
     routing.Pipe.Message.Type getType();
 
     /**
-     * <code>required string from = 2;</code>
+     * <code>required string senderId = 2;</code>
      */
-    boolean hasFrom();
+    boolean hasSenderId();
     /**
-     * <code>required string from = 2;</code>
+     * <code>required string senderId = 2;</code>
      */
-    java.lang.String getFrom();
+    java.lang.String getSenderId();
     /**
-     * <code>required string from = 2;</code>
+     * <code>required string senderId = 2;</code>
      */
     com.google.protobuf.ByteString
-        getFromBytes();
+        getSenderIdBytes();
 
     /**
      * <code>required string payload = 3;</code>
@@ -4586,26 +4586,26 @@ public final class Pipe {
      *would be groupId if the type is GROUP or else userId if the type is SINGLE
      * </pre>
      *
-     * <code>required string to = 4;</code>
+     * <code>required string receiverId = 4;</code>
      */
-    boolean hasTo();
+    boolean hasReceiverId();
     /**
      * <pre>
      *would be groupId if the type is GROUP or else userId if the type is SINGLE
      * </pre>
      *
-     * <code>required string to = 4;</code>
+     * <code>required string receiverId = 4;</code>
      */
-    java.lang.String getTo();
+    java.lang.String getReceiverId();
     /**
      * <pre>
      *would be groupId if the type is GROUP or else userId if the type is SINGLE
      * </pre>
      *
-     * <code>required string to = 4;</code>
+     * <code>required string receiverId = 4;</code>
      */
     com.google.protobuf.ByteString
-        getToBytes();
+        getReceiverIdBytes();
 
     /**
      * <code>required string timestamp = 5;</code>
@@ -4653,9 +4653,9 @@ public final class Pipe {
     }
     private Message() {
       type_ = 0;
-      from_ = "";
+      senderId_ = "";
       payload_ = "";
-      to_ = "";
+      receiverId_ = "";
       timestamp_ = "";
       status_ = 0;
       action_ = 0;
@@ -4703,7 +4703,7 @@ public final class Pipe {
             case 18: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              from_ = bs;
+              senderId_ = bs;
               break;
             }
             case 26: {
@@ -4715,7 +4715,7 @@ public final class Pipe {
             case 34: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000008;
-              to_ = bs;
+              receiverId_ = bs;
               break;
             }
             case 42: {
@@ -5074,19 +5074,19 @@ public final class Pipe {
       return result == null ? routing.Pipe.Message.Type.SINGLE : result;
     }
 
-    public static final int FROM_FIELD_NUMBER = 2;
-    private volatile java.lang.Object from_;
+    public static final int SENDERID_FIELD_NUMBER = 2;
+    private volatile java.lang.Object senderId_;
     /**
-     * <code>required string from = 2;</code>
+     * <code>required string senderId = 2;</code>
      */
-    public boolean hasFrom() {
+    public boolean hasSenderId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required string from = 2;</code>
+     * <code>required string senderId = 2;</code>
      */
-    public java.lang.String getFrom() {
-      java.lang.Object ref = from_;
+    public java.lang.String getSenderId() {
+      java.lang.Object ref = senderId_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -5094,22 +5094,22 @@ public final class Pipe {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          from_ = s;
+          senderId_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>required string from = 2;</code>
+     * <code>required string senderId = 2;</code>
      */
     public com.google.protobuf.ByteString
-        getFromBytes() {
-      java.lang.Object ref = from_;
+        getSenderIdBytes() {
+      java.lang.Object ref = senderId_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        from_ = b;
+        senderId_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -5158,16 +5158,16 @@ public final class Pipe {
       }
     }
 
-    public static final int TO_FIELD_NUMBER = 4;
-    private volatile java.lang.Object to_;
+    public static final int RECEIVERID_FIELD_NUMBER = 4;
+    private volatile java.lang.Object receiverId_;
     /**
      * <pre>
      *would be groupId if the type is GROUP or else userId if the type is SINGLE
      * </pre>
      *
-     * <code>required string to = 4;</code>
+     * <code>required string receiverId = 4;</code>
      */
-    public boolean hasTo() {
+    public boolean hasReceiverId() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
@@ -5175,10 +5175,10 @@ public final class Pipe {
      *would be groupId if the type is GROUP or else userId if the type is SINGLE
      * </pre>
      *
-     * <code>required string to = 4;</code>
+     * <code>required string receiverId = 4;</code>
      */
-    public java.lang.String getTo() {
-      java.lang.Object ref = to_;
+    public java.lang.String getReceiverId() {
+      java.lang.Object ref = receiverId_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -5186,7 +5186,7 @@ public final class Pipe {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          to_ = s;
+          receiverId_ = s;
         }
         return s;
       }
@@ -5196,16 +5196,16 @@ public final class Pipe {
      *would be groupId if the type is GROUP or else userId if the type is SINGLE
      * </pre>
      *
-     * <code>required string to = 4;</code>
+     * <code>required string receiverId = 4;</code>
      */
     public com.google.protobuf.ByteString
-        getToBytes() {
-      java.lang.Object ref = to_;
+        getReceiverIdBytes() {
+      java.lang.Object ref = receiverId_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        to_ = b;
+        receiverId_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -5296,7 +5296,7 @@ public final class Pipe {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasFrom()) {
+      if (!hasSenderId()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -5304,7 +5304,7 @@ public final class Pipe {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasTo()) {
+      if (!hasReceiverId()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -5330,13 +5330,13 @@ public final class Pipe {
         output.writeEnum(1, type_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, from_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, senderId_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 3, payload_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, to_);
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, receiverId_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 5, timestamp_);
@@ -5360,13 +5360,13 @@ public final class Pipe {
           .computeEnumSize(1, type_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, from_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, senderId_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, payload_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, to_);
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, receiverId_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, timestamp_);
@@ -5399,20 +5399,20 @@ public final class Pipe {
       if (hasType()) {
         result = result && type_ == other.type_;
       }
-      result = result && (hasFrom() == other.hasFrom());
-      if (hasFrom()) {
-        result = result && getFrom()
-            .equals(other.getFrom());
+      result = result && (hasSenderId() == other.hasSenderId());
+      if (hasSenderId()) {
+        result = result && getSenderId()
+            .equals(other.getSenderId());
       }
       result = result && (hasPayload() == other.hasPayload());
       if (hasPayload()) {
         result = result && getPayload()
             .equals(other.getPayload());
       }
-      result = result && (hasTo() == other.hasTo());
-      if (hasTo()) {
-        result = result && getTo()
-            .equals(other.getTo());
+      result = result && (hasReceiverId() == other.hasReceiverId());
+      if (hasReceiverId()) {
+        result = result && getReceiverId()
+            .equals(other.getReceiverId());
       }
       result = result && (hasTimestamp() == other.hasTimestamp());
       if (hasTimestamp()) {
@@ -5442,17 +5442,17 @@ public final class Pipe {
         hash = (37 * hash) + TYPE_FIELD_NUMBER;
         hash = (53 * hash) + type_;
       }
-      if (hasFrom()) {
-        hash = (37 * hash) + FROM_FIELD_NUMBER;
-        hash = (53 * hash) + getFrom().hashCode();
+      if (hasSenderId()) {
+        hash = (37 * hash) + SENDERID_FIELD_NUMBER;
+        hash = (53 * hash) + getSenderId().hashCode();
       }
       if (hasPayload()) {
         hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
         hash = (53 * hash) + getPayload().hashCode();
       }
-      if (hasTo()) {
-        hash = (37 * hash) + TO_FIELD_NUMBER;
-        hash = (53 * hash) + getTo().hashCode();
+      if (hasReceiverId()) {
+        hash = (37 * hash) + RECEIVERID_FIELD_NUMBER;
+        hash = (53 * hash) + getReceiverId().hashCode();
       }
       if (hasTimestamp()) {
         hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
@@ -5597,11 +5597,11 @@ public final class Pipe {
         super.clear();
         type_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        from_ = "";
+        senderId_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
         payload_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
-        to_ = "";
+        receiverId_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
         timestamp_ = "";
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -5640,7 +5640,7 @@ public final class Pipe {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.from_ = from_;
+        result.senderId_ = senderId_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
@@ -5648,7 +5648,7 @@ public final class Pipe {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.to_ = to_;
+        result.receiverId_ = receiverId_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
@@ -5706,9 +5706,9 @@ public final class Pipe {
         if (other.hasType()) {
           setType(other.getType());
         }
-        if (other.hasFrom()) {
+        if (other.hasSenderId()) {
           bitField0_ |= 0x00000002;
-          from_ = other.from_;
+          senderId_ = other.senderId_;
           onChanged();
         }
         if (other.hasPayload()) {
@@ -5716,9 +5716,9 @@ public final class Pipe {
           payload_ = other.payload_;
           onChanged();
         }
-        if (other.hasTo()) {
+        if (other.hasReceiverId()) {
           bitField0_ |= 0x00000008;
-          to_ = other.to_;
+          receiverId_ = other.receiverId_;
           onChanged();
         }
         if (other.hasTimestamp()) {
@@ -5741,13 +5741,13 @@ public final class Pipe {
         if (!hasType()) {
           return false;
         }
-        if (!hasFrom()) {
+        if (!hasSenderId()) {
           return false;
         }
         if (!hasPayload()) {
           return false;
         }
-        if (!hasTo()) {
+        if (!hasReceiverId()) {
           return false;
         }
         if (!hasTimestamp()) {
@@ -5833,24 +5833,24 @@ public final class Pipe {
         return this;
       }
 
-      private java.lang.Object from_ = "";
+      private java.lang.Object senderId_ = "";
       /**
-       * <code>required string from = 2;</code>
+       * <code>required string senderId = 2;</code>
        */
-      public boolean hasFrom() {
+      public boolean hasSenderId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string from = 2;</code>
+       * <code>required string senderId = 2;</code>
        */
-      public java.lang.String getFrom() {
-        java.lang.Object ref = from_;
+      public java.lang.String getSenderId() {
+        java.lang.Object ref = senderId_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
-            from_ = s;
+            senderId_ = s;
           }
           return s;
         } else {
@@ -5858,53 +5858,53 @@ public final class Pipe {
         }
       }
       /**
-       * <code>required string from = 2;</code>
+       * <code>required string senderId = 2;</code>
        */
       public com.google.protobuf.ByteString
-          getFromBytes() {
-        java.lang.Object ref = from_;
+          getSenderIdBytes() {
+        java.lang.Object ref = senderId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          from_ = b;
+          senderId_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>required string from = 2;</code>
+       * <code>required string senderId = 2;</code>
        */
-      public Builder setFrom(
+      public Builder setSenderId(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000002;
-        from_ = value;
+        senderId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>required string from = 2;</code>
+       * <code>required string senderId = 2;</code>
        */
-      public Builder clearFrom() {
+      public Builder clearSenderId() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        from_ = getDefaultInstance().getFrom();
+        senderId_ = getDefaultInstance().getSenderId();
         onChanged();
         return this;
       }
       /**
-       * <code>required string from = 2;</code>
+       * <code>required string senderId = 2;</code>
        */
-      public Builder setFromBytes(
+      public Builder setSenderIdBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000002;
-        from_ = value;
+        senderId_ = value;
         onChanged();
         return this;
       }
@@ -5985,15 +5985,15 @@ public final class Pipe {
         return this;
       }
 
-      private java.lang.Object to_ = "";
+      private java.lang.Object receiverId_ = "";
       /**
        * <pre>
        *would be groupId if the type is GROUP or else userId if the type is SINGLE
        * </pre>
        *
-       * <code>required string to = 4;</code>
+       * <code>required string receiverId = 4;</code>
        */
-      public boolean hasTo() {
+      public boolean hasReceiverId() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
@@ -6001,16 +6001,16 @@ public final class Pipe {
        *would be groupId if the type is GROUP or else userId if the type is SINGLE
        * </pre>
        *
-       * <code>required string to = 4;</code>
+       * <code>required string receiverId = 4;</code>
        */
-      public java.lang.String getTo() {
-        java.lang.Object ref = to_;
+      public java.lang.String getReceiverId() {
+        java.lang.Object ref = receiverId_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
-            to_ = s;
+            receiverId_ = s;
           }
           return s;
         } else {
@@ -6022,16 +6022,16 @@ public final class Pipe {
        *would be groupId if the type is GROUP or else userId if the type is SINGLE
        * </pre>
        *
-       * <code>required string to = 4;</code>
+       * <code>required string receiverId = 4;</code>
        */
       public com.google.protobuf.ByteString
-          getToBytes() {
-        java.lang.Object ref = to_;
+          getReceiverIdBytes() {
+        java.lang.Object ref = receiverId_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          to_ = b;
+          receiverId_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
@@ -6042,15 +6042,15 @@ public final class Pipe {
        *would be groupId if the type is GROUP or else userId if the type is SINGLE
        * </pre>
        *
-       * <code>required string to = 4;</code>
+       * <code>required string receiverId = 4;</code>
        */
-      public Builder setTo(
+      public Builder setReceiverId(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000008;
-        to_ = value;
+        receiverId_ = value;
         onChanged();
         return this;
       }
@@ -6059,11 +6059,11 @@ public final class Pipe {
        *would be groupId if the type is GROUP or else userId if the type is SINGLE
        * </pre>
        *
-       * <code>required string to = 4;</code>
+       * <code>required string receiverId = 4;</code>
        */
-      public Builder clearTo() {
+      public Builder clearReceiverId() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        to_ = getDefaultInstance().getTo();
+        receiverId_ = getDefaultInstance().getReceiverId();
         onChanged();
         return this;
       }
@@ -6072,15 +6072,15 @@ public final class Pipe {
        *would be groupId if the type is GROUP or else userId if the type is SINGLE
        * </pre>
        *
-       * <code>required string to = 4;</code>
+       * <code>required string receiverId = 4;</code>
        */
-      public Builder setToBytes(
+      public Builder setReceiverIdBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000008;
-        to_ = value;
+        receiverId_ = value;
         onChanged();
         return this;
       }
@@ -10548,29 +10548,29 @@ public final class Pipe {
       "ACCESS\020\001\022\n\n\006DELETE\020\002\"l\n\005Group\022\r\n\005gname\030\001" +
       " \002(\t\022\013\n\003gid\030\002 \002(\003\022!\n\006action\030\003 \002(\0162\021.Grou" +
       "p.ActionType\"$\n\nActionType\022\n\n\006CREATE\020\000\022\n" +
-      "\n\006DELETE\020\001\"\232\002\n\007Message\022\033\n\004type\030\001 \002(\0162\r.M" +
-      "essage.Type\022\014\n\004from\030\002 \002(\t\022\017\n\007payload\030\003 \002",
-      "(\t\022\n\n\002to\030\004 \002(\t\022\021\n\ttimestamp\030\005 \002(\t\022\037\n\006sta" +
-      "tus\030\006 \002(\0162\017.Message.Status\022#\n\006action\030\007 \002" +
-      "(\0162\023.Message.ActionType\".\n\nActionType\022\010\n" +
-      "\004POST\020\000\022\n\n\006UPDATE\020\001\022\n\n\006DELETE\020\002\"\035\n\004Type\022" +
-      "\n\n\006SINGLE\020\000\022\t\n\005GROUP\020\001\"\037\n\006Status\022\n\n\006ACTI" +
-      "VE\020\000\022\t\n\005STALE\020\001\"_\n\017MessagesRequest\022#\n\004ty" +
-      "pe\030\001 \002(\0162\025.MessagesRequest.Type\022\n\n\002id\030\002 " +
-      "\002(\t\"\033\n\004Type\022\010\n\004USER\020\000\022\t\n\005GROUP\020\001\"}\n\020Mess" +
-      "agesResponse\022$\n\004type\030\001 \002(\0162\026.MessagesRes" +
-      "ponse.Type\022\n\n\002id\030\002 \002(\t\022\032\n\010messages\030\003 \003(\013",
-      "2\010.Message\"\033\n\004Type\022\010\n\004USER\020\000\022\t\n\005GROUP\020\001\"" +
-      "\331\002\n\026NetworkDiscoveryPacket\022*\n\004mode\030\001 \002(\016" +
-      "2\034.NetworkDiscoveryPacket.Mode\022D\n\006sender" +
-      "\030\002 \002(\0162\036.NetworkDiscoveryPacket.Sender:\024" +
-      "INTERNAL_SERVER_NODE\022\020\n\010groupTag\030\003 \001(\t\022\016" +
-      "\n\006nodeId\030\004 \001(\t\022\023\n\013nodeAddress\030\005 \002(\t\022\020\n\010n" +
-      "odePort\030\006 \002(\003\022\016\n\006secret\030\007 \002(\t\"Q\n\006Sender\022" +
-      "\030\n\024EXTERNAL_SERVER_NODE\020\000\022\030\n\024INTERNAL_SE" +
-      "RVER_NODE\020\001\022\023\n\017END_USER_CLIENT\020\002\"!\n\004Mode" +
-      "\022\013\n\007REQUEST\020\000\022\014\n\010RESPONSE\020\001\"\026\n\006Header\022\014\n",
-      "\004type\030\001 \002(\tB\013\n\007routingH\001"
+      "\n\006DELETE\020\001\"\246\002\n\007Message\022\033\n\004type\030\001 \002(\0162\r.M" +
+      "essage.Type\022\020\n\010senderId\030\002 \002(\t\022\017\n\007payload",
+      "\030\003 \002(\t\022\022\n\nreceiverId\030\004 \002(\t\022\021\n\ttimestamp\030" +
+      "\005 \002(\t\022\037\n\006status\030\006 \002(\0162\017.Message.Status\022#" +
+      "\n\006action\030\007 \002(\0162\023.Message.ActionType\".\n\nA" +
+      "ctionType\022\010\n\004POST\020\000\022\n\n\006UPDATE\020\001\022\n\n\006DELET" +
+      "E\020\002\"\035\n\004Type\022\n\n\006SINGLE\020\000\022\t\n\005GROUP\020\001\"\037\n\006St" +
+      "atus\022\n\n\006ACTIVE\020\000\022\t\n\005STALE\020\001\"_\n\017MessagesR" +
+      "equest\022#\n\004type\030\001 \002(\0162\025.MessagesRequest.T" +
+      "ype\022\n\n\002id\030\002 \002(\t\"\033\n\004Type\022\010\n\004USER\020\000\022\t\n\005GRO" +
+      "UP\020\001\"}\n\020MessagesResponse\022$\n\004type\030\001 \002(\0162\026" +
+      ".MessagesResponse.Type\022\n\n\002id\030\002 \002(\t\022\032\n\010me",
+      "ssages\030\003 \003(\0132\010.Message\"\033\n\004Type\022\010\n\004USER\020\000" +
+      "\022\t\n\005GROUP\020\001\"\331\002\n\026NetworkDiscoveryPacket\022*" +
+      "\n\004mode\030\001 \002(\0162\034.NetworkDiscoveryPacket.Mo" +
+      "de\022D\n\006sender\030\002 \002(\0162\036.NetworkDiscoveryPac" +
+      "ket.Sender:\024INTERNAL_SERVER_NODE\022\020\n\010grou" +
+      "pTag\030\003 \001(\t\022\016\n\006nodeId\030\004 \001(\t\022\023\n\013nodeAddres" +
+      "s\030\005 \002(\t\022\020\n\010nodePort\030\006 \002(\003\022\016\n\006secret\030\007 \002(" +
+      "\t\"Q\n\006Sender\022\030\n\024EXTERNAL_SERVER_NODE\020\000\022\030\n" +
+      "\024INTERNAL_SERVER_NODE\020\001\022\023\n\017END_USER_CLIE" +
+      "NT\020\002\"!\n\004Mode\022\013\n\007REQUEST\020\000\022\014\n\010RESPONSE\020\001\"",
+      "\026\n\006Header\022\014\n\004type\030\001 \002(\tB\013\n\007routingH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -10607,7 +10607,7 @@ public final class Pipe {
     internal_static_Message_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Message_descriptor,
-        new java.lang.String[] { "Type", "From", "Payload", "To", "Timestamp", "Status", "Action", });
+        new java.lang.String[] { "Type", "SenderId", "Payload", "ReceiverId", "Timestamp", "Status", "Action", });
     internal_static_MessagesRequest_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_MessagesRequest_fieldAccessorTable = new
