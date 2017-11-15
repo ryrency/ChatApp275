@@ -2,6 +2,7 @@ package gash.router.server.raft;
 
 import java.sql.Timestamp;
 
+import gash.router.container.RoutingConf;
 import gash.router.server.NodeMonitor;
 import gash.router.server.raft.Follower;
 import org.slf4j.Logger;
@@ -24,6 +25,8 @@ public class NodeState {
 	private static Long timeStampOnLatestUpdate = null;
 
 	// private static long noTaskProcessed = 0;
+	
+	public static RoutingConf conf;
 
 	public static Long getTimeStampOnLatestUpdate() {
 		if (timeStampOnLatestUpdate == null) {
@@ -101,5 +104,13 @@ public class NodeState {
 
 	public synchronized int getState() {
 		return state;
+	}
+	
+	public static RoutingConf getConf() {
+		return conf;
+	}
+
+	public static void setConf(RoutingConf conf) {
+		NodeState.conf = conf;
 	}
 }

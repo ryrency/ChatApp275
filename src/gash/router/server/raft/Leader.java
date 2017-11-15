@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import gash.router.discovery.DiscoveryServer;
 //import common.ConfigurationReader;
 //import deven.monitor.client.MonitorClient;
 //import deven.monitor.client.MonitorClientApp;
@@ -64,6 +65,9 @@ public class Leader extends Service implements Runnable {
 		// TODO Auto-generated constructor stub
 		mongoDB = MessageMongoDB.getInstance();
 		userMongoDB = UserMongoDB.getInstance();
+		DiscoveryServer udpDiscoveryServer = new DiscoveryServer(NodeState.getConf());
+		Thread discoveryThread = new Thread(udpDiscoveryServer);
+		discoveryThread.start();
 
 	}
 

@@ -152,7 +152,7 @@ public class NodeMonitor {
 		}
 	}
 	
-	public String getLocalHostAddress() {
+	public  static String getLocalHostAddress() {
 		String hostAddress = null;
 		
 		try {

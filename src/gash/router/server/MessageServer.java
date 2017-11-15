@@ -140,6 +140,7 @@ public class MessageServer {
 				}
 			}
 		}
+		NodeState.setConf(conf);
 		NodeState.getInstance().setState(NodeState.FOLLOWER);	
 	}
 

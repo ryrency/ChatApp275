@@ -1,6 +1,8 @@
 package gash.router.server.raft;
 
 import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
+
+import gash.router.container.RoutingConf;
 import gash.router.server.NodeMonitor;
 import raft.proto.AppendEntries;
 import raft.proto.AppendEntries.*;
@@ -9,6 +11,7 @@ import raft.proto.HeartBeat.*;
 import raft.proto.Vote.*;
 import raft.proto.Vote.ResponseVote.IsVoteGranted;
 import raft.proto.Work.WorkMessage;
+import routing.Pipe.NetworkDiscoveryPacket;
 import routing.Pipe.Route;
 import raft.proto.InternalNodeAdd.*;
 
@@ -148,4 +151,32 @@ public class MessageBuilder {
         return work.build();
 
     }
+	
+	public static Route buildNetworkDiscoveryResponse(RoutingConf conf) {
+		Route.Builder rb = Route.newBuilder();
+		try {
+		NetworkDiscoveryPacket.Builder ndpb = NetworkDiscoveryPacket.newBuilder();
+        ndpb.setMode(NetworkDiscoveryPacket.Mode.RESPONSE);
+        ndpb.setSender(NetworkDiscoveryPacket.Sender.EXTERNAL_SERVER_NODE);
+        ndpb.setGroupTag(conf.getGroupTag());
+        //ndpb.setGroupTag("weCAN");
+        ndpb.setNodeAddress(NodeMonitor.getLocalHostAddress());
+        ndpb.setNodePort(conf.getPort());
+        //ndpb.setNodePort(8887);
+        ndpb.setSecret(conf.getSecret());
+        //ndpb.setSecret("secret");
+
+        
+//        rb.setId(nextId());
+        rb.setId(NodeMonitor.getInstance().getNodeConf().getNodeId());
+        rb.setPath(Route.Path.NETWORK_DISCOVERY);
+        rb.setNetworkDiscoveryPacket(ndpb);
+        
+	}
+	
+	catch(Exception e) {
+		e.printStackTrace();
+	}
+		return rb.build();
+	}
 }

@@ -33,6 +33,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RoutingConf {
 	private int port;
+	private int networkDiscoveryPort;
+	private String groupTag;
+	private String secret;
 	private List<RoutingEntry> routing;
 
 	public HashMap<String, String> asHashMap() {
@@ -58,9 +61,16 @@ public class RoutingConf {
 	public int getPort() {
 		return port;
 	}
+	
+	public int getNetworkDiscoveryPort() {
+		return networkDiscoveryPort;
+	}
 
 	public void setPort(int port) {
 		this.port = port;
+	}
+	public void setNetworkDiscoveryPort(int port) {
+		this.networkDiscoveryPort = port;
 	}
 
 	public List<RoutingEntry> getRouting() {
@@ -70,6 +80,26 @@ public class RoutingConf {
 	public void setRouting(List<RoutingEntry> conf) {
 		this.routing = conf;
 	}
+	
+	
+
+	public String getGroupTag() {
+		return groupTag;
+	}
+
+	public void setGroupTag(String groupTag) {
+		this.groupTag = groupTag;
+	}
+
+	public String getSecret() {
+		return secret;
+	}
+
+	public void setSecret(String secret) {
+		this.secret = secret;
+	}
+
+
 
 	@XmlRootElement(name = "entry")
 	@XmlAccessorType(XmlAccessType.PROPERTY)
