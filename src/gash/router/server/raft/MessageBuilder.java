@@ -7,6 +7,7 @@ import org.bson.Document;
 import com.mongodb.client.FindIterable;
 import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
 
+import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
 import gash.router.server.NodeMonitor;
 import raft.proto.AppendEntries;
@@ -199,7 +200,7 @@ public class MessageBuilder {
 		return routeMsg.build();
 	}
 
-	public static Route buildNetworkDiscoveryResponse(RoutingConf conf) {
+	public static Route buildNetworkDiscoveryResponse(NodeConf conf) {
 		Route.Builder rb = Route.newBuilder();
 		try {
 		NetworkDiscoveryPacket.Builder ndpb = NetworkDiscoveryPacket.newBuilder();
@@ -208,7 +209,7 @@ public class MessageBuilder {
         ndpb.setGroupTag(conf.getGroupTag());
         //ndpb.setGroupTag("weCAN");
         ndpb.setNodeAddress(NodeMonitor.getLocalHostAddress());
-        ndpb.setNodePort(conf.getPort());
+        ndpb.setNodePort(conf.getClientPort());
         //ndpb.setNodePort(8887);
         ndpb.setSecret(conf.getSecret());
         //ndpb.setSecret("secret");

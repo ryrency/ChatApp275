@@ -65,7 +65,11 @@ public class Leader extends Service implements Runnable {
 		// TODO Auto-generated constructor stub
 		messageMongoDB = MessageMongoDB.getInstance();
 		userMongoDB = UserMongoDB.getInstance();
-		DiscoveryServer udpDiscoveryServer = new DiscoveryServer(NodeState.getConf());
+		DiscoveryServer udpDiscoveryServer = new DiscoveryServer(
+				RaftNode.getInstance().getState().getConf(), 
+				RaftNode.getInstance().getState().getNodeConf()
+		);
+		
 		Thread discoveryThread = new Thread(udpDiscoveryServer);
 		discoveryThread.start();
 
@@ -193,11 +197,11 @@ public class Leader extends Service implements Runnable {
 
 		System.out.println("Leader****** fn:sendAppendEntriesPacket*****");
 
-		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getNodeMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(wm);
 				if (cf.isDone() && !cf.isSuccess()) {
-					System.out.println("Failed to send append entries message server " + entry.getValue().getHost());
+					System.out.println("Failed to send append entries message server " + entry.getValue().getNodeConf().getHost());
 				}
 			}
 		}
@@ -217,7 +221,7 @@ public class Leader extends Service implements Runnable {
 	}
 	public int countActiveNodes() {
 		int count = 0;
-		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getNodeMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {	
 				count++;
 				
@@ -232,13 +236,13 @@ public class Leader extends Service implements Runnable {
 	@Override
 	public void sendHeartBeat() {
 		/*Sending HeartBeat to all Followers to inform them of the health of Leader */
-		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getNodeMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
 				WorkMessage workMessage = MessageBuilder.prepareHeartBeat();
 
 				ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(workMessage);
 				if (cf.isDone() && !cf.isSuccess()) {
-					System.out.println("Failed to send heart beat message to server "+entry.getValue().getHost());
+					System.out.println("Failed to send heart beat message to server "+entry.getValue().getNodeConf().getHost());
 				}
 			}
 		}

@@ -2,6 +2,7 @@ package gash.router.server.resources;
 
 import gash.router.container.RoutingConf;
 import gash.router.server.raft.MessageBuilder;
+import gash.router.server.raft.RaftNode;
 import routing.Pipe.Route;
 
 public class NetworkDiscoveryResource implements RouteResource {
@@ -16,7 +17,7 @@ public class NetworkDiscoveryResource implements RouteResource {
 		Route response = null;
 		if(msg.hasNetworkDiscoveryPacket()) {
 			
-		response = MessageBuilder.buildNetworkDiscoveryResponse(conf);
+		response = MessageBuilder.buildNetworkDiscoveryResponse(RaftNode.getInstance().getState().getNodeConf());
 		}
 		return response;
 	}

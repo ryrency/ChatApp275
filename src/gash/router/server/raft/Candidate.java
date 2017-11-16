@@ -110,9 +110,9 @@ public class Candidate extends Service implements Runnable {
 	public void sendRequestVote() {
 		WorkMessage voteRequest = MessageBuilder.prepareRequestVote();
 
-		for (RemoteNode ts : NodeMonitor.getInstance().getStatMap().values()) {
+		for (RemoteNode ts : NodeMonitor.getInstance().getNodeMap().values()) {
 			if (ts.isActive() && ts.getChannel() != null) {
-				logger.info("Sent VoteRequestRPC to " + ts.getRef());
+				logger.info("Sent VoteRequestRPC to " + ts.getNodeConf().getNodeId());
 				ChannelFuture cf = ts.getChannel().writeAndFlush(voteRequest);
 				expectedResponses++;
 			} else {

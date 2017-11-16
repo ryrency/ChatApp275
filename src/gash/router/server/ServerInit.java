@@ -16,9 +16,8 @@ public class ServerInit extends ChannelInitializer<SocketChannel> {
 	boolean compress = false;
 	RoutingConf conf;
 
-	public ServerInit(RoutingConf conf, boolean enableCompression) {
+	public ServerInit(RoutingConf conf) {
 		super();
-		compress = enableCompression;
 		this.conf = conf;
 	}
 

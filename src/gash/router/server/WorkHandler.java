@@ -9,6 +9,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
+import raft.proto.Internal.InternalPacket;
 import raft.proto.InternalNodeAdd.InternalNodeAddRequest;
 //import pipe.work.Work.WorkMessage; For now msg is coming as string
 //import pipe.common.Common.Failure;
@@ -18,7 +19,7 @@ import raft.proto.InternalNodeAdd.InternalNodeAddRequest;
 //import pipe.work.Work.WorkState;
 import raft.proto.Work.WorkMessage;
 
-public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage> {
+public class WorkHandler extends SimpleChannelInboundHandler<InternalPacket> {
 
 	Follower foll;
 	Leader leader;
@@ -31,57 +32,33 @@ public class WorkHandler extends SimpleChannelInboundHandler<WorkMessage> {
 		candidate = Candidate.getInstance();
 	}
 
-	public void handleMessage(WorkMessage wm, Channel channel) {
+	public void handleMessage(InternalPacket packet, Channel channel) {
 		
-		try {
-			if (wm == null) {
-				System.out.println("ERROR: Unexpected content - " + wm);
-				return;
-			}
-
-			System.out.println("Into handleMessage : Message - " + wm);
-			if (wm.hasHeartBeatPacket()) {
-				if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
-					foll.handleHeartBeat(wm);
-				else if (NodeState.getInstance().getState() == NodeState.LEADER)
-					leader.handleHeartBeat(wm);
-			}
-			if (wm.hasVoteRPCPacket()) {
-				if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
-					foll.handleRequestVote(wm);
-				else if (NodeState.getInstance().getState() == NodeState.CANDIDATE)
-					candidate.handleResponseVote(wm);
-
-			}
-
-			if (wm.hasAppendEntriesPacket()) {
-				if (NodeState.getInstance().getState() == NodeState.FOLLOWER)
-					foll.handleAppendEntries(wm);
-				else if (NodeState.getInstance().getState() == NodeState.LEADER)
-					leader.handleAppendEntries(wm);
-			}
+		if (packet.hasAppendEntriesRequest()) {
 			
-			if(wm.hasInternalNodeAddPacket()) {
-				if(wm.getInternalNodeAddPacket().hasInternalNodeAddRequest()) {
-					InternalNodeAddRequest internalNodeAddRequest = wm.getInternalNodeAddPacket().getInternalNodeAddRequest();
-					NodeMonitor nodeMonitor = NodeMonitor.getInstance();
-					nodeMonitor.addNode(new RemoteNode(internalNodeAddRequest.getId(), 
-							internalNodeAddRequest.getHost(), 
-							internalNodeAddRequest.getPort(), 
-							channel));
-				}
-			}
+		} else if (packet.hasAppendEntriesResponse()) {
 			
+		} else if (packet.hasVoteRequest()) {
 			
-		} catch(Exception ex) {
-			ex.printStackTrace();	
+		} else if (packet.hasVoteResponse()) {
+			
 		}
-
+		
+//		if(wm.hasInternalNodeAddPacket()) {
+//			if(wm.getInternalNodeAddPacket().hasInternalNodeAddRequest()) {
+//				InternalNodeAddRequest internalNodeAddRequest = wm.getInternalNodeAddPacket().getInternalNodeAddRequest();
+//				NodeMonitor nodeMonitor = NodeMonitor.getInstance();
+//				nodeMonitor.addNode(new RemoteNode(internalNodeAddRequest.getId(), 
+//						internalNodeAddRequest.getHost(), 
+//						internalNodeAddRequest.getPort(), 
+//						channel));
+//			}
+//		}
 	}
 
 	@Override
-	protected void channelRead0(ChannelHandlerContext ctx, WorkMessage workMessage) throws Exception {
-		handleMessage(workMessage, ctx.channel());
+	protected void channelRead0(ChannelHandlerContext ctx, InternalPacket packet) throws Exception {
+		handleMessage(packet, ctx.channel());
 
 	}
 

@@ -16,7 +16,6 @@
 package gash.router.server;
 
 import java.io.BufferedInputStream;
- 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -28,14 +27,16 @@ import org.slf4j.LoggerFactory;
 
 import gash.router.container.RoutingConf;
 import gash.router.container.NodeConf;
-import gash.router.container.NodeConf.RoutingEntry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import gash.router.server.raft.NodeState;
+import gash.router.server.raft.RaftNode;
 public class MessageServer {
 	protected static Logger logger = LoggerFactory.getLogger("server");
 
@@ -48,33 +49,30 @@ public class MessageServer {
 	protected NodeConf nodeconf;
 	protected boolean background = false;
 
-	//nodecf to do!!
-	public MessageServer(RoutingConf conf, NodeConf nodecf) {
-		this.conf = conf;
-		this.nodeconf = nodecf;
-	}
-
 	public void release() {
 	}
 
 	public void startServer() {
 		
-		StartCommunication comm;
 		logger.info("Communication starting");
+		RaftNode.getInstance().init(conf, nodeconf);
 		
-		//Code to implement connection to other server  
-		NodeMonitor.getInstance(nodeconf).start();
+		StartCommunication comm;
 		
-		//Add logic to start consumer server request e.g. 4167
-		comm =  new StartCommunication(nodeconf);
+		// start socket server for internal communication
+		comm =  new StartCommunication(nodeconf.getInternalPort(), new WorkInit());
 		//Always need to run in background
 //		comm.run();
 		Thread cthread = new Thread(comm);
 		cthread.start();
 		
+		//start the monitor to monitor other nodes  
+		NodeMonitor.getInstance().init(conf, nodeconf);
+		NodeMonitor.getInstance().start();
+		
 		
 		//Starting Consumer for client services e.g. 4267(routing.conf)
-		comm =  new StartCommunication(conf);
+		comm =  new StartCommunication(nodeconf.getClientPort(), new ServerInit(conf));
 		if (background) {
 			cthread = new Thread(comm);
 			cthread.start();
@@ -99,17 +97,15 @@ public class MessageServer {
 	 * 
 	 * @param cfg
 	 */
-	public MessageServer(File cfg,File nodecfg) {
+	public MessageServer(File cfg, int currentNodeId) {
 		//init(cfg);
 		System.out.println("init ***");
-		init(cfg, nodecfg);
+		init(cfg, currentNodeId);
 	}
 
-	private void init(File cfg, File nodecfg) {
-		if (!cfg.exists())
-			throw new RuntimeException(cfg.getAbsolutePath() + " not found");
-		if (!nodecfg.exists())
-			throw new RuntimeException(nodecfg.getAbsolutePath() + " not found");
+	private void init(File cfg, int currentNodeId) {
+		if (!cfg.exists()) throw new RuntimeException(cfg.getAbsolutePath() + " not found");
+		
 		// resource initialization - how message are processed
 		BufferedInputStream br = null;
 		try {
@@ -119,15 +115,9 @@ public class MessageServer {
 			conf = JsonUtil.decode(new String(raw), RoutingConf.class);
 			br.close();
 			if (conf == null)
-				throw new RuntimeException("verification of configuration failed 1");
+				throw new RuntimeException("verification of configuration failed");
 			
-			raw = new byte[(int) nodecfg.length()];
-			br = new BufferedInputStream(new FileInputStream(nodecfg));
-			br.read(raw);
-			nodeconf = JsonUtil.decode(new String(raw), NodeConf.class);
-			br.close();
-			if (nodeconf == null)
-				throw new RuntimeException("verification of configuration failed 2");
+			nodeconf = conf.getNodeConf(currentNodeId);
 			
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -140,8 +130,6 @@ public class MessageServer {
 				}
 			}
 		}
-		NodeState.setConf(conf);
-		NodeState.getInstance().setState(NodeState.FOLLOWER);	
 	}
 
 
@@ -152,17 +140,12 @@ public class MessageServer {
 	 *            The port to listen to
 	 */
 	private static class StartCommunication implements Runnable {
-		Object conf;
-		//NodeConf nodeconf;
 		int port;
+		ChannelInitializer<SocketChannel> channelInit;
 
-		public StartCommunication(Object conf) {
-			this.conf = conf;
-			if (conf.getClass().getTypeName() == "gash.router.container.RoutingConf") {
-				this.port = ((RoutingConf) conf).getPort();
-			}else {
-				this.port = ((NodeConf) conf).getWorkPort();
-			}
+		public StartCommunication(int port, ChannelInitializer<SocketChannel> channelInit) {
+			this.port = port;
+			this.channelInit = channelInit;
 		}
 
 		public void run() {
@@ -191,15 +174,8 @@ public class MessageServer {
 				b.option(ChannelOption.TCP_NODELAY, true);
 				b.option(ChannelOption.SO_KEEPALIVE, true);
 				// b.option(ChannelOption.MESSAGE_SIZE_ESTIMATOR);
-
-				boolean compressComm = false;
 				
-				if (conf.getClass().getTypeName() != "gash.router.container.RoutingConf") {
-					System.out.println("***JSingh***");
-					b.childHandler(new WorkInit());
-				} else {
-					b.childHandler(new ServerInit((RoutingConf) conf, compressComm)); 
-				}
+				b.childHandler(channelInit);
 
 				// Start the server.
 				logger.info("Starting server, listening on port = " + this.port);
@@ -260,7 +236,6 @@ public class MessageServer {
 				ObjectMapper mapper = new ObjectMapper();
 				return mapper.readValue(data.getBytes(), theClass);
 			} catch (Exception ex) {
-				System.out.println("Parag- " + ex.getMessage());
 				return null;
 			}
 		}

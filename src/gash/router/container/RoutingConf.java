@@ -32,11 +32,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "conf")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RoutingConf {
-	private int port;
-	private int networkDiscoveryPort;
-	private String groupTag;
-	private String secret;
 	private List<RoutingEntry> routing;
+	private List<NodeConf> nodes;
 
 	public HashMap<String, String> asHashMap() {
 		HashMap<String, String> map = new HashMap<String, String>();
@@ -58,21 +55,6 @@ public class RoutingConf {
 		routing.add(entry);
 	}
 
-	public int getPort() {
-		return port;
-	}
-	
-	public int getNetworkDiscoveryPort() {
-		return networkDiscoveryPort;
-	}
-
-	public void setPort(int port) {
-		this.port = port;
-	}
-	public void setNetworkDiscoveryPort(int port) {
-		this.networkDiscoveryPort = port;
-	}
-
 	public List<RoutingEntry> getRouting() {
 		return routing;
 	}
@@ -80,26 +62,22 @@ public class RoutingConf {
 	public void setRouting(List<RoutingEntry> conf) {
 		this.routing = conf;
 	}
-	
-	
 
-	public String getGroupTag() {
-		return groupTag;
+	public List<NodeConf> getNodes() {
+		return nodes;
 	}
 
-	public void setGroupTag(String groupTag) {
-		this.groupTag = groupTag;
+	public void setNodes(List<NodeConf> nodes) {
+		this.nodes = nodes;
 	}
 
-	public String getSecret() {
-		return secret;
+	public NodeConf getNodeConf(int nodeId) {
+		for (NodeConf conf : nodes) {
+			if (conf.getNodeId() == nodeId) return conf;
+		}
+		
+		return null;
 	}
-
-	public void setSecret(String secret) {
-		this.secret = secret;
-	}
-
-
 
 	@XmlRootElement(name = "entry")
 	@XmlAccessorType(XmlAccessType.PROPERTY)

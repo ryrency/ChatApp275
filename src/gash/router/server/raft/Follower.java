@@ -105,9 +105,9 @@ public class Follower extends Service implements Runnable {
 	}
 
 	public static void sendResponseVote(WorkMessage voteResponse, WorkMessage wm) {
-		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getNodeMap().entrySet()) {
 			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
-				if (entry.getValue().getRef() == wm.getVoteRPCPacket().getRequestVote().getCandidateId()) {
+				if (entry.getValue().getNodeConf().getNodeId() == wm.getVoteRPCPacket().getRequestVote().getCandidateId()) {
 					ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(voteResponse);
 					if (cf.isDone() && !cf.isSuccess()) {
 						System.out.println("Fail to send vote response message to candidate");
@@ -162,10 +162,10 @@ public class Follower extends Service implements Runnable {
 
 	public void sendAppendEntiresResponse(WorkMessage wm, String response) {
 		WorkMessage wmResponse =  MessageBuilder.prepareAppendEntriesResponse(response);
-		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getStatMap().entrySet()) {
+		for (Map.Entry<Integer, RemoteNode> entry : NodeMonitor.getInstance().getNodeMap().entrySet()) {
 
-			if (entry.getValue().isActive() && entry.getValue().getChannel() != null) {
-				if (entry.getValue().getRef() == wm.getAppendEntriesPacket().getAppendEntries().getLeaderId()) {
+			if (entry.getValue().isActive()) {
+				if (entry.getValue().getNodeConf().getNodeId() == wm.getAppendEntriesPacket().getAppendEntries().getLeaderId()) {
 					ChannelFuture cf = entry.getValue().getChannel().writeAndFlush(wmResponse);
 					if (cf.isDone() && !cf.isSuccess()) {
 						System.out.println("Failed to send AppendEntries Response message to Leader");

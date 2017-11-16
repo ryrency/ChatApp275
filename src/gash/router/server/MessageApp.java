@@ -33,12 +33,12 @@ public class MessageApp {
 //		}
 //
 		File routeCf = new File(args[0]);
-		File nodeCf = new File(args[1]);
+		int currentNodeId = new Integer(args[1]).intValue();
 
 //		File nodecf = new File("resources/NodeConf_3.conf");
 //		File routecf = new File("resources/routing.conf");
 		try {
-			MessageServer svr = new MessageServer(routeCf,nodeCf);
+			MessageServer svr = new MessageServer(routeCf, currentNodeId);
 			svr.startServer();
 		} catch (Exception e) {
 			e.printStackTrace();

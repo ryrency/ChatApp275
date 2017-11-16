@@ -1,5 +1,6 @@
 package gash.router.discovery;
 
+import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
@@ -10,7 +11,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.internal.SocketUtils;
-
 import routing.Pipe.NetworkDiscoveryPacket;
 import routing.Pipe.Route;
 
@@ -21,9 +21,9 @@ public final class DiscoveryClient implements Runnable {
     // track requests
     private static long curID = 0;
 
-    private RoutingConf conf;
+    private NodeConf conf;
 
-    public DiscoveryClient(RoutingConf conf) {
+    public DiscoveryClient(NodeConf conf) {
         this.conf = conf;
     }
 

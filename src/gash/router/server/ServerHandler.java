@@ -28,6 +28,8 @@ import gash.router.server.resources.RouteResource;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import routing.Pipe.MessagesResponse;
+import routing.Pipe.MessagesResponseOrBuilder;
 import routing.Pipe.Route;
 
 /**
@@ -67,7 +69,11 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 		System.out.println("---> " + msg.getId() + ": " + msg.getPath() + ", " + msg.getMessage());
 		if(NodeState.getInstance().getState() == NodeState.LEADER) {
 			if (msg.hasMessage())
+			{
 				leader.handleClientRequest(msg);
+			   
+
+			}
 			else if (msg.hasUser()) {
 				/*Rency - Call leader to do user functions*/
 				leader.handleUsers(msg);

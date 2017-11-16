@@ -35,31 +35,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NodeConf {
 	private int nodeId;
-	private int commandPort;
-	private int workPort;
+	private String host;
 	private boolean internalNode = true;
 	private int heartbeatDt = 2000;
-	private List<RoutingEntry> routing;
-
-	public HashMap<String, Integer> asHashMap() {
-		HashMap<String, Integer> map = new HashMap<String, Integer>();
-		if (routing != null) {
-			for (RoutingEntry entry : routing) {
-				map.put(entry.host, entry.port);
-			}
-		}
-		return map;
-	}
-
-	public void addEntry(RoutingEntry entry) {
-		if (entry == null)
-			return;
-
-		if (routing == null)
-			routing = new ArrayList<RoutingEntry>();
-
-		routing.add(entry);
-	}
+	
+	private int internalPort;
+	private int clientPort;
+	private int networkDiscoveryPort;
+	private int mongoPort;
+	
+	private String groupTag;
+	private String secret;
+	
+	private List<Integer> monitorConnections;
 
 	public int getNodeId() {
 		return nodeId;
@@ -69,20 +57,12 @@ public class NodeConf {
 		this.nodeId = nodeId;
 	}
 
-	public int getCommandPort() {
-		return commandPort;
+	public String getHost() {
+		return host;
 	}
 
-	public void setCommandPort(int commandPort) {
-		this.commandPort = commandPort;
-	}
-
-	public int getWorkPort() {
-		return workPort;
-	}
-
-	public void setWorkPort(int workPort) {
-		this.workPort = workPort;
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 	public boolean isInternalNode() {
@@ -101,53 +81,75 @@ public class NodeConf {
 		this.heartbeatDt = heartbeatDt;
 	}
 
-	public List<RoutingEntry> getRouting() {
-		return routing;
+	public int getInternalPort() {
+		return internalPort;
 	}
 
-	public void setRouting(List<RoutingEntry> conf) {
-		this.routing = conf;
+	public void setInternalPort(int internalPort) {
+		this.internalPort = internalPort;
 	}
 
-	@XmlRootElement(name = "entry")
-	@XmlAccessorType(XmlAccessType.PROPERTY)
-	public static final class RoutingEntry {
-		private String host;
-		private int port;
-		private int id;
+	public int getClientPort() {
+		return clientPort;
+	}
 
-		public RoutingEntry() {
-		}
+	public void setClientPort(int clientPort) {
+		this.clientPort = clientPort;
+	}
 
-		public RoutingEntry(int id, String host, int port) {
-			this.id = id;
-			this.host = host;
-			this.port = port;
-		}
+	public int getNetworkDiscoveryPort() {
+		return networkDiscoveryPort;
+	}
 
-		public String getHost() {
-			return host;
-		}
+	public void setNetworkDiscoveryPort(int networkDiscoveryPort) {
+		this.networkDiscoveryPort = networkDiscoveryPort;
+	}
 
-		public void setHost(String host) {
-			this.host = host;
-		}
+	public int getMongoPort() {
+		return mongoPort;
+	}
 
-		public int getPort() {
-			return port;
-		}
+	public void setMongoPort(int mongoPort) {
+		this.mongoPort = mongoPort;
+	}
 
-		public void setPort(int port) {
-			this.port = port;
-		}
+	public List<Integer> getMonitorConnections() {
+		return monitorConnections;
+	}
 
-		public int getId() {
-			return id;
-		}
+	public void setMonitorConnections(List<Integer> monitorConnections) {
+		this.monitorConnections = monitorConnections;
+	}
 
-		public void setId(int id) {
-			this.id = id;
-		}
+	public String getGroupTag() {
+		return groupTag;
+	}
 
+	public void setGroupTag(String groupTag) {
+		this.groupTag = groupTag;
+	}
+
+	public String getSecret() {
+		return secret;
+	}
+
+	public void setSecret(String secret) {
+		this.secret = secret;
+	}
+	
+	public String getInternalSocketServerAddress() {
+		return host + ":" + internalPort;
+	}
+	
+	public String getClientSocketServerAddress() {
+		return host + ":" + clientPort;
+	}
+	
+	public String getDiscoverySocketServerAddress() {
+		return host + ":" + networkDiscoveryPort;
+	}
+	
+	public String getMongoServerAddress() {
+		return host + ":" + mongoPort;
 	}
 }

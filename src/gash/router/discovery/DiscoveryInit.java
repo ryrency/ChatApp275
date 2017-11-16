@@ -1,5 +1,6 @@
 package gash.router.discovery;
 
+import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -16,11 +17,12 @@ import routing.Pipe.Route;
 public class DiscoveryInit extends ChannelInitializer<DatagramChannel> {
 	boolean compress = false;
 	RoutingConf conf;
+	NodeConf nodeConf;
 
-	public DiscoveryInit(RoutingConf conf, boolean enableCompression) {
+	public DiscoveryInit(RoutingConf conf, NodeConf nodeConf) {
 		super();
-		compress = enableCompression;
 		this.conf = conf;
+		this.nodeConf = nodeConf;
 	}
 
 	@Override
@@ -49,6 +51,6 @@ public class DiscoveryInit extends ChannelInitializer<DatagramChannel> {
 
 
 		// our server processor (new instance for each connection)
-		pipeline.addLast("handler", new DiscoveryServerHandler(conf));
+		pipeline.addLast("handler", new DiscoveryServerHandler(conf, nodeConf));
 	}
 }

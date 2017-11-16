@@ -15,6 +15,7 @@
  */
 package gash.router.discovery;
 
+import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
 import gash.router.server.resources.NetworkDiscoveryResource;
 import gash.router.server.resources.RouteResource;
@@ -25,8 +26,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.SocketUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import routing.Pipe;
 import routing.Pipe.Route;
 
@@ -44,10 +47,12 @@ import java.util.HashMap;
 public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 	protected static Logger logger = LoggerFactory.getLogger("discovery");
 	RoutingConf conf;
+	NodeConf nodeConf;
 	private HashMap<String, String> routing;
 
-	public DiscoveryServerHandler(RoutingConf conf) {
+	public DiscoveryServerHandler(RoutingConf conf, NodeConf nodeConf) {
 		this.conf = conf;
+		this.nodeConf = nodeConf;
 		if (conf != null)
 			routing = conf.asHashMap();
 	}
@@ -81,7 +86,10 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 
 						channel.writeAndFlush(new DatagramPacket(
 								Unpooled.copiedBuffer(response.toByteArray()),
-								SocketUtils.socketAddress(msg.getNetworkDiscoveryPacket().getNodeAddress(), conf.getNetworkDiscoveryPort()))).sync();
+								SocketUtils.socketAddress(
+										msg.getNetworkDiscoveryPacket().getNodeAddress(), 
+										nodeConf.getNetworkDiscoveryPort())))
+								.sync();
 
 					}
 				} catch (Exception e) {

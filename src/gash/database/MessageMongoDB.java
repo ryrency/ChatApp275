@@ -132,8 +132,7 @@ public class MessageMongoDB {
 					workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getSender());
 			document.append(RECEIVER_ID, workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTo());
 			document.append(PAYLOAD, workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getPayload());
-			Date date = new Date(workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTimestamp()
-					.replace(".", ""));
+			Date date = new Date(workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTimestamp().replace(".", ""));
 			document.append(TIMESTAMP, date);
 			document.append(STATUS, workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getStatus());
 			document.append(TIMESTAMPONLATESTUPDATE,

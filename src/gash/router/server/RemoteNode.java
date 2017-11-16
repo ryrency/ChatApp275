@@ -6,25 +6,15 @@ import io.netty.channel.Channel;
 
 public class RemoteNode {
 	
-	private int ref;
-	private String host;
-	private int port;
-	boolean active;
+	private NodeConf nodeConf;
+
+	
+	//state variables
 	Channel channel;
-	boolean exists;
 	 
 	 
-	 RemoteNode(int ref, String host, int port){
-		 setRef(ref);
-		 setHost(host);
-		 setPort(port);
-	 }
-	 
-	 RemoteNode(int ref, String host, int port, Channel channel){
-		 setRef(ref);
-		 setHost(host);
-		 setPort(port);
-		 setChannel(channel);
+	 RemoteNode(NodeConf conf){
+		 nodeConf = conf;
 	 }
  
 	public boolean isActive() {
@@ -37,23 +27,8 @@ public class RemoteNode {
 	public void setChannel(Channel channel) {
 		this.channel = channel;
 	}
-	public int getRef() {
-		return ref;
+	
+	public NodeConf getNodeConf() {
+		return nodeConf;
 	}
-	public void setRef(int ref) {
-		this.ref = ref;
-	}
-	public String getHost() {
-		return host;
-	}
-	public void setHost(String host) {
-		this.host = host;
-	}
-	public int getPort() {
-		return port;
-	}
-	public void setPort(int port) {
-		this.port = port;
-	}
-
 }

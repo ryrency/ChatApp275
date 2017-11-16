@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import gash.router.container.NodeConf;
+import gash.router.container.RoutingConf;
 import gash.router.server.raft.MessageBuilder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -24,7 +25,7 @@ public class NodeMonitor {
 
 	private static final long RECONNECT_DELAY = 1000;
 	
-	static ConcurrentHashMap<Integer, RemoteNode> statMap = new ConcurrentHashMap<Integer, RemoteNode>();
+	static ConcurrentHashMap<Integer, RemoteNode> nodeMap = new ConcurrentHashMap<Integer, RemoteNode>();
 //	EventLoopGroup group = null;
 //	static Bootstrap b;
 	
@@ -34,36 +35,37 @@ public class NodeMonitor {
 
 	public static NodeMonitor instance;
 
-	public static NodeMonitor getInstance(NodeConf nodeConf) {
+	public static NodeMonitor getInstance() {
 		if (instance == null) {
-			instance = new NodeMonitor(nodeConf);
+			instance = new NodeMonitor();
 		}
 		return instance;
 	}
 
-	public static NodeMonitor getInstance() {
-		return instance;
-	}
+	NodeMonitor() {
+		
 
-	NodeMonitor(NodeConf nc) {
-		this.nodeConf = nc;
-		for (NodeConf.RoutingEntry re : nc.getRouting()) {
-			RemoteNode rm = new RemoteNode(re.getId(), re.getHost(), re.getPort());
+	}
+	
+	public void init(RoutingConf conf, NodeConf nodeConf) {
+		this.nodeConf = nodeConf;
+		
+		for (NodeConf node : conf.getNodes()) {
+			RemoteNode rm = new RemoteNode(node);
 			addNode(rm);
 		}
-
 	}
 
 	public void start() {
 		// TODO Auto-generated method stub
-		for (RemoteNode rm : statMap.values()) {
+		for (RemoteNode rm : nodeMap.values()) {
 			scheduleConnect(rm, 0);
 		}
 	}
 
 	public synchronized void connectWithNode(RemoteNode rm) {
 		try {
-			Logger.getGlobal().info("starting to connect with node --> " + rm.getHost() + ":" + rm.getPort());
+			Logger.getGlobal().info("starting to connect with node --> " + rm.getNodeConf().getInternalSocketServerAddress());
 			Bootstrap b = new Bootstrap();
 				
 			b.group(workerGroup).channel(NioSocketChannel.class).handler(new WorkInit());
@@ -71,8 +73,8 @@ public class NodeMonitor {
 			b.option(ChannelOption.TCP_NODELAY, true);
 			b.option(ChannelOption.SO_KEEPALIVE, true);
 
-			ChannelFuture cf = b.connect(rm.getHost(), rm.getPort()).syncUninterruptibly();
-			Logger.getGlobal().info("remote node status--> " + rm.getHost() + ":" + rm.getPort() + " - channel status: open: " + cf.channel().isOpen() + ", active: " + cf.channel().isActive() + ", isWritable: " + cf.channel().isWritable());
+			ChannelFuture cf = b.connect(rm.getNodeConf().getHost(), rm.getNodeConf().getInternalPort()).syncUninterruptibly();
+			Logger.getGlobal().info("remote node status--> " + rm.getNodeConf().getInternalSocketServerAddress() + " - channel status: open: " + cf.channel().isOpen() + ", active: " + cf.channel().isActive() + ", isWritable: " + cf.channel().isWritable());
 				
 			rm.setChannel(cf.channel());
 				
@@ -81,13 +83,13 @@ public class NodeMonitor {
 			sendAddRequestToExistingNode(rm);
 			
 		} catch (Exception ex) {
-			Logger.getGlobal().info("channel failed to connect with --> " + rm.getHost() + ":" + rm.getPort());
+			Logger.getGlobal().info("channel failed to connect with --> " + rm.getNodeConf().getInternalSocketServerAddress());
 			scheduleConnect(rm, RECONNECT_DELAY);
 		} 
 	}
 
 	public synchronized void scheduleConnect(final RemoteNode rm, long millis) {
-		Logger.getGlobal().info("scheduling connect with " + rm.getHost() + ":" + rm.getPort() + " in " + millis + "ms");
+		Logger.getGlobal().info("scheduling connect with " + rm.getNodeConf().getInternalSocketServerAddress() + " in " + millis + "ms");
 		executor.schedule(new Runnable() {
 			
 			@Override
@@ -108,9 +110,13 @@ public class NodeMonitor {
 			
 			String hostAddress = getLocalHostAddress();
 			
-			Logger.getGlobal().info("Generated request to add adjacent node: "  + rm.getHost() + ":" + rm.getPort());
+			Logger.getGlobal().info("Generated request to add adjacent node: "  + rm.getNodeConf().getInternalSocketServerAddress());
 
-			WorkMessage workMessage = MessageBuilder.prepareInternalNodeAddRequest(nodeConf.getNodeId(), hostAddress, nodeConf.getWorkPort());
+			WorkMessage workMessage = MessageBuilder.prepareInternalNodeAddRequest(
+					nodeConf.getNodeId(), 
+					hostAddress, 
+					nodeConf.getInternalPort()
+			);
 
 			ChannelFuture cf = rm.getChannel().writeAndFlush(workMessage);
 
@@ -128,14 +134,15 @@ public class NodeMonitor {
 
 	}
 
-	public ConcurrentHashMap<Integer, RemoteNode> getStatMap() {
-		return statMap;
+	public ConcurrentHashMap<Integer, RemoteNode> getNodeMap() {
+		return nodeMap;
 	}
 
 	public synchronized void addNode(RemoteNode rm) {
-		Logger.getGlobal().info("adding new node in config " + rm.getHost() + ":" +rm.getPort());
-		if (!statMap.containsKey(rm.getRef()) || !statMap.get(rm.getRef()).isActive()) {
-			statMap.put(rm.getRef(), rm);
+		Logger.getGlobal().info("adding new node in config " + rm.getNodeConf().getInternalSocketServerAddress());
+		int nodeId = rm.getNodeConf().getNodeId();
+		if (!nodeMap.containsKey(nodeId) || !nodeMap.get(nodeId).isActive()) {
+			nodeMap.put(nodeId, rm);
 		}
 	}
 
@@ -143,11 +150,11 @@ public class NodeMonitor {
 		return this.nodeConf;
 	}
 
-	public void printStatMap() {
+	public void printNodeMap() {
 		System.out.println("***Printing stat map****");
-		for (RemoteNode rm : statMap.values()) {
+		for (RemoteNode rm : nodeMap.values()) {
 
-			System.out.println("TOPO STat :" + rm.getHost() + "--" + rm.getPort() + "--" + rm.isActive() + "------"
+			System.out.println("TOPO STat :" + rm.getNodeConf().getInternalSocketServerAddress() + "--" + rm.isActive() + "------"
 					+ rm.getChannel());
 		}
 	}
@@ -206,7 +213,7 @@ public class NodeMonitor {
 		@Override
 		public void operationComplete(ChannelFuture future) throws Exception {
 			// we lost the connection or have shutdown.
-			Logger.getGlobal().info("channel closed with server: " + rm.getHost() + ":" + rm.getPort());
+			Logger.getGlobal().info("channel closed with server: " + rm.getNodeConf().getInternalSocketServerAddress());
 			nm.scheduleConnect(rm, RECONNECT_DELAY);
 		}
 	}

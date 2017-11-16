@@ -11,14 +11,13 @@ import org.slf4j.LoggerFactory;
 public class NodeState {
 
 	public static final int LEADER = 0;
-
 	public static final int CANDIDATE = 1;
-
 	public static final int FOLLOWER = 2;
 
-	private static int state = 2;
+	private static int state = FOLLOWER;
 
 	public static int currentTerm = 0;
+	
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("NODESTATE");
 
 	// private static Timestamp timeStampOnLatestUpdate=null;
