@@ -1,3 +1,5 @@
+from pipe_pb2 import Route
+from pipe_pb2 import NetworkDiscoveryPacket
 
 class LengthFieldProtoEncoder:
     def __init__(self):
@@ -11,10 +13,11 @@ class LengthFieldProtoEncoder:
             res = str(unichr(x)) + res
         return res
 
-    def encode(self, route):
+    def encode(self, route, msg_type='tcp'):
         msg = route.SerializeToString()
         print(msg)
-        msg = self.convert_int_to_bytes_string(len(msg)) + msg
+        if (msg_type=='tcp'):
+            msg = self.convert_int_to_bytes_string(len(msg)) + msg
         return msg
 
 
@@ -23,6 +26,10 @@ class LengthFieldProtoDncoder:
         pass
 
     def decode(self, msg):
-        pass
+      
+        routeMsg = Route()
+        routeMsg.ParseFromString(msg)
 
+        print (routeMsg) 
+        return routeMsg
 
