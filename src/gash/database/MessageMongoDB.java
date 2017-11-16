@@ -1,5 +1,6 @@
 package gash.database;
 
+import com.google.protobuf.Timestamp;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
@@ -103,21 +104,6 @@ public class MessageMongoDB {
 		return result;
 	}
 	
-	public boolean post(String senderId,String receiverId,String payload, Date msgTimeStamp) {
-		System.out.println("***MongoDB*** fn:post***");
-		try {
-			Document document = new Document();
-			document.put(SENDER_ID, senderId);
-			document.append(RECEIVER_ID, receiverId).append(PAYLOAD, payload).append(TIMESTAMP, msgTimeStamp);
-			dbCollection.insertOne(document);
-			return true;
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		finally {}
-	}
 	
 	public boolean delete(String senderId) {
 		System.out.println("***MongoDB*** fn:delete***");
@@ -154,10 +140,11 @@ public class MessageMongoDB {
 			document.append(SENDER_ID,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getSender() );
 			document.append(RECEIVER_ID,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTo() );
 			document.append(PAYLOAD,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getPayload() );
-			Date date = new Date(Long.parseLong(workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTimestamp().replace(".", "")));
+			Date date = new Date(workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getTimestamp().replace(".", ""));
 			document.append(TIMESTAMP,date);
 			document.append(STATUS,workMessage.getAppendEntriesPacket().getAppendEntries().getMessage().getStatus() );
 			document.append(TIMESTAMPONLATESTUPDATE,workMessage.getAppendEntriesPacket().getAppendEntries().getTimeStampOnLatestUpdate() );
+			document.append(READ, 0);
 			dbCollection.insertOne(document);
 	
 			return true;
@@ -167,6 +154,95 @@ public class MessageMongoDB {
 		finally {}
 	}
 	 
+	public boolean postData1() {
+		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
+		try {
+			Document document = new Document();
+			document.put(UNIXTIMESTAMP, Timestamp.getDefaultInstance());
+			document.append(MESSAGETYPE,0);
+			document.append(TERMID,2 );
+			document.append(SENDER_ID,"rency" );
+			document.append(RECEIVER_ID,"shefali" );
+			document.append(PAYLOAD,"Hi, this is me" );
+		      Date date1 = new Date();
+
+			 Date date = new Date(Long.parseLong(date1.toString()));
+			document.append(TIMESTAMP,Timestamp.getDefaultInstance());
+			document.append(STATUS,0 );
+			document.append(TIMESTAMPONLATESTUPDATE,Timestamp.getDefaultInstance());
+			document.append(READ, 0);
+			dbCollection.insertOne(document);
+	
+			return true;
+		}
+		catch(Exception e) {e.printStackTrace();
+		return false;}
+		finally {}
+	}
+//	String DATE_FORMAT_NOW = "yyyy-MM-dd";
+//	 Date date = new Date();
+//	 SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
+//	 String stringDate = sdf.format(date );
+//	    try {
+//	        Date date2 = sdf.parse(stringDate);
+//	    } catch(ParseException e){
+//	     //Exception handling
+//	    } catch(Exception e){
+//	     //handle exception
+//	    }
+//	
+	public boolean postData2() {
+		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
+		try {
+			Document document = new Document();
+			document.put(UNIXTIMESTAMP, Timestamp.getDefaultInstance());
+			document.append(MESSAGETYPE,0);
+			document.append(TERMID,2 );
+			document.append(SENDER_ID,"shefali" );
+			document.append(RECEIVER_ID,"rency" );
+			document.append(PAYLOAD,"Hi, this is me" );
+		      Date date1 = new Date();
+
+				 Date date = new Date(date1.toString());
+			document.append(TIMESTAMP,Timestamp.getDefaultInstance());
+			document.append(STATUS,0 );
+			document.append(TIMESTAMPONLATESTUPDATE,Timestamp.getDefaultInstance());
+			document.append(READ, 0);
+			dbCollection.insertOne(document);
+	
+			return true;
+		}
+		catch(Exception e) {e.printStackTrace();
+		return false;}
+		finally {}
+	}
+	public FindIterable<Document> getUnreadMessage(String key) {
+		System.out.println("***MongoDB*** fn:get***");
+		 FindIterable<Document> result = null;
+		 try {
+			 result = dbCollection.find(Filters.and(Filters.eq(RECEIVER_ID,key),Filters.eq(READ,0)));
+		 }
+		 catch(Exception e) {
+			 e.printStackTrace();
+			 return null;
+		 }
+		 finally {
+			
+		 }
+		 
+		 return result;
+		 
+	 }
+	
+	public boolean setRead(String key) {
+		try {
+		dbCollection.updateOne({ "receiverID":key },{ $set:{ "read": 1 } });
+		}
+		 catch(Exception e) {
+			 e.printStackTrace();
+			
+		 }
+	}
 	
 	
 

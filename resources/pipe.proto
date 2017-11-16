@@ -13,6 +13,7 @@ message Route {
         MESSAGES_REQUEST = 5;
         MESSAGES_RESPONSE = 6;
         HEADER = 7;
+	    RESPONSE = 8;
     }
 
     //a node should not have a value though this is not enforced
@@ -23,26 +24,28 @@ message Route {
 	    NetworkDiscoveryPacket networkDiscoveryPacket = 3;
 	    User user = 4;
 	    Message message = 5;
+        Group group = 6;   
+	    MessagesRequest messagesRequest = 7;
+    		MessagesResponse messagesResponse = 8;
+	    Response response=9;
     }
-    optional Group group = 6;
-    optional MessagesRequest messagesRequest = 7;
-    optional MessagesRequest messagesResponse = 8;
-    optional Header header = 9;
+    
+    optional Header header = 10;
 }
 
 message User {
-	    //a node should not have a value though this is not enforced
-    required string uname = 1;
-    optional string email = 2;
-    optional string password = 3;
-    optional string recentActiveTime = 4;
-    required ActionType action = 5;
+
     enum ActionType {
         REGISTER = 0;
         ACCESS = 1;
         DELETE = 2;
     }
-
+    //a node should not have a value though this is not enforced
+    required string uname = 1;
+    optional string email = 2;
+    optional string password = 3;
+    optional string recentActiveTime = 4;
+    required ActionType action = 5;
 }
 
 message Group {
@@ -80,7 +83,7 @@ message Message {
     required string payload = 3;
     required string receiverId = 4; //would be groupId if the type is GROUP or else userId if the type is SINGLE
     required string timestamp = 5;
-    required Status status = 6;
+    optional Status status = 6;
     required ActionType action = 7;
 }
 
@@ -103,7 +106,7 @@ message MessagesResponse {
     }
 
     required Type type = 1;
-    required string id = 2; //would be groupId if the type is GROUP or else userId if the type is USER
+    optional string id = 2; //would be groupId if the type is GROUP or else userId if the type is USER
     repeated Message messages = 3;
 }
 
@@ -130,5 +133,21 @@ message NetworkDiscoveryPacket {
 }
 
 message Header {
-    required string type = 1;
+	enum Type{
+	INTERNAL=0;
+	INTER_CLUSTER=1;
+	CLIENT=2;
+	}
+    required Type type = 1;
+}
+
+
+
+message Response{
+     required bool success=1;
+     //add error or any response which needs to be sent
+     optional string message=2;
+	
+     //not required but can be used in case we set up common codes for errors
+     optional string errorCode=3;
 }

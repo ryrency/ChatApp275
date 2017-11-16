@@ -1,10 +1,12 @@
 package gash.database;
 
+import com.google.protobuf.Timestamp;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bson.Document;
@@ -23,7 +25,7 @@ public class UserMongoDB {
 
 //	final static String USER_ID = "userID";
 	final static String USER_NAME = "userName";
-	final static String TIMESTAMP = "timestamp";
+//	final static String TIMESTAMP = "timestamp";
 //	final static String UNIXTIMESTAMP = "UnixTimeStamp";
 //	final static String TIMESTAMPONLATESTUPDATE = "TimeStampOnLatestUpdate";
 
@@ -70,19 +72,19 @@ public class UserMongoDB {
 	}
 
 	/*Get result based on timestamp of user creation */
-
-	public FindIterable<Document> getNewEntries(Date staleTimeStamp) {
-		System.out.println("***UserMongoDB*** fn:getnewEntries***");
-		FindIterable<Document> result = null;
-		try {
-			result = dbCollection.find(Filters.eq(TIMESTAMP, staleTimeStamp));
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		} finally {
-		}
-		return result;
-	}
+//
+//	public FindIterable<Document> getNewEntries(Date staleTimeStamp) {
+//		System.out.println("***UserMongoDB*** fn:getnewEntries***");
+//		FindIterable<Document> result = null;
+//		try {
+//			result = dbCollection.find(Filters.eq(TIMESTAMP, staleTimeStamp));
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//			return null;
+//		} finally {
+//		}
+//		return result;
+//	}
 
 	/*Get result - all  entries in the table */
 
@@ -99,24 +101,6 @@ public class UserMongoDB {
 
 		}
 		return result;
-	}
-
-	/********************************************************************************/
-	/* Post into User table								 						  */
-	/********************************************************************************/
-	public boolean post(String userName, Date msgTimeStamp) {
-		System.out.println("***MongoDB*** fn:post***");
-		try {
-			Document document = new Document();
-			document.put(USER_NAME, userName);
-			document.append(TIMESTAMP, msgTimeStamp);
-			dbCollection.insertOne(document);
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		} finally {
-		}
 	}
 	
 	/********************************************************************************/
@@ -142,11 +126,10 @@ public class UserMongoDB {
 		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
 		try {
 			Document document = new Document();
-//			document.put(UNIXTIMESTAMP, clientMessage.getUser().getRecentActiveTime().getUnixTimeStamp());
 			document.append(USER_NAME,
 					clientMessage.getUser().getUname());
 			Date date = new Date(Long.parseLong(clientMessage.getUser().getRecentActiveTime().replace(".", "")));
-			document.append(TIMESTAMP, date);
+//			document.append(TIMESTAMP, date);
 			dbCollection.insertOne(document);
 
 			return true;
@@ -155,6 +138,53 @@ public class UserMongoDB {
 			return false;
 		} finally {
 		}
+	}
+
+	public boolean postUser1() {
+		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
+		try {
+			Document document = new Document();
+			document.append(USER_NAME,"rency");
+
+//			document.append(TIMESTAMP, getDate());
+			dbCollection.insertOne(document);
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		} finally {}
+		}
+	
+//	public Date getDate() {
+//	String DATE_FORMAT_NOW = "yyyy-MM-dd";
+//	 Date date = new Date();
+//	 SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_NOW);
+//	 String stringDate = sdf.format(date );
+//     Date date2 = null;
+//
+//	    try {
+//	    	date2 =sdf.parse(stringDate);
+//	    } catch(Exception e){
+//	    		e.printStackTrace();	   
+//}
+//        return date2;
+//
+//	}
+		public boolean postUser2() {
+			System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
+			try {
+				Document document = new Document();
+				document.append(USER_NAME,"shefali");
+//				document.append(TIMESTAMP, getDate());
+				dbCollection.insertOne(document);
+
+				return true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			} finally {
+			}
 	}
 
 	/********************************************************************************/

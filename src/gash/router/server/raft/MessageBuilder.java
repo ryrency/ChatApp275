@@ -1,5 +1,10 @@
 package gash.router.server.raft;
 
+import java.util.ArrayList;
+
+import org.bson.Document;
+
+import com.mongodb.client.FindIterable;
 import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
 
 import gash.router.container.RoutingConf;
@@ -11,6 +16,8 @@ import raft.proto.HeartBeat.*;
 import raft.proto.Vote.*;
 import raft.proto.Vote.ResponseVote.IsVoteGranted;
 import raft.proto.Work.WorkMessage;
+import routing.Pipe;
+import routing.Pipe.Message;
 import routing.Pipe.NetworkDiscoveryPacket;
 import routing.Pipe.Route;
 import raft.proto.InternalNodeAdd.*;
@@ -151,7 +158,47 @@ public class MessageBuilder {
         return work.build();
 
     }
+	public static Route prepareMessage(String Error) {
+		Route.Builder routeMsg = Route.newBuilder();
+		routeMsg.setId(1); // NEED TO CHECK WHAT ID TO PASS
+		routeMsg.setPath(routeMsg.getPath().MESSAGES_RESPONSE);
+		
+		Pipe.Response.Builder response = Pipe.Response.newBuilder();
+		response.setSuccess(false);
+		response.setMessage(Error);
+		return routeMsg.build();
+	}
 	
+	public static Route prepareMessageResponse(FindIterable<Document> dbresult) {
+		Route.Builder routeMsg = Route.newBuilder();
+		routeMsg.setId(1); // NEED TO CHECK WHAT ID TO PASS
+		routeMsg.setPath(routeMsg.getPath().MESSAGES_RESPONSE);
+
+		Pipe.MessagesResponse.Builder msgResponse = Pipe.MessagesResponse.newBuilder();
+		msgResponse.setType(msgResponse.getType().USER);
+
+		ArrayList Mess = new ArrayList<Message>();
+
+		Pipe.Message.Builder msg = Pipe.Message.newBuilder();
+		for (Document documentRow : dbresult) {
+			documentRow.getString("receiverID");
+			msgResponse.setId(documentRow.getString("senderId"));
+
+			msg.setAction(msg.getAction().POST);
+			msg.setType(msg.getType().SINGLE);
+			msg.setStatus(msg.getStatus().ACTIVE);
+			msg.setSenderId(documentRow.getString("senderId"));
+			msg.setPayload(documentRow.getString("payload"));
+			msg.setReceiverId(documentRow.getString("receiverID"));
+			msg.setTimestamp(documentRow.getString("timestamp"));
+			Mess.add(msg);
+		}
+		msgResponse.addAllMessages(Mess);
+		routeMsg.setMessagesResponse(msgResponse);
+		routeMsg.setMessage(msg);
+		return routeMsg.build();
+	}
+
 	public static Route buildNetworkDiscoveryResponse(RoutingConf conf) {
 		Route.Builder rb = Route.newBuilder();
 		try {

@@ -55,7 +55,7 @@ public class Leader extends Service implements Runnable {
 
 
 	protected static Logger logger = (Logger) LoggerFactory.getLogger("LEADER");
-	MessageMongoDB mongoDB;
+	MessageMongoDB messageMongoDB;
 	UserMongoDB userMongoDB;
 
 	/********************************************************************************/
@@ -63,7 +63,7 @@ public class Leader extends Service implements Runnable {
 	/********************************************************************************/
 	private Leader() {
 		// TODO Auto-generated constructor stub
-		mongoDB = MessageMongoDB.getInstance();
+		messageMongoDB = MessageMongoDB.getInstance();
 		userMongoDB = UserMongoDB.getInstance();
 		DiscoveryServer udpDiscoveryServer = new DiscoveryServer(NodeState.getConf());
 		Thread discoveryThread = new Thread(udpDiscoveryServer);
@@ -116,41 +116,60 @@ public class Leader extends Service implements Runnable {
 	public void handleUsers(Route msg) {
 		User.Builder userPacket = User.newBuilder();
 
-		if (userPacket.getAction().getNumber() == REGISTER){
-			RegisterUser(msg);
-			/*New User .. so check for duplicate and if not, add entrry into DB*/
+		if (userPacket.getAction().getNumber() == REGISTER) {
+			RegisterUser(msg); /* New User .. so check for duplicate and if not, add entry into DB */
 		}
-		if (userPacket.getAction().getNumber() == ACCESS){
-			AccessUser(msg);
+		if (userPacket.getAction().getNumber() == ACCESS) {
+			// AccessUser(msg); /*RENCY - NEED TO CHECK */
 		}
-		if (userPacket.getAction().getNumber() == DELETE){
-			
+		if (userPacket.getAction().getNumber() == DELETE) {
+			DeleteUser(msg);
 		}
 	}
-	
+
 	/*----------------------------------------------------*/
 	/*Register New User into DB if does not exist already */
 	/*----------------------------------------------------*/
 	public void RegisterUser(Route msg) {
-		  FindIterable<Document> result =userMongoDB.get(msg.getUser().getUname());
-		  if (result == null) {
-			  userMongoDB.storeUserMessagetoDB(msg);
-		  }
-		  else {
-			  /*Rency - SEND ERROR MESSAGE TO USER*/
-		  }
+
+		FindIterable<Document> result = null;
+		result = userMongoDB.get(msg.getUser().getUname());
+		if (result == null) {
+			userMongoDB.storeUserMessagetoDB(msg);
+		} else {
+			String error = "User Already Registered";
+			/* Rency - SEND ERROR MESSAGE TO USER */
+			/* Rency - NEED TO HANDLE USER REPLICATION */
+			MessageBuilder.prepareMessage(error); /* RENCY - NOT COMPLETE */
+		}
 
 	}
+
 	
 	/*----------------------------------------------------*/
-	/*send all messages for the user                      */
+	/* send all unread messages for the user */
 	/*----------------------------------------------------*/
-	public void AccessUser(Route msg) {
-		FindIterable<Document> result = userMongoDB.get(msg.getUser().getUname());			 
-	/*	while(result.iterator();
-			
-			
-		}*/
+
+	public void handleMessageRequest(Route msg) {
+		String userName = msg.getMessagesRequest().getId();
+
+		FindIterable<Document> dbresults = null;
+
+		dbresults = userMongoDB.get(userName);
+		if (dbresults != null) {
+			dbresults = messageMongoDB.getUnreadMessage(userName);
+		}
+
+		MessageBuilder.prepareMessageResponse(dbresults);
+		/* CODE TO SEND DATA TO CLIENT */
+
+	}
+
+	/*----------------------------------------------------*/
+	/* Delete user Registration */
+	/*----------------------------------------------------*/
+	public void DeleteUser(Route msg) {
+		userMongoDB.delete(msg.getUser().getUname());
 	}
 	
 	/********************************************************************************/
@@ -165,7 +184,7 @@ public class Leader extends Service implements Runnable {
 					clientRoute.getMessage().getTimestamp());
 			System.out.println("***Leader*** fn:handleClientMessage *** work message returned");
 			sendAppendEntriesPacket(workMessage);
-			mongoDB.storeClientMessagetoDB(workMessage);
+			messageMongoDB.storeClientMessagetoDB(workMessage);
 		}
 	}
 

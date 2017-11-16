@@ -72,12 +72,23 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 				/*Rency - Call leader to do user functions*/
 				leader.handleUsers(msg);
 			}
+			else if (msg.hasMessagesRequest()) {
+				/*Pull messages from server*/
+				leader.handleMessageRequest(msg);
+				}
+			else if (msg.hasGroup()) {{
+				/*
+				 * to implement group!!
+				 */
+			}
+				
 		}
 		else if(NodeState.getInstance().getState() == NodeState.FOLLOWER) {
 			// TO be implemented later ******************
 		}
 
 		System.out.flush();
+		}
 	}
 
 	/**
