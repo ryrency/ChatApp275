@@ -1,0 +1,53 @@
+syntax="proto2";
+package raft.proto;
+option optimize_for = SPEED;
+
+// AppendEntries
+message AppendEntriesRequest{
+	required int32 term = 1;
+    required int32 leaderId = 2;
+    required int32 prevLogIndex = 3;
+    required int32 prevLogTerm = 4;
+    required int32 leaderCommit = 5;
+    repeated LogEntry entries = 6;
+} 
+
+message AppendEntriesResponse{
+    required int32 term = 1;
+    required bool success = 2;
+    required int32 nodeId = 3;
+    required int32 matchIndex = 4;
+}
+
+message LogEntry {
+	required int32 term = 1;
+    required int32 index = 2;
+    required string command = 3;
+}
+
+// Request votes
+message VoteRequest {
+	required int32 term = 1;
+    required int32 candidateId = 2;
+    required int32 lastLogIndex = 3;
+    required int32 lastLogTerm = 4;
+}
+
+message VoteResponse {
+	required int32 term = 1;
+    required bool voteGranted = 2;
+}
+
+message ConnectionActiveAck {
+	required int32 nodeId = 1;
+}
+
+message InternalPacket {
+	oneof payload{
+	 	AppendEntriesRequest appendEntriesRequest = 1;
+	 	AppendEntriesResponse appendEntriesResponse = 2;
+	 	VoteRequest voteRequest = 3;
+	 	VoteResponse voteResponse = 4; 
+	 	ConnectionActiveAck connectionActiveAck = 5;
+	}
+}
