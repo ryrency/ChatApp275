@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gash.router.container.RoutingConf;
-import gash.router.server.raft.Leader;
+
 import gash.router.server.raft.NodeState;
 import gash.router.server.resources.RouteResource;
 import io.netty.channel.Channel;
@@ -44,12 +44,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	protected static Logger logger = LoggerFactory.getLogger("connect");
 
 	private HashMap<String, String> routing;
-	Leader leader;
 
 	public ServerHandler(RoutingConf conf) {
 		if (conf != null)
 			routing = conf.asHashMap();
-		leader = Leader.getInstance();
 	}
 
 	/**
@@ -60,41 +58,43 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 * @param msg
 	 */
 	public void handleMessage(Route msg, Channel channel) {
-		if (msg == null) {
-			// TODO add logging
-			System.out.println("ERROR: Unexpected content - " + msg);
-			return;
-		}
-
-		System.out.println("---> " + msg.getId() + ": " + msg.getPath() + ", " + msg.getMessage());
-		if(NodeState.getInstance().getState() == NodeState.LEADER) {
-			if (msg.hasMessage())
-			{
-				leader.handleClientRequest(msg);
-			   
-
-			}
-			else if (msg.hasUser()) {
-				/*Rency - Call leader to do user functions*/
-				leader.handleUsers(msg);
-			}
-			else if (msg.hasMessagesRequest()) {
-				/*Pull messages from server*/
-				leader.handleMessageRequest(msg);
-				}
-			else if (msg.hasGroup()) {{
-				/*
-				 * to implement group!!
-				 */
-			}
-				
-		}
-		else if(NodeState.getInstance().getState() == NodeState.FOLLOWER) {
-			// TO be implemented later ******************
-		}
-
-		System.out.flush();
-		}
+		//todo(shefali): reimplement this
+		
+//		if (msg == null) {
+//			// TODO add logging
+//			System.out.println("ERROR: Unexpected content - " + msg);
+//			return;
+//		}
+//
+//		System.out.println("---> " + msg.getId() + ": " + msg.getPath() + ", " + msg.getMessage());
+//		if(NodeState.getInstance().getState() == NodeState.LEADER) {
+//			if (msg.hasMessage())
+//			{
+//				leader.handleClientRequest(msg);
+//			   
+//
+//			}
+//			else if (msg.hasUser()) {
+//				/*Rency - Call leader to do user functions*/
+//				leader.handleUsers(msg);
+//			}
+//			else if (msg.hasMessagesRequest()) {
+//				/*Pull messages from server*/
+//				leader.handleMessageRequest(msg);
+//				}
+//			else if (msg.hasGroup()) {{
+//				/*
+//				 * to implement group!!
+//				 */
+//			}
+//				
+//		}
+//		else if(NodeState.getInstance().getState() == NodeState.FOLLOWER) {
+//			// TO be implemented later ******************
+//		}
+//
+//		System.out.flush();
+//		}
 	}
 
 	/**

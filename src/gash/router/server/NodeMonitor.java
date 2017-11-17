@@ -4,6 +4,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +20,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import raft.proto.Internal.ConnectionActiveAck;
+import raft.proto.Internal.InternalPacket;
 import raft.proto.Work.WorkMessage;
 
 public class NodeMonitor {
@@ -42,24 +45,26 @@ public class NodeMonitor {
 		return instance;
 	}
 
-	NodeMonitor() {
+	private NodeMonitor() {
 		
-
 	}
 	
 	public void init(RoutingConf conf, NodeConf nodeConf) {
 		this.nodeConf = nodeConf;
 		
 		for (NodeConf node : conf.getNodes()) {
-			RemoteNode rm = new RemoteNode(node);
-			addNode(rm);
+			if (node != nodeConf) {
+				RemoteNode rm = new RemoteNode(node);
+				addNode(rm);
+			}
 		}
 	}
 
 	public void start() {
 		// TODO Auto-generated method stub
+		List<Integer> monitorNodes = nodeConf.getMonitorConnections();
 		for (RemoteNode rm : nodeMap.values()) {
-			scheduleConnect(rm, 0);
+			if (monitorNodes.contains(rm.getNodeConf().getNodeId())) scheduleConnect(rm, 0);
 		}
 	}
 
@@ -107,18 +112,17 @@ public class NodeMonitor {
 
 	public void sendAddRequestToExistingNode(RemoteNode rm) {
 		try {
-			
-			String hostAddress = getLocalHostAddress();
-			
 			Logger.getGlobal().info("Generated request to add adjacent node: "  + rm.getNodeConf().getInternalSocketServerAddress());
+			
+			ConnectionActiveAck ack = 
+					ConnectionActiveAck
+					.newBuilder()
+					.setNodeId(nodeConf.getNodeId())
+					.build();
+			
+			InternalPacket packet = InternalPacket.newBuilder().setConnectionActiveAck(ack).build();
 
-			WorkMessage workMessage = MessageBuilder.prepareInternalNodeAddRequest(
-					nodeConf.getNodeId(), 
-					hostAddress, 
-					nodeConf.getInternalPort()
-			);
-
-			ChannelFuture cf = rm.getChannel().writeAndFlush(workMessage);
+			ChannelFuture cf = rm.getChannel().writeAndFlush(packet);
 
 			if (cf.isDone() && !cf.isSuccess()) {
 				System.out.println("Send failed: " + cf.cause());
@@ -151,10 +155,10 @@ public class NodeMonitor {
 	}
 
 	public void printNodeMap() {
-		System.out.println("***Printing stat map****");
+		System.out.println("***Printing node map****");
 		for (RemoteNode rm : nodeMap.values()) {
 
-			System.out.println("TOPO STat :" + rm.getNodeConf().getInternalSocketServerAddress() + "--" + rm.isActive() + "------"
+			System.out.println("TOPO remote node :" + rm.getNodeConf().getInternalSocketServerAddress() + "--" + rm.isActive() + "------"
 					+ rm.getChannel());
 		}
 	}
@@ -205,8 +209,8 @@ public class NodeMonitor {
 		RemoteNode rm;
 		NodeMonitor nm;
 
-		public ChannelClosedListener(RemoteNode stat, NodeMonitor monitor) {
-			rm = stat;
+		public ChannelClosedListener(RemoteNode node, NodeMonitor monitor) {
+			rm = node;
 			nm = monitor;
 		}
 

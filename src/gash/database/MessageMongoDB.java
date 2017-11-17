@@ -6,9 +6,14 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import gash.router.container.NodeConf;
+import gash.router.server.raft.RaftNode;
+
 import java.util.Date;
+import java.util.logging.Logger;
 
 import org.bson.Document;
+
 import com.mongodb.client.model.Filters;
 
 import raft.proto.Work.WorkMessage;
@@ -36,7 +41,9 @@ public class MessageMongoDB {
 	private MessageMongoDB() {
 		// TODO Auto-generated constructor stub
 		try {
-			mongoClient = new MongoClient();
+			Logger.getGlobal().info("connecting to mongodb for messages");
+			NodeConf conf = RaftNode.getInstance().getState().getNodeConf();
+			mongoClient = new MongoClient(conf.getHost(), conf.getMongoPort());
 			database = mongoClient.getDatabase(DB_NAME);
 			dbCollection = database.getCollection(COLLECTION_NAME);
 		} catch (Exception e) {

@@ -60,7 +60,7 @@ public class NodeState {
 
 	private NodeState() {
 
-		service = Follower.getInstance(); // Service starting as follower
+		// service = Follower.getInstance(); // Service starting as follower
 
 	}
 

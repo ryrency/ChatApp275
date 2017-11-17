@@ -6,10 +6,14 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import gash.router.container.NodeConf;
+import gash.router.server.raft.RaftNode;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.bson.Document;
+
 import com.mongodb.client.model.Filters;
 
 import routing.Pipe.Route;
@@ -32,7 +36,8 @@ public class UserMongoDB {
 	private UserMongoDB() {
 			// TODO Auto-generated constructor stub
 			try {
-			mongoClient = new MongoClient();
+			NodeConf conf = RaftNode.getInstance().getState().getNodeConf();
+			mongoClient = new MongoClient(conf.getHost(), conf.getMongoPort());
 			database = mongoClient.getDatabase(DB_NAME);
 			dbCollection = database.getCollection(COLLECTION_NAME);
 			}

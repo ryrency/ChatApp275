@@ -1,5 +1,6 @@
 package gash.router.server.raft;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 
 import java.util.HashMap;
@@ -134,10 +135,14 @@ public class RaftNode {
 				sendHeartbeat();
 			}
 		});
+		
+		//todo: start discovery servers
 	}
 	
 	private void stopLeader() {
 		executor.remove(leaderTask);
+		
+		//todo: stop discovery servers
 	}
  	
 	/********************************************************************************/
@@ -180,11 +185,15 @@ public class RaftNode {
 		saveState();
 	}
 	
-	private InternalPacket prepareVoteRequest() {
-		// get last log entry from db
+	private LogEntry getLastLogEntry() {
 		if (lastLogEntry == null) lastLogEntry = NodeStateMongoDB.getInstance().getLastLogEntry();
-		int lastLogTerm = lastLogEntry != null ? lastLogEntry.getTerm() : DEFAULT_LOG_TERM;
-		int lastLogIndex = lastLogEntry != null ? lastLogEntry.getIndex() : DEFAULT_LOG_INDEX;
+		return lastLogEntry;
+	}
+	
+	private InternalPacket prepareVoteRequest() {
+		LogEntry entry = getLastLogEntry();
+		int lastLogTerm = entry != null ? entry.getTerm() : DEFAULT_LOG_TERM;
+		int lastLogIndex = entry != null ? entry.getIndex() : DEFAULT_LOG_INDEX;
 				
 		//prepare vote request
 		VoteRequest request = 
@@ -223,31 +232,53 @@ public class RaftNode {
 	/********************************************************************************/
 	/* Respond to vote requests */
 	/********************************************************************************/
-	public synchronized InternalPacket handleVoteRequest(VoteRequest request) {
+	public synchronized void handleVoteRequest(VoteRequest request) {
 		
-		boolean isVoteGranted = isVoteGranted(request.getTerm());
-		
-		VoteResponse response = 
-				VoteResponse
-				.newBuilder()
-				.setVoteGranted(isVoteGranted)
-				.setTerm(state.getCurrentTerm())
-				.build();
-		
-		InternalPacket packet = 
-				InternalPacket
-				.newBuilder()
-				.setVoteResponse(response)
-				.build();
-		
-		return packet;
+		executor.submit(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				if (request.getTerm() > state.getCurrentTerm()) {
+					state.setCurrentTerm(request.getTerm());
+					saveState();
+					setNodeType(NodeType.Follower);
+				}
+				
+				Logger.getGlobal().info("vote request received from: " + request.getCandidateId());
+				boolean isVoteGranted = isVoteGranted(request);
+				if (isVoteGranted) Logger.getGlobal().info("granted vote to nodeId: " + request.getCandidateId());
+				
+				VoteResponse response = 
+						VoteResponse
+						.newBuilder()
+						.setVoteGranted(isVoteGranted)
+						.setTerm(state.getCurrentTerm())
+						.build();
+				
+				InternalPacket packet = 
+						InternalPacket
+						.newBuilder()
+						.setVoteResponse(response)
+						.build();
+				
+				sendVoteResponse(packet, request.getCandidateId());
+			}
+		});
 	}
 	
-	private boolean isVoteGranted(int candidateTerm) {
+	private boolean isVoteGranted(VoteRequest request) {
+		int candidateTerm = request.getTerm(); 
+		int candidateLastLogIndex = request.getLastLogIndex();
+		
+		LogEntry entry = getLastLogEntry();
+		int lastLogIndex = entry != null ? entry.getIndex() : DEFAULT_LOG_INDEX;
+		
 		boolean granted = 
 				nodeType == NodeType.Follower && 
-				candidateTerm > state.getCurrentTerm() && 
-				candidateTerm > state.getLastVotedTerm();
+				candidateTerm >= state.getCurrentTerm() && 
+				candidateTerm > state.getLastVotedTerm() && 
+				candidateLastLogIndex >= lastLogIndex;
 				
 		if (granted) {
 			state.setLastVotedTerm(candidateTerm);
@@ -256,21 +287,42 @@ public class RaftNode {
 		return granted;
 	}
 	
+	private void sendVoteResponse(InternalPacket packet, int nodeId) {
+		Logger.getGlobal().info("sending vote response to node id: " + nodeId);
+		
+		NodeMonitor
+		.getInstance()
+		.getNodeMap()
+		.get(nodeId)
+		.getChannel()
+		.writeAndFlush(packet);
+	}
+	
 	/********************************************************************************/
 	/* Handling Voting Responses */
 	/********************************************************************************/
 	public synchronized void handleVoteResponse(VoteResponse response) {
-		Logger.getGlobal().info("vote received: " + response.toString());
-		if (response.getTerm() <= state.getCurrentTerm()) {
-			state.incrementVotesReceived();
-			if (response.getVoteGranted()) state.incrementYesVotes();
+		executor.submit(new Runnable() {
 			
-			//todo: also check election result after the voting timeout
-			if (state.getVotesExpected() == state.getVotesReceived()) checkElectionResult();
-		} else {
-			setNodeType(NodeType.Follower);
-			Logger.getGlobal().info("term outdated, converting to follower");
-		}
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Logger.getLogger(RaftNode.class.getSimpleName()).info("vote received: " + response.toString());
+				
+				if (response.getTerm() > state.getCurrentTerm()) {
+					state.setCurrentTerm(response.getTerm());
+					saveState();
+					setNodeType(NodeType.Follower);
+				} else {
+					state.incrementVotesReceived();
+					Logger.getLogger(RaftNode.class.getSimpleName()).info("going to query response votegranted");
+					if (response.getVoteGranted()) state.incrementYesVotes();
+					
+					//todo: also check election result after the voting timeout
+					if (state.getVotesExpected() == state.getVotesReceived()) checkElectionResult();
+				}
+			}
+		});
 	}
 	
 	private synchronized void checkElectionResult() {
@@ -310,7 +362,6 @@ public class RaftNode {
 	}
 	
 	private void startDiscoveryServer() {
-		
 		DiscoveryServer udpDiscoveryServer = new DiscoveryServer(state.getConf(), state.getNodeConf());
 		Thread discoveryThread = new Thread(udpDiscoveryServer);
 		discoveryThread.start();

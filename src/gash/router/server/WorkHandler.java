@@ -1,35 +1,24 @@
 package gash.router.server;
 
-import gash.router.server.raft.Candidate;
-import gash.router.server.raft.Follower;
-import gash.router.server.raft.Leader;
-import gash.router.server.raft.NodeState;
-import io.netty.buffer.ByteBuf;
+import gash.router.server.raft.RaftNode;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.CharsetUtil;
+
+import java.util.logging.Logger;
+
 import raft.proto.Internal.InternalPacket;
-import raft.proto.InternalNodeAdd.InternalNodeAddRequest;
 //import pipe.work.Work.WorkMessage; For now msg is coming as string
 //import pipe.common.Common.Failure;
 //import pipe.work.Work.Heartbeat;
 //import pipe.work.Work.Task;
 //import pipe.work.Work.WorkMessage;
 //import pipe.work.Work.WorkState;
-import raft.proto.Work.WorkMessage;
 
 public class WorkHandler extends SimpleChannelInboundHandler<InternalPacket> {
 
-	Follower foll;
-	Leader leader;
-
-	Candidate candidate;
-
 	WorkHandler() {
-		foll = Follower.getInstance();
-		leader = Leader.getInstance();
-		candidate = Candidate.getInstance();
+		
 	}
 
 	public void handleMessage(InternalPacket packet, Channel channel) {
@@ -39,21 +28,21 @@ public class WorkHandler extends SimpleChannelInboundHandler<InternalPacket> {
 		} else if (packet.hasAppendEntriesResponse()) {
 			
 		} else if (packet.hasVoteRequest()) {
+			RaftNode.getInstance().handleVoteRequest(packet.getVoteRequest());
 			
 		} else if (packet.hasVoteResponse()) {
+			RaftNode.getInstance().handleVoteResponse(packet.getVoteResponse());
 			
+		} else if (packet.hasConnectionActiveAck()) {
+			int nodeId = packet.getConnectionActiveAck().getNodeId();
+			Logger.getGlobal().info("received connection alive ack from node: " + nodeId);
+			
+			NodeMonitor
+			.getInstance()
+			.getNodeMap()
+			.get(nodeId)
+			.setChannel(channel);
 		}
-		
-//		if(wm.hasInternalNodeAddPacket()) {
-//			if(wm.getInternalNodeAddPacket().hasInternalNodeAddRequest()) {
-//				InternalNodeAddRequest internalNodeAddRequest = wm.getInternalNodeAddPacket().getInternalNodeAddRequest();
-//				NodeMonitor nodeMonitor = NodeMonitor.getInstance();
-//				nodeMonitor.addNode(new RemoteNode(internalNodeAddRequest.getId(), 
-//						internalNodeAddRequest.getHost(), 
-//						internalNodeAddRequest.getPort(), 
-//						channel));
-//			}
-//		}
 	}
 
 	@Override

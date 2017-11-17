@@ -2,6 +2,7 @@ package gash.database;
 
 import java.util.logging.Logger;
 
+import gash.router.container.NodeConf;
 import gash.router.server.raft.RaftNode;
 
 import org.bson.Document;
@@ -41,7 +42,9 @@ public class NodeStateMongoDB {
 	Document nodeStateDocument = null;
 	
 	private NodeStateMongoDB() {
-		mongoClient = new MongoClient();
+		Logger.getGlobal().info("connecting to mongodb for node states");
+		NodeConf conf = RaftNode.getInstance().getState().getNodeConf();
+		mongoClient = new MongoClient(conf.getHost(), conf.getMongoPort());
 		database = mongoClient.getDatabase(DB_NAME);
 		logCollection = database.getCollection(LOG_COLLECTION_NAME);
 		nodeStateCollection = database.getCollection(NODE_STATE_COLLECTION_NAME);
@@ -91,9 +94,9 @@ public class NodeStateMongoDB {
 		if (nodeStateDocument == null) return false;
 		Logger.getGlobal().info("recovered node state" + nodeStateDocument.toJson());
 		
-		state.setCurrentTerm(nodeStateDocument.getInteger(CURRENT_TERM));
-		state.setLastVotedTerm(nodeStateDocument.getInteger(LAST_VOTED_TERM));
-		state.setLastApplied(nodeStateDocument.getInteger(LAST_APPLIED));
+		state.setCurrentTerm(nodeStateDocument.getInteger(CURRENT_TERM, 0));
+		state.setLastVotedTerm(nodeStateDocument.getInteger(LAST_VOTED_TERM, 0));
+		state.setLastApplied(nodeStateDocument.getInteger(LAST_APPLIED, 0));
 		
 		return true;
 	}
