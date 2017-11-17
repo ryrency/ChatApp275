@@ -24,8 +24,10 @@ public class WorkHandler extends SimpleChannelInboundHandler<InternalPacket> {
 	public void handleMessage(InternalPacket packet, Channel channel) {
 		
 		if (packet.hasAppendEntriesRequest()) {
+			RaftNode.getInstance().handleAppendEntriesRequest(packet.getAppendEntriesRequest());
 			
 		} else if (packet.hasAppendEntriesResponse()) {
+			RaftNode.getInstance().handleAppendEntriesResponse(packet.getAppendEntriesResponse());
 			
 		} else if (packet.hasVoteRequest()) {
 			RaftNode.getInstance().handleVoteRequest(packet.getVoteRequest());

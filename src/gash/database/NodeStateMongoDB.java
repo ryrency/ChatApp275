@@ -1,5 +1,8 @@
 package gash.database;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import gash.router.container.NodeConf;
@@ -12,6 +15,7 @@ import raft.proto.Internal.LogEntry;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -48,6 +52,9 @@ public class NodeStateMongoDB {
 		database = mongoClient.getDatabase(DB_NAME);
 		logCollection = database.getCollection(LOG_COLLECTION_NAME);
 		nodeStateCollection = database.getCollection(NODE_STATE_COLLECTION_NAME);
+		
+		logCollection.drop();
+		nodeStateCollection.drop();
 	}
 	
 	public static NodeStateMongoDB getInstance() {
@@ -60,8 +67,7 @@ public class NodeStateMongoDB {
 	/********************************************************************************/
 	/* Persists node state in mongodb */
 	/********************************************************************************/
-	
-	public boolean saveNodeState(RaftNode.State state) {
+	public synchronized boolean saveNodeState(RaftNode.State state) {
 		if(nodeStateDocument == null) {
 			nodeStateDocument = new Document();
 			nodeStateDocument.put("_id", ID_IDX);
@@ -84,7 +90,7 @@ public class NodeStateMongoDB {
 		return true;
 	}
 	
-	public boolean restoreNodeState(RaftNode.State state) {
+	public synchronized boolean restoreNodeState(RaftNode.State state) {
 		try {
 			nodeStateDocument = nodeStateCollection.find().first();
 		} catch(Exception e) {
@@ -114,6 +120,17 @@ public class NodeStateMongoDB {
 		}
 	}
 	
+	public LogEntry getLogEntry(int logIndex) {
+		try {
+			Bson filter = Filters.eq(LOG_INDEX, logIndex);
+			Document logDocument = (Document)logCollection.find(filter).first();
+			return mapDocumentToLogEntry(logDocument);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	private LogEntry mapDocumentToLogEntry(Document lastLogDocument) {
 		if (lastLogDocument == null) return null;
 		LogEntry entry = LogEntry.
@@ -126,5 +143,51 @@ public class NodeStateMongoDB {
 		return entry;
 	}
 	
+	private Document mapLogEntryToDocument(LogEntry entry) {
+		if (entry == null) return null;
+		Document document = new Document();
+		document.put(LOG_TERM, entry.getTerm());
+		document.put(LOG_INDEX, entry.getIndex());
+		document.put(LOG_COMMAND, entry.getCommand());
+		return document;
+	}
+	
+	public List<LogEntry> getLogEntriesFromIndex(int fromIndex) {
+		List<LogEntry> entries = new ArrayList<LogEntry>();
+		
+		try {
+			FindIterable<Document> documents = logCollection.find(Filters.gte(LOG_INDEX, fromIndex));
+			Iterator<Document> iterator = documents.iterator();
+			while (iterator.hasNext()) {
+				Document document = iterator.next();
+				LogEntry entry = mapDocumentToLogEntry(document);
+				entries.add(entry);
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		} 
+		
+		return entries;
+	}
+	
+	public void deleteLogEntries(int fromIndex) {
+		try {
+			logCollection.deleteMany(Filters.gte(LOG_INDEX, fromIndex));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} 
+	}
+	
+	public void commitLogEntries(List<LogEntry> entries) {
+		try {
+			List<Document> documents = new ArrayList<Document>();
+			for (LogEntry entry : entries) documents.add(mapLogEntryToDocument(entry));
+			if (documents.size() > 0) logCollection.insertMany(documents);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} 
+	}
 	
 }

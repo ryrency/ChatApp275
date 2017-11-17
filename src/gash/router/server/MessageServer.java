@@ -20,10 +20,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import gash.router.container.RoutingConf;
 import gash.router.container.NodeConf;
@@ -38,7 +39,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import gash.router.server.raft.NodeState;
 import gash.router.server.raft.RaftNode;
 public class MessageServer {
-	protected static Logger logger = LoggerFactory.getLogger("server");
+	protected static Logger logger = Logger.getGlobal();
 
 	protected static HashMap<Integer, ServerBootstrap> bootstrap = new HashMap<Integer, ServerBootstrap>();
 
@@ -48,11 +49,14 @@ public class MessageServer {
 	protected RoutingConf conf;
 	protected NodeConf nodeconf;
 	protected boolean background = false;
+	
+	private boolean writeLogsToFile = true;
 
 	public void release() {
 	}
 
 	public void startServer() {
+		if (writeLogsToFile) enablesLogsToFile("log/node_" + nodeconf.getNodeId() + ".log");
 		
 		logger.info("Communication starting");
 		RaftNode.getInstance().init(conf, nodeconf);
@@ -189,7 +193,8 @@ public class MessageServer {
 
 			} catch (Exception ex) {
 				// on bind().sync()
-				logger.error("Failed to setup handler.", ex);
+				logger.info("Failed to setup handler.");
+				ex.printStackTrace();
 			} finally {
 				// Shut down all event loops to terminate all threads.
 				bossGroup.shutdownGracefully();
@@ -239,6 +244,24 @@ public class MessageServer {
 				return null;
 			}
 		}
+	}
+	
+	private void enablesLogsToFile(String fileName) {  
+	    FileHandler fh;  
+
+	    try {  
+
+	        // This block configure the logger with handler and formatter  
+	        fh = new FileHandler(fileName);  
+	        logger.addHandler(fh);
+	        SimpleFormatter formatter = new SimpleFormatter();  
+	        fh.setFormatter(formatter);    
+
+	    } catch (SecurityException e) {  
+	        e.printStackTrace();  
+	    } catch (IOException e) {  
+	        e.printStackTrace();  
+	    }
 	}
 
 }

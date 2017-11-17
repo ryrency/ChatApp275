@@ -16,6 +16,9 @@
 package gash.router.server;
 
 import java.io.File;
+import java.util.logging.Logger;
+
+import raft.proto.Internal.AppendEntriesRequest;
 
 /**
  * @author gash1
@@ -40,6 +43,8 @@ public class MessageApp {
 		try {
 			MessageServer svr = new MessageServer(routeCf, currentNodeId);
 			svr.startServer();
+			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

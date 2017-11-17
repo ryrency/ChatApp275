@@ -1270,6 +1270,24 @@ public final class Internal {
      * <code>required bool success = 2;</code>
      */
     boolean getSuccess();
+
+    /**
+     * <code>required int32 nodeId = 3;</code>
+     */
+    boolean hasNodeId();
+    /**
+     * <code>required int32 nodeId = 3;</code>
+     */
+    int getNodeId();
+
+    /**
+     * <code>required int32 matchIndex = 4;</code>
+     */
+    boolean hasMatchIndex();
+    /**
+     * <code>required int32 matchIndex = 4;</code>
+     */
+    int getMatchIndex();
   }
   /**
    * Protobuf type {@code raft.proto.AppendEntriesResponse}
@@ -1285,6 +1303,8 @@ public final class Internal {
     private AppendEntriesResponse() {
       term_ = 0;
       success_ = false;
+      nodeId_ = 0;
+      matchIndex_ = 0;
     }
 
     @java.lang.Override
@@ -1323,6 +1343,16 @@ public final class Internal {
             case 16: {
               bitField0_ |= 0x00000002;
               success_ = input.readBool();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              nodeId_ = input.readInt32();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              matchIndex_ = input.readInt32();
               break;
             }
           }
@@ -1380,6 +1410,36 @@ public final class Internal {
       return success_;
     }
 
+    public static final int NODEID_FIELD_NUMBER = 3;
+    private int nodeId_;
+    /**
+     * <code>required int32 nodeId = 3;</code>
+     */
+    public boolean hasNodeId() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required int32 nodeId = 3;</code>
+     */
+    public int getNodeId() {
+      return nodeId_;
+    }
+
+    public static final int MATCHINDEX_FIELD_NUMBER = 4;
+    private int matchIndex_;
+    /**
+     * <code>required int32 matchIndex = 4;</code>
+     */
+    public boolean hasMatchIndex() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>required int32 matchIndex = 4;</code>
+     */
+    public int getMatchIndex() {
+      return matchIndex_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1394,6 +1454,14 @@ public final class Internal {
         memoizedIsInitialized = 0;
         return false;
       }
+      if (!hasNodeId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasMatchIndex()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -1405,6 +1473,12 @@ public final class Internal {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBool(2, success_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, nodeId_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(4, matchIndex_);
       }
       unknownFields.writeTo(output);
     }
@@ -1421,6 +1495,14 @@ public final class Internal {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, success_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, nodeId_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, matchIndex_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -1449,6 +1531,16 @@ public final class Internal {
         result = result && (getSuccess()
             == other.getSuccess());
       }
+      result = result && (hasNodeId() == other.hasNodeId());
+      if (hasNodeId()) {
+        result = result && (getNodeId()
+            == other.getNodeId());
+      }
+      result = result && (hasMatchIndex() == other.hasMatchIndex());
+      if (hasMatchIndex()) {
+        result = result && (getMatchIndex()
+            == other.getMatchIndex());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -1468,6 +1560,14 @@ public final class Internal {
         hash = (37 * hash) + SUCCESS_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
             getSuccess());
+      }
+      if (hasNodeId()) {
+        hash = (37 * hash) + NODEID_FIELD_NUMBER;
+        hash = (53 * hash) + getNodeId();
+      }
+      if (hasMatchIndex()) {
+        hash = (37 * hash) + MATCHINDEX_FIELD_NUMBER;
+        hash = (53 * hash) + getMatchIndex();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -1591,6 +1691,10 @@ public final class Internal {
         bitField0_ = (bitField0_ & ~0x00000001);
         success_ = false;
         bitField0_ = (bitField0_ & ~0x00000002);
+        nodeId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        matchIndex_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -1623,6 +1727,14 @@ public final class Internal {
           to_bitField0_ |= 0x00000002;
         }
         result.success_ = success_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.nodeId_ = nodeId_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.matchIndex_ = matchIndex_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1671,6 +1783,12 @@ public final class Internal {
         if (other.hasSuccess()) {
           setSuccess(other.getSuccess());
         }
+        if (other.hasNodeId()) {
+          setNodeId(other.getNodeId());
+        }
+        if (other.hasMatchIndex()) {
+          setMatchIndex(other.getMatchIndex());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -1681,6 +1799,12 @@ public final class Internal {
           return false;
         }
         if (!hasSuccess()) {
+          return false;
+        }
+        if (!hasNodeId()) {
+          return false;
+        }
+        if (!hasMatchIndex()) {
           return false;
         }
         return true;
@@ -1765,6 +1889,70 @@ public final class Internal {
       public Builder clearSuccess() {
         bitField0_ = (bitField0_ & ~0x00000002);
         success_ = false;
+        onChanged();
+        return this;
+      }
+
+      private int nodeId_ ;
+      /**
+       * <code>required int32 nodeId = 3;</code>
+       */
+      public boolean hasNodeId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required int32 nodeId = 3;</code>
+       */
+      public int getNodeId() {
+        return nodeId_;
+      }
+      /**
+       * <code>required int32 nodeId = 3;</code>
+       */
+      public Builder setNodeId(int value) {
+        bitField0_ |= 0x00000004;
+        nodeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 nodeId = 3;</code>
+       */
+      public Builder clearNodeId() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        nodeId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int matchIndex_ ;
+      /**
+       * <code>required int32 matchIndex = 4;</code>
+       */
+      public boolean hasMatchIndex() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>required int32 matchIndex = 4;</code>
+       */
+      public int getMatchIndex() {
+        return matchIndex_;
+      }
+      /**
+       * <code>required int32 matchIndex = 4;</code>
+       */
+      public Builder setMatchIndex(int value) {
+        bitField0_ |= 0x00000008;
+        matchIndex_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 matchIndex = 4;</code>
+       */
+      public Builder clearMatchIndex() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        matchIndex_ = 0;
         onChanged();
         return this;
       }
@@ -5997,23 +6185,24 @@ public final class Internal {
       "pendEntriesRequest\022\014\n\004term\030\001 \002(\005\022\020\n\010lead" +
       "erId\030\002 \002(\005\022\024\n\014prevLogIndex\030\003 \002(\005\022\023\n\013prev" +
       "LogTerm\030\004 \002(\005\022\024\n\014leaderCommit\030\005 \002(\005\022%\n\007e" +
-      "ntries\030\006 \003(\0132\024.raft.proto.LogEntry\"6\n\025Ap" +
+      "ntries\030\006 \003(\0132\024.raft.proto.LogEntry\"Z\n\025Ap" +
       "pendEntriesResponse\022\014\n\004term\030\001 \002(\005\022\017\n\007suc" +
-      "cess\030\002 \002(\010\"8\n\010LogEntry\022\014\n\004term\030\001 \002(\005\022\r\n\005" +
-      "index\030\002 \002(\005\022\017\n\007command\030\003 \002(\t\"[\n\013VoteRequ" +
-      "est\022\014\n\004term\030\001 \002(\005\022\023\n\013candidateId\030\002 \002(\005\022\024" +
-      "\n\014lastLogIndex\030\003 \002(\005\022\023\n\013lastLogTerm\030\004 \002(",
-      "\005\"1\n\014VoteResponse\022\014\n\004term\030\001 \002(\005\022\023\n\013voteG" +
-      "ranted\030\002 \002(\010\"%\n\023ConnectionActiveAck\022\016\n\006n" +
-      "odeId\030\001 \002(\005\"\303\002\n\016InternalPacket\022@\n\024append" +
-      "EntriesRequest\030\001 \001(\0132 .raft.proto.Append" +
-      "EntriesRequestH\000\022B\n\025appendEntriesRespons" +
-      "e\030\002 \001(\0132!.raft.proto.AppendEntriesRespon" +
-      "seH\000\022.\n\013voteRequest\030\003 \001(\0132\027.raft.proto.V" +
-      "oteRequestH\000\0220\n\014voteResponse\030\004 \001(\0132\030.raf" +
-      "t.proto.VoteResponseH\000\022>\n\023connectionActi" +
-      "veAck\030\005 \001(\0132\037.raft.proto.ConnectionActiv",
-      "eAckH\000B\t\n\007payloadB\002H\001"
+      "cess\030\002 \002(\010\022\016\n\006nodeId\030\003 \002(\005\022\022\n\nmatchIndex" +
+      "\030\004 \002(\005\"8\n\010LogEntry\022\014\n\004term\030\001 \002(\005\022\r\n\005inde" +
+      "x\030\002 \002(\005\022\017\n\007command\030\003 \002(\t\"[\n\013VoteRequest\022" +
+      "\014\n\004term\030\001 \002(\005\022\023\n\013candidateId\030\002 \002(\005\022\024\n\014la",
+      "stLogIndex\030\003 \002(\005\022\023\n\013lastLogTerm\030\004 \002(\005\"1\n" +
+      "\014VoteResponse\022\014\n\004term\030\001 \002(\005\022\023\n\013voteGrant" +
+      "ed\030\002 \002(\010\"%\n\023ConnectionActiveAck\022\016\n\006nodeI" +
+      "d\030\001 \002(\005\"\303\002\n\016InternalPacket\022@\n\024appendEntr" +
+      "iesRequest\030\001 \001(\0132 .raft.proto.AppendEntr" +
+      "iesRequestH\000\022B\n\025appendEntriesResponse\030\002 " +
+      "\001(\0132!.raft.proto.AppendEntriesResponseH\000" +
+      "\022.\n\013voteRequest\030\003 \001(\0132\027.raft.proto.VoteR" +
+      "equestH\000\0220\n\014voteResponse\030\004 \001(\0132\030.raft.pr" +
+      "oto.VoteResponseH\000\022>\n\023connectionActiveAc",
+      "k\030\005 \001(\0132\037.raft.proto.ConnectionActiveAck" +
+      "H\000B\t\n\007payloadB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -6038,7 +6227,7 @@ public final class Internal {
     internal_static_raft_proto_AppendEntriesResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_AppendEntriesResponse_descriptor,
-        new java.lang.String[] { "Term", "Success", });
+        new java.lang.String[] { "Term", "Success", "NodeId", "MatchIndex", });
     internal_static_raft_proto_LogEntry_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_raft_proto_LogEntry_fieldAccessorTable = new

@@ -19,15 +19,19 @@ public class TimerRoutine {
 	}
 	
 	public static long getFollowerTimeOut() {
-		// 2s (fixed delay) + 1s(variable delay)
+		// 4s (fixed delay) + 1s(variable delay)
 		Random random = new Random();
 		long variableTimeout = random.nextInt((int)(1000L));
-		long currentTimeout = 2000L + (long) variableTimeout;
+		long currentTimeout = 4000L + (long) variableTimeout;
 		return currentTimeout;
 	}
 	
 	public static long getHeartbeatSendDelay() {
 		return 1000L;
+	}
+	
+	public static long getLogCommitInterval() {
+		return 500L;
 	}
 
 	int randomWithRange(int min, int max) {
@@ -37,5 +41,9 @@ public class TimerRoutine {
 
 	public static long getFixedTimeout() {
 		return 10000L;
+	}
+	
+	public static long getCandidateElectionTimeout() {
+		return 2000L;
 	}
 }

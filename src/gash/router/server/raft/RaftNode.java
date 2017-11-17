@@ -1,24 +1,33 @@
 package gash.router.server.raft;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
-import raft.proto.Internal.InternalPacket;
-import raft.proto.Internal.LogEntry;
-import raft.proto.Internal.VoteRequest;
-import raft.proto.Internal.VoteResponse;
 import gash.database.NodeStateMongoDB;
 import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
 import gash.router.discovery.DiscoveryServer;
 import gash.router.server.NodeMonitor;
 import gash.router.server.RemoteNode;
+import io.netty.channel.Channel;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
+
+import com.mongodb.client.model.UpdateOptions;
+
+import raft.proto.Internal.AppendEntriesRequest;
+import raft.proto.Internal.AppendEntriesResponse;
+import raft.proto.Internal.InternalPacket;
+import raft.proto.Internal.LogEntry;
+import raft.proto.Internal.VoteRequest;
+import raft.proto.Internal.VoteResponse;
+import sun.rmi.runtime.Log;
 
 
 //todo: all nodes must be present in remote nodes so that we know how many votes to expect
@@ -50,6 +59,12 @@ public class RaftNode {
 	private State state;
 	private LogEntry lastLogEntry = null;
 	private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(3);
+	private Map<Integer, Runnable> appendEntriesTask = new ConcurrentHashMap<Integer, Runnable>();
+	private Map<Integer, ScheduledFuture<Void>> appendEntriesFutures = new ConcurrentHashMap<Integer, ScheduledFuture<Void>>();
+	
+	private ScheduledFuture<Void> followerTaskFuture = null;
+	private ScheduledFuture<Void> candidateTaskFuture = null;
+	
 	
 	public NodeType getNodeType() {
 		return nodeType;
@@ -59,10 +74,11 @@ public class RaftNode {
 		
 	}
 	
-	public void init(RoutingConf conf, NodeConf nodeConf) {
+	public synchronized void init(RoutingConf conf, NodeConf nodeConf) {
 		state = new State(conf, nodeConf);
 		restoreState();
 		setNodeType(NodeType.Follower);
+		scheduleLogCommitTask();
 	}
 	
 	public State getState() {
@@ -96,13 +112,33 @@ public class RaftNode {
 		rescheduleFollowerTask();
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void rescheduleFollowerTask() {
-		executor.remove(followerTask);
-		executor.schedule(
+		if (followerTaskFuture != null) {
+			
+			followerTaskFuture.cancel(true);
+		}
+		
+		followerTaskFuture = (ScheduledFuture<Void>) executor.schedule(
 				followerTask, 
 				TimerRoutine.getFollowerTimeOut(), 
 				TimeUnit.MILLISECONDS
 		);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void rescheduleAppendEntriesTask(int nodeId, long delay) {
+		ScheduledFuture<Void> future = null;
+		if (appendEntriesFutures.containsKey(nodeId)) future = appendEntriesFutures.get(nodeId);
+		if (future != null) future.cancel(true);
+		
+		future = (ScheduledFuture<Void>) executor.schedule(
+				appendEntriesTask.get(nodeId), 
+				delay, 
+				TimeUnit.MILLISECONDS
+		);
+		
+		appendEntriesFutures.put(nodeId, future);
 	}
 	
 	private void stopFollower() {
@@ -122,27 +158,31 @@ public class RaftNode {
 	}
 	
 	private void stopCandidate() {
+		if (candidateTaskFuture != null) {
+			candidateTaskFuture.cancel(true);
+		}
+		
 		executor.remove(candidateTask);
 	}
 	
 	private void startLeader() {
 		Logger.getGlobal().info("Starting as leader");
-		executor.submit(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				sendHeartbeat();
-			}
-		});
+		
+		//reset state variables
+		state.resetNextIndices();
+		state.resetmatchIndices();
+		sendAppendEntriesRequests();
 		
 		//todo: start discovery servers
 	}
 	
 	private void stopLeader() {
-		executor.remove(leaderTask);
-		
+		cancelAppendEntriesRequests();
 		//todo: stop discovery servers
+	}
+	
+	private void scheduleLogCommitTask() {
+		executor.schedule(logCommitTask, TimerRoutine.getLogCommitInterval(), TimeUnit.MICROSECONDS);
 	}
  	
 	/********************************************************************************/
@@ -159,7 +199,8 @@ public class RaftNode {
 	/********************************************************************************/
 	/* Ask for votes Requests */
 	/********************************************************************************/
-	private synchronized void requestVotes() {
+	@SuppressWarnings("unchecked")
+	private void requestVotes() {
 		Logger.getGlobal().info("starting to request votes");
 		// start election, vote to self
 		voteToSelf();
@@ -172,7 +213,11 @@ public class RaftNode {
 		if (isWinner()) {
 			setNodeType(NodeType.Leader);
 		} else {
-			executor.schedule(candidateTask, TimerRoutine.getFixedTimeout(), TimeUnit.MILLISECONDS);
+			candidateTaskFuture = (ScheduledFuture<Void>) executor.schedule(
+					candidateTask, 
+					TimerRoutine.getCandidateElectionTimeout(), 
+					TimeUnit.MILLISECONDS
+			);
 		}
 	}
 	
@@ -186,8 +231,18 @@ public class RaftNode {
 	}
 	
 	private LogEntry getLastLogEntry() {
-		if (lastLogEntry == null) lastLogEntry = NodeStateMongoDB.getInstance().getLastLogEntry();
+		if (lastLogEntry == null) initLastLogEntry();
 		return lastLogEntry;
+	}
+	
+	
+	// this method is synchronized
+	private synchronized void initLastLogEntry() {
+		lastLogEntry = NodeStateMongoDB.getInstance().getLastLogEntry();
+	}
+	
+	private synchronized void setLastLogEntry(LogEntry logEntry) {
+		lastLogEntry = logEntry;
 	}
 	
 	private InternalPacket prepareVoteRequest() {
@@ -215,14 +270,14 @@ public class RaftNode {
 		return packet;
 	}
 	
-	private synchronized void broadcastVoteRequestPacket(InternalPacket packet) {
+	private void broadcastVoteRequestPacket(InternalPacket packet) {
 		
 		for (RemoteNode rm : NodeMonitor.getInstance().getNodeMap().values()) {
 			state.incrementVotesExpected();
 			
 			if (rm.isActive() && rm.getChannel() != null) {
-				Logger.getGlobal().info("Sent VoteRequestRPC to " + rm.getNodeConf().getNodeId());
-				ChannelFuture cf = rm.getChannel().writeAndFlush(packet);
+				Logger.getGlobal().info("Sent VoteRequestRPC to " + rm.getNodeConf().getNodeId() + "request: " + packet.toString());
+				rm.getChannel().writeAndFlush(packet);
 			} else {
 				Logger.getGlobal().info("Channel not active ,server  is down");
 			}
@@ -239,13 +294,18 @@ public class RaftNode {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				Logger.getGlobal().info("vote request received from: " + request.getCandidateId() + ", request: " + request.toString());
+				
 				if (request.getTerm() > state.getCurrentTerm()) {
 					state.setCurrentTerm(request.getTerm());
 					saveState();
 					setNodeType(NodeType.Follower);
 				}
 				
-				Logger.getGlobal().info("vote request received from: " + request.getCandidateId());
+				if (nodeType == NodeType.Follower) {
+					rescheduleFollowerTask();
+				}
+				
 				boolean isVoteGranted = isVoteGranted(request);
 				if (isVoteGranted) Logger.getGlobal().info("granted vote to nodeId: " + request.getCandidateId());
 				
@@ -280,6 +340,8 @@ public class RaftNode {
 				candidateTerm > state.getLastVotedTerm() && 
 				candidateLastLogIndex >= lastLogIndex;
 				
+		Logger.getGlobal().info("vote reasons: type: " + nodeType + ", currTerm: " + state.getCurrentTerm() + ", lastLogIndex: " + lastLogIndex + ", lastVotedTerm: " + state.getLastVotedTerm());
+				
 		if (granted) {
 			state.setLastVotedTerm(candidateTerm);
 			saveState();
@@ -301,7 +363,7 @@ public class RaftNode {
 	/********************************************************************************/
 	/* Handling Voting Responses */
 	/********************************************************************************/
-	public synchronized void handleVoteResponse(VoteResponse response) {
+	public void handleVoteResponse(VoteResponse response) {
 		executor.submit(new Runnable() {
 			
 			@Override
@@ -309,13 +371,14 @@ public class RaftNode {
 				// TODO Auto-generated method stub
 				Logger.getLogger(RaftNode.class.getSimpleName()).info("vote received: " + response.toString());
 				
+				if (nodeType != NodeType.Candidate) return;
+				
 				if (response.getTerm() > state.getCurrentTerm()) {
 					state.setCurrentTerm(response.getTerm());
 					saveState();
 					setNodeType(NodeType.Follower);
 				} else {
 					state.incrementVotesReceived();
-					Logger.getLogger(RaftNode.class.getSimpleName()).info("going to query response votegranted");
 					if (response.getVoteGranted()) state.incrementYesVotes();
 					
 					//todo: also check election result after the voting timeout
@@ -350,17 +413,204 @@ public class RaftNode {
 	}
 	
 	/********************************************************************************/
-	/* Leader functions: append edtries, send heartbeats */
+	/* Leader functions: append entries, send heart beats */
 	/********************************************************************************/
-	private void sendHeartbeat() {
-		//todo: send heartbeat here
-		Logger.getGlobal().info("sending heartbeats");
+	@SuppressWarnings("unchecked")
+	private void sendAppendEntriesRequests() {
+		Logger.getGlobal().info("scheduling append entries requests for all nodes");
+		
+		//send append entries to all servers, in parallel on thread pool
+		for (RemoteNode node: NodeMonitor.getInstance().getNodeMap().values()) {
+			final int nodeId = node.getNodeConf().getNodeId();
+			Runnable task = null;
+			ScheduledFuture<Void> future = null;
+			if (appendEntriesTask.containsKey(nodeId)) task = appendEntriesTask.get(nodeId);
+			if (appendEntriesFutures.containsKey(nodeId)) future = appendEntriesFutures.get(nodeId);
+			
+			if (future != null) future.cancel(true);
+			
+			if (task == null) {
+				task = getSendAppendEntriesTask(nodeId);
+				appendEntriesTask.put(nodeId, task);
+			}
+			
+			future = (ScheduledFuture<Void>) executor.submit(task);
+			appendEntriesFutures.put(nodeId, future);
+		}
 	}
 	
-	private synchronized void scheduleHeartBeatSend() {
-		executor.schedule(leaderTask, TimerRoutine.getHeartbeatSendDelay(), TimeUnit.MILLISECONDS);
+	private void cancelAppendEntriesRequests() {
+		Logger.getGlobal().info("cancelling append entries requests for all nodes");
+		
+		for (ScheduledFuture<Void> future : appendEntriesFutures.values()) {
+			if (future != null) future.cancel(true);
+		}
 	}
 	
+	private InternalPacket prepareAppendEntriesRequest(int nodeId) {
+		int fromIndex = state.getNextIndices().get(nodeId) - 1;
+		List<LogEntry> entries = NodeStateMongoDB.getInstance().getLogEntriesFromIndex(fromIndex);
+		List<LogEntry> newEntries = new ArrayList<LogEntry>();
+		
+		int prevLogIndex = 0;
+		int prevLogTerm = 0;
+		
+		if (fromIndex > 0) {
+			if (entries.size() > 0) {
+				prevLogIndex = entries.get(0).getIndex();
+				prevLogTerm = entries.get(0).getTerm();
+				newEntries = entries.subList(1, entries.size());
+			}
+		} else {
+			newEntries = entries;
+		}
+		
+		int currentNodeId = state.getNodeConf().getNodeId();
+		int currentTerm = state.getCurrentTerm();
+		
+		AppendEntriesRequest request = 
+				AppendEntriesRequest
+				.newBuilder()
+				.setLeaderId(currentNodeId)
+				.setTerm(currentTerm)
+				.setPrevLogIndex(prevLogIndex)
+				.setPrevLogTerm(prevLogTerm)
+				.setLeaderCommit(state.getCommitIndex())
+				.addAllEntries(newEntries)
+				.build();
+		
+		InternalPacket packet = 
+				InternalPacket
+				.newBuilder()
+				.setAppendEntriesRequest(request)
+				.build();
+		
+		Logger.getGlobal().info("request packet prepared for node: " + nodeId);
+		return packet;
+		
+	}
+	
+	public synchronized void handleAppendEntriesRequest(AppendEntriesRequest request) {
+		executor.submit(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Logger.getGlobal().info("received append entry request: " + request.toString());
+				
+				if (request.getTerm() > state.getCurrentTerm()) {
+					state.setCurrentTerm(request.getTerm());
+					setNodeType(NodeType.Follower);
+					saveState();
+				}
+				
+				//1. in raft paper
+				if (request.getTerm() < state.getCurrentTerm()) {
+					sendAppendEntriesResponse(false, request.getLeaderId());
+					return;
+				}
+				
+				state.setCurrentLeader(request.getLeaderId());
+				rescheduleFollowerTask(); // since we just received a request from leader
+				
+				//2, 3. in raft paper
+				boolean success = true;
+				if (request.getPrevLogIndex() != 0) {
+					LogEntry existingLogEntry = NodeStateMongoDB.getInstance().getLogEntry(request.getPrevLogIndex());
+					if (existingLogEntry != null) {
+						success = existingLogEntry.getTerm() == request.getPrevLogTerm();
+						if (!success) {
+							NodeStateMongoDB.getInstance().deleteLogEntries(existingLogEntry.getIndex());
+							sendAppendEntriesResponse(success, request.getLeaderId());
+							return;
+						}
+					} else {
+						success = false;
+						sendAppendEntriesResponse(success, request.getLeaderId());
+						return;
+					}
+				}
+				
+				//4. in raft paper
+				if (request.getEntriesCount() > 0) {
+					NodeStateMongoDB.getInstance().commitLogEntries(request.getEntriesList());
+					setLastLogEntry(request.getEntriesList().get(request.getEntriesCount() - 1));
+				}
+				
+				//5. in raft paper
+				int lastEntryCommitIndex = 
+						request.getEntriesCount() > 0 ? 
+						request.getEntriesList().get(0).getIndex() : request.getLeaderCommit();
+						
+				int newCommitIndex = Math.min(request.getLeaderCommit(), lastEntryCommitIndex);
+				Logger.getGlobal().info("updating follower's commit index to: " + state.getCommitIndex());
+				state.setCommitIndex(newCommitIndex);
+				
+				sendAppendEntriesResponse(true, request.getLeaderId());
+			}
+		});
+	}
+	
+	private void sendAppendEntriesResponse(final boolean success, final int nodeId) {
+		executor.submit(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				LogEntry entry = getLastLogEntry();
+				int matchIndex = entry != null ? entry.getIndex() : 0;
+				
+				AppendEntriesResponse response = 
+						AppendEntriesResponse
+						.newBuilder()
+						.setSuccess(success)
+						.setTerm(state.getCurrentTerm())
+						.setNodeId(state.getNodeConf().getNodeId())
+						.setMatchIndex(matchIndex)
+						.build();
+				
+				InternalPacket packet = 
+						InternalPacket
+						.newBuilder()
+						.setAppendEntriesResponse(response)
+						.build();
+				
+				Logger.getGlobal().info("sending append entries response: " + response.toString());
+				
+				Channel channel = NodeMonitor.getInstance().getNodeMap().get(nodeId).getChannel();
+				channel.writeAndFlush(packet);
+			}
+		});
+	}
+	
+	public void handleAppendEntriesResponse(AppendEntriesResponse response) {
+		Logger.getGlobal().info("received append entry response: " + response.toString());
+		
+		int matchIndex = response.getMatchIndex();
+		int nodeId = response.getNodeId();
+		
+		if (response.getSuccess()) {
+			state.getNextIndices().put(nodeId, matchIndex + 1);
+			state.getMatchIndices().put(nodeId, matchIndex);
+			
+			rescheduleAppendEntriesTask(nodeId, TimerRoutine.getHeartbeatSendDelay());
+			
+		} else {
+			if (response.getTerm() > state.getCurrentTerm()) {
+				state.setCurrentTerm(response.getTerm());
+				setNodeType(NodeType.Follower);
+				saveState();
+			} else {
+				int oldNextIndex = state.getNextIndices().get(nodeId);
+				state.getNextIndices().put(nodeId, oldNextIndex - 1);
+				rescheduleAppendEntriesTask(nodeId, 0);
+			}
+		}
+	}
+	
+	/********************************************************************************/
+	/* Leader functions: start and stop discovery */
+	/********************************************************************************/
 	private void startDiscoveryServer() {
 		DiscoveryServer udpDiscoveryServer = new DiscoveryServer(state.getConf(), state.getNodeConf());
 		Thread discoveryThread = new Thread(udpDiscoveryServer);
@@ -380,6 +630,7 @@ public class RaftNode {
 		public void run() {
 			// TODO Auto-generated method stub
 			//no heart beat received, become candidate
+			if (followerTaskFuture.isCancelled()) return;
 			Logger.getGlobal().info("follower heartbeat timed out");
 			setNodeType(NodeType.Candidate);
 		}
@@ -390,22 +641,126 @@ public class RaftNode {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
+			if(candidateTaskFuture.isCancelled()) return;
+			
 			if (nodeType == NodeType.Candidate) 
 				checkElectionResult();
 			
 		}
 	};
 	
-	private Runnable leaderTask = new Runnable() {
+	private Runnable logCommitTask = new Runnable() {
 		
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			sendHeartbeat();
-			scheduleHeartBeatSend();
+			
+			// 1. update commit indices for the leader
+			if (nodeType == NodeType.Leader) {
+				
+				generateDummyLogs();
+				
+				List<Integer> matchIndices = (List<Integer>)state.getMatchIndices().values();
+				Collections.sort(matchIndices);
+				int N = matchIndices.get(matchIndices.size()/2);
+				
+				while (N > state.getCommitIndex()) {
+					if (state.getLogIndexTermMap().containsKey(N) && 
+							state.getLogIndexTermMap().get(N) == state.getCurrentTerm()) {
+						
+						Logger.getGlobal().info("updating commit index to : " + N);
+						state.setCommitIndex(N);
+						break;
+						
+					}
+				}
+			}
+			
+			//2. apply logs to new commit index
+			if (state.getLastApplied() < state.getCommitIndex()) {
+				// apply logs here
+				
+			}
+			
+			// reschedule task
+			scheduleLogCommitTask();
 		}
 	};
 	
+	private Runnable getSendAppendEntriesTask(final int nodeId) {
+		Runnable task = new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				// TODO Auto-generated method stub
+				Logger.getGlobal().info("going to send append entries to node: " + nodeId);
+				if (appendEntriesFutures.get(nodeId).isCancelled()) {
+					Logger.getGlobal().info("append entries future has been cancelled for node: " + nodeId);
+					return;
+				}
+				
+				RemoteNode remoteNode = NodeMonitor.getInstance().getNodeMap().get(nodeId);
+				
+				if (remoteNode.getChannel().isActive()) {
+					InternalPacket packet = prepareAppendEntriesRequest(nodeId);
+					remoteNode.getChannel().writeAndFlush(packet);
+					Logger.getGlobal().info("sent append entries request to nodeId: " + nodeId + "request: " + packet);
+				} else {
+					Logger.getGlobal().info("channel not active, cannot send append entries to nodeId: " + nodeId);
+				}
+				
+				rescheduleAppendEntriesTask(nodeId, TimerRoutine.getHeartbeatSendDelay());
+			}
+		};
+		
+		return task;
+	}
+	
+	/********************************************************************************/
+	/* add logs */
+	/********************************************************************************/
+	// get next index for creating new logs
+	private int getNextLogIndex() {
+		LogEntry entry = getLastLogEntry();
+		int nextLogIndex = entry != null ? entry.getIndex() + 1 : DEFAULT_LOG_INDEX;
+		return nextLogIndex;
+	}
+	
+	public void addLogs(List<LogEntry> entries) {
+		Logger.getGlobal().info("adding new entries to logs, size: " + entries.size());
+		
+		if (nodeType == NodeType.Leader && entries.size() > 0) {
+			NodeStateMongoDB.getInstance().commitLogEntries(entries);
+			lastLogEntry = entries.get(entries.size() - 1);
+		}
+	}
+	
+	//todo: this method should be removed
+	private void generateDummyLogs() {
+		int nextLogIndex = getNextLogIndex();
+		
+		LogEntry entry1 = 
+				LogEntry
+				.newBuilder()
+				.setTerm(state.getCurrentTerm())
+				.setIndex(nextLogIndex++)
+				.setCommand("dummy command")
+				.build();
+		
+		LogEntry entry2 = 
+				LogEntry
+				.newBuilder()
+				.setTerm(state.getCurrentTerm())
+				.setIndex(nextLogIndex++)
+				.setCommand("dummy command")
+				.build();
+		
+		List<LogEntry> entries = new ArrayList<LogEntry>();
+		entries.add(entry1);
+		entries.add(entry2);
+		addLogs(entries);
+	}
 	
 	/********************************************************************************/
 	/* Node state */
@@ -413,19 +768,20 @@ public class RaftNode {
 	
 	public class State {
 		// persistent variables
-		private int currentTerm = 1;
-		private int votedFor = -1;
+		private int currentTerm = 0;
 		private int lastApplied = 0;
+		private int lastVotedTerm = 0;
 		
 		// volatile variables 
 		private RoutingConf conf;
 		private NodeConf nodeConf;
 		private int commitIndex = 0;
-		private int lastVotedTerm;
+		private int currentLeader = 0;
 		
 		// leader variables
-		private Map<Integer, Integer> nextIndices = new HashMap<Integer, Integer>();
-		private Map<Integer, Integer> matchIndices = new HashMap<Integer, Integer>();
+		private Map<Integer, Integer> nextIndices = new ConcurrentHashMap<Integer, Integer>();
+		private Map<Integer, Integer> matchIndices = new ConcurrentHashMap<Integer, Integer>();
+		private Map<Integer, Integer> logIndexTermMap = new ConcurrentHashMap<Integer, Integer>();
 		
 		// election variables
 		private int votesReceived;
@@ -436,7 +792,7 @@ public class RaftNode {
 			return currentTerm;
 		}
 		
-		public void setCurrentTerm(int currentTerm) {
+		public synchronized void setCurrentTerm(int currentTerm) {
 			this.currentTerm = currentTerm;
 		}
 		
@@ -444,7 +800,7 @@ public class RaftNode {
 			return lastApplied;
 		}
 		
-		public void setLastApplied(int lastApplied) {
+		public synchronized void setLastApplied(int lastApplied) {
 			this.lastApplied = lastApplied;
 		}
 		
@@ -452,7 +808,7 @@ public class RaftNode {
 			return conf;
 		}
 		
-		public void setConf(RoutingConf conf) {
+		public synchronized void setConf(RoutingConf conf) {
 			this.conf = conf;
 		}
 		
@@ -460,7 +816,7 @@ public class RaftNode {
 			return nodeConf;
 		}
 		
-		public void setNodeConf(NodeConf conf) {
+		public synchronized void setNodeConf(NodeConf conf) {
 			this.nodeConf = conf;
 		}
 		
@@ -468,7 +824,7 @@ public class RaftNode {
 			return commitIndex;
 		}
 		
-		public void setCommitIndex(int commitIndex) {
+		public synchronized void setCommitIndex(int commitIndex) {
 			this.commitIndex = commitIndex;
 		}
 		
@@ -476,7 +832,7 @@ public class RaftNode {
 			return lastVotedTerm;
 		}
 		
-		public void setLastVotedTerm(int term) {
+		public synchronized void setLastVotedTerm(int term) {
 			lastVotedTerm = term;
 		}
 		
@@ -489,7 +845,7 @@ public class RaftNode {
 			return votesReceived;
 		}
 		
-		public void setVotesReceived(int votesReceived) {
+		public synchronized void setVotesReceived(int votesReceived) {
 			this.votesReceived = votesReceived;
 		}
 		
@@ -497,7 +853,7 @@ public class RaftNode {
 			return votesExpected;
 		}
 		
-		public void setVotesExpected(int votesExpected) {
+		public synchronized void setVotesExpected(int votesExpected) {
 			this.votesExpected = votesExpected;
 		}
 		
@@ -505,24 +861,62 @@ public class RaftNode {
 			return yesVotes;
 		}
 		
-		public void setYesVotes(int yesVotes) {
+		public synchronized void setYesVotes(int yesVotes) {
 			this.yesVotes = yesVotes;
 		}
 		
+		public int getCurrentLeader() {
+			return currentLeader;
+		}
+
+		public synchronized void setCurrentLeader(int currentLeader) {
+			this.currentLeader = currentLeader;
+		}
+
+		public Map<Integer, Integer> getNextIndices() {
+			return nextIndices;
+		}
+		
+		public Map<Integer, Integer> getMatchIndices() {
+			return matchIndices;
+		}
+		
+		public Map<Integer, Integer> getLogIndexTermMap() {
+			return logIndexTermMap;
+		}
+
 		public synchronized void incrementCurrentTerm() {
 			currentTerm++;
 		}
 		
-		public void incrementVotesExpected() {
+		public synchronized void incrementVotesExpected() {
 			votesExpected++;
 		}
 		
-		public void incrementVotesReceived() {
+		public synchronized void incrementVotesReceived() {
 			votesReceived++;
 		}
 		
-		public void incrementYesVotes() {
+		public synchronized void incrementYesVotes() {
 			yesVotes++;
+		}
+		
+		public void resetNextIndices() {
+			LogEntry entry = getLastLogEntry();
+			int nextIndex = entry != null ? entry.getIndex() + 1: DEFAULT_LOG_INDEX;
+			for (RemoteNode node : NodeMonitor.getInstance().getNodeMap().values()) {
+				nextIndices.put(node.getNodeConf().getNodeId(), nextIndex);
+			}
+		}
+		
+		public void resetmatchIndices() {
+			for (RemoteNode node : NodeMonitor.getInstance().getNodeMap().values()) {
+				matchIndices.put(node.getNodeConf().getNodeId(), 0);
+			}
+		}
+		
+		public void resetLogIndexTermMap() {
+			logIndexTermMap.clear();
 		}
 	}
 
