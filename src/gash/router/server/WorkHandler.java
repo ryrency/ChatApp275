@@ -45,7 +45,7 @@ public class WorkHandler extends SimpleChannelInboundHandler<InternalPacket> {
 			.get(nodeId)
 			.setChannel(channel);
 		} else if (packet.hasForwardMessageRequest()) {
-			Logger.getGlobal().info("Call interface function");
+			RaftNode.getInstance().addMessage(packet.getForwardMessageRequest().getMessage());
 		}
 	}
 

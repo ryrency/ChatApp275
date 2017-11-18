@@ -179,6 +179,8 @@ public class RaftNode {
 		state.resetNextIndices();
 		state.resetmatchIndices();
 		state.resetLogIndexTermMap();
+		state.setCurrentLeader(state.getNodeConf().getNodeId());
+		
 		sendAppendEntriesRequests();
 		
 		//todo: start discovery servers

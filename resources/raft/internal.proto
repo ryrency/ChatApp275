@@ -1,5 +1,6 @@
 syntax="proto2";
 package raft.proto;
+import "pipe.proto";
 option optimize_for = SPEED;
 
 // AppendEntries
@@ -46,15 +47,8 @@ message ConnectionActiveAck {
 	required int32 nodeId = 1;
 }
 
-message ForwardMessageRequest{
-
-    //a node should not have a value though this is not enforced
-    required string senderId = 1;
-    required string payload = 2;
-    required string receiverId = 3; 
-    required string timestamp = 4;
-    
-    
+message ForwardMessageRequest{    
+    required Message message = 1;
 }
 message InternalPacket {
 	oneof payload{

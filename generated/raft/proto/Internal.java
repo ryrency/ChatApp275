@@ -5135,72 +5135,17 @@ public final class Internal {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <pre>
-     *a node should not have a value though this is not enforced
-     * </pre>
-     *
-     * <code>required string senderId = 1;</code>
+     * <code>required .Message message = 1;</code>
      */
-    boolean hasSenderId();
+    boolean hasMessage();
     /**
-     * <pre>
-     *a node should not have a value though this is not enforced
-     * </pre>
-     *
-     * <code>required string senderId = 1;</code>
+     * <code>required .Message message = 1;</code>
      */
-    java.lang.String getSenderId();
+    routing.Pipe.Message getMessage();
     /**
-     * <pre>
-     *a node should not have a value though this is not enforced
-     * </pre>
-     *
-     * <code>required string senderId = 1;</code>
+     * <code>required .Message message = 1;</code>
      */
-    com.google.protobuf.ByteString
-        getSenderIdBytes();
-
-    /**
-     * <code>required string payload = 2;</code>
-     */
-    boolean hasPayload();
-    /**
-     * <code>required string payload = 2;</code>
-     */
-    java.lang.String getPayload();
-    /**
-     * <code>required string payload = 2;</code>
-     */
-    com.google.protobuf.ByteString
-        getPayloadBytes();
-
-    /**
-     * <code>required string receiverId = 3;</code>
-     */
-    boolean hasReceiverId();
-    /**
-     * <code>required string receiverId = 3;</code>
-     */
-    java.lang.String getReceiverId();
-    /**
-     * <code>required string receiverId = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getReceiverIdBytes();
-
-    /**
-     * <code>required string timestamp = 4;</code>
-     */
-    boolean hasTimestamp();
-    /**
-     * <code>required string timestamp = 4;</code>
-     */
-    java.lang.String getTimestamp();
-    /**
-     * <code>required string timestamp = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getTimestampBytes();
+    routing.Pipe.MessageOrBuilder getMessageOrBuilder();
   }
   /**
    * Protobuf type {@code raft.proto.ForwardMessageRequest}
@@ -5214,10 +5159,6 @@ public final class Internal {
       super(builder);
     }
     private ForwardMessageRequest() {
-      senderId_ = "";
-      payload_ = "";
-      receiverId_ = "";
-      timestamp_ = "";
     }
 
     @java.lang.Override
@@ -5249,27 +5190,16 @@ public final class Internal {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              routing.Pipe.Message.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = message_.toBuilder();
+              }
+              message_ = input.readMessage(routing.Pipe.Message.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(message_);
+                message_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000001;
-              senderId_ = bs;
-              break;
-            }
-            case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              payload_ = bs;
-              break;
-            }
-            case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              receiverId_ = bs;
-              break;
-            }
-            case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              timestamp_ = bs;
               break;
             }
           }
@@ -5297,184 +5227,25 @@ public final class Internal {
     }
 
     private int bitField0_;
-    public static final int SENDERID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object senderId_;
+    public static final int MESSAGE_FIELD_NUMBER = 1;
+    private routing.Pipe.Message message_;
     /**
-     * <pre>
-     *a node should not have a value though this is not enforced
-     * </pre>
-     *
-     * <code>required string senderId = 1;</code>
+     * <code>required .Message message = 1;</code>
      */
-    public boolean hasSenderId() {
+    public boolean hasMessage() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <pre>
-     *a node should not have a value though this is not enforced
-     * </pre>
-     *
-     * <code>required string senderId = 1;</code>
+     * <code>required .Message message = 1;</code>
      */
-    public java.lang.String getSenderId() {
-      java.lang.Object ref = senderId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          senderId_ = s;
-        }
-        return s;
-      }
+    public routing.Pipe.Message getMessage() {
+      return message_ == null ? routing.Pipe.Message.getDefaultInstance() : message_;
     }
     /**
-     * <pre>
-     *a node should not have a value though this is not enforced
-     * </pre>
-     *
-     * <code>required string senderId = 1;</code>
+     * <code>required .Message message = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getSenderIdBytes() {
-      java.lang.Object ref = senderId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        senderId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int PAYLOAD_FIELD_NUMBER = 2;
-    private volatile java.lang.Object payload_;
-    /**
-     * <code>required string payload = 2;</code>
-     */
-    public boolean hasPayload() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required string payload = 2;</code>
-     */
-    public java.lang.String getPayload() {
-      java.lang.Object ref = payload_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          payload_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string payload = 2;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPayloadBytes() {
-      java.lang.Object ref = payload_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        payload_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int RECEIVERID_FIELD_NUMBER = 3;
-    private volatile java.lang.Object receiverId_;
-    /**
-     * <code>required string receiverId = 3;</code>
-     */
-    public boolean hasReceiverId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required string receiverId = 3;</code>
-     */
-    public java.lang.String getReceiverId() {
-      java.lang.Object ref = receiverId_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          receiverId_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string receiverId = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getReceiverIdBytes() {
-      java.lang.Object ref = receiverId_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        receiverId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int TIMESTAMP_FIELD_NUMBER = 4;
-    private volatile java.lang.Object timestamp_;
-    /**
-     * <code>required string timestamp = 4;</code>
-     */
-    public boolean hasTimestamp() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>required string timestamp = 4;</code>
-     */
-    public java.lang.String getTimestamp() {
-      java.lang.Object ref = timestamp_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          timestamp_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string timestamp = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getTimestampBytes() {
-      java.lang.Object ref = timestamp_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        timestamp_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
+    public routing.Pipe.MessageOrBuilder getMessageOrBuilder() {
+      return message_ == null ? routing.Pipe.Message.getDefaultInstance() : message_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -5483,19 +5254,11 @@ public final class Internal {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasSenderId()) {
+      if (!hasMessage()) {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasPayload()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasReceiverId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasTimestamp()) {
+      if (!getMessage().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -5506,16 +5269,7 @@ public final class Internal {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, senderId_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, payload_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, receiverId_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, timestamp_);
+        output.writeMessage(1, getMessage());
       }
       unknownFields.writeTo(output);
     }
@@ -5526,16 +5280,8 @@ public final class Internal {
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, senderId_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, payload_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, receiverId_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, timestamp_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, getMessage());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5554,25 +5300,10 @@ public final class Internal {
       raft.proto.Internal.ForwardMessageRequest other = (raft.proto.Internal.ForwardMessageRequest) obj;
 
       boolean result = true;
-      result = result && (hasSenderId() == other.hasSenderId());
-      if (hasSenderId()) {
-        result = result && getSenderId()
-            .equals(other.getSenderId());
-      }
-      result = result && (hasPayload() == other.hasPayload());
-      if (hasPayload()) {
-        result = result && getPayload()
-            .equals(other.getPayload());
-      }
-      result = result && (hasReceiverId() == other.hasReceiverId());
-      if (hasReceiverId()) {
-        result = result && getReceiverId()
-            .equals(other.getReceiverId());
-      }
-      result = result && (hasTimestamp() == other.hasTimestamp());
-      if (hasTimestamp()) {
-        result = result && getTimestamp()
-            .equals(other.getTimestamp());
+      result = result && (hasMessage() == other.hasMessage());
+      if (hasMessage()) {
+        result = result && getMessage()
+            .equals(other.getMessage());
       }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
@@ -5585,21 +5316,9 @@ public final class Internal {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasSenderId()) {
-        hash = (37 * hash) + SENDERID_FIELD_NUMBER;
-        hash = (53 * hash) + getSenderId().hashCode();
-      }
-      if (hasPayload()) {
-        hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
-        hash = (53 * hash) + getPayload().hashCode();
-      }
-      if (hasReceiverId()) {
-        hash = (37 * hash) + RECEIVERID_FIELD_NUMBER;
-        hash = (53 * hash) + getReceiverId().hashCode();
-      }
-      if (hasTimestamp()) {
-        hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-        hash = (53 * hash) + getTimestamp().hashCode();
+      if (hasMessage()) {
+        hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+        hash = (53 * hash) + getMessage().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -5715,18 +5434,17 @@ public final class Internal {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
+          getMessageFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
-        senderId_ = "";
+        if (messageBuilder_ == null) {
+          message_ = null;
+        } else {
+          messageBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000001);
-        payload_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
-        receiverId_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        timestamp_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -5754,19 +5472,11 @@ public final class Internal {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.senderId_ = senderId_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
+        if (messageBuilder_ == null) {
+          result.message_ = message_;
+        } else {
+          result.message_ = messageBuilder_.build();
         }
-        result.payload_ = payload_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.receiverId_ = receiverId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.timestamp_ = timestamp_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5809,25 +5519,8 @@ public final class Internal {
 
       public Builder mergeFrom(raft.proto.Internal.ForwardMessageRequest other) {
         if (other == raft.proto.Internal.ForwardMessageRequest.getDefaultInstance()) return this;
-        if (other.hasSenderId()) {
-          bitField0_ |= 0x00000001;
-          senderId_ = other.senderId_;
-          onChanged();
-        }
-        if (other.hasPayload()) {
-          bitField0_ |= 0x00000002;
-          payload_ = other.payload_;
-          onChanged();
-        }
-        if (other.hasReceiverId()) {
-          bitField0_ |= 0x00000004;
-          receiverId_ = other.receiverId_;
-          onChanged();
-        }
-        if (other.hasTimestamp()) {
-          bitField0_ |= 0x00000008;
-          timestamp_ = other.timestamp_;
-          onChanged();
+        if (other.hasMessage()) {
+          mergeMessage(other.getMessage());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5835,16 +5528,10 @@ public final class Internal {
       }
 
       public final boolean isInitialized() {
-        if (!hasSenderId()) {
+        if (!hasMessage()) {
           return false;
         }
-        if (!hasPayload()) {
-          return false;
-        }
-        if (!hasReceiverId()) {
-          return false;
-        }
-        if (!hasTimestamp()) {
+        if (!getMessage().isInitialized()) {
           return false;
         }
         return true;
@@ -5869,332 +5556,122 @@ public final class Internal {
       }
       private int bitField0_;
 
-      private java.lang.Object senderId_ = "";
+      private routing.Pipe.Message message_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          routing.Pipe.Message, routing.Pipe.Message.Builder, routing.Pipe.MessageOrBuilder> messageBuilder_;
       /**
-       * <pre>
-       *a node should not have a value though this is not enforced
-       * </pre>
-       *
-       * <code>required string senderId = 1;</code>
+       * <code>required .Message message = 1;</code>
        */
-      public boolean hasSenderId() {
+      public boolean hasMessage() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <pre>
-       *a node should not have a value though this is not enforced
-       * </pre>
-       *
-       * <code>required string senderId = 1;</code>
+       * <code>required .Message message = 1;</code>
        */
-      public java.lang.String getSenderId() {
-        java.lang.Object ref = senderId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            senderId_ = s;
+      public routing.Pipe.Message getMessage() {
+        if (messageBuilder_ == null) {
+          return message_ == null ? routing.Pipe.Message.getDefaultInstance() : message_;
+        } else {
+          return messageBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .Message message = 1;</code>
+       */
+      public Builder setMessage(routing.Pipe.Message value) {
+        if (messageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
           }
-          return s;
+          message_ = value;
+          onChanged();
         } else {
-          return (java.lang.String) ref;
+          messageBuilder_.setMessage(value);
         }
-      }
-      /**
-       * <pre>
-       *a node should not have a value though this is not enforced
-       * </pre>
-       *
-       * <code>required string senderId = 1;</code>
-       */
-      public com.google.protobuf.ByteString
-          getSenderIdBytes() {
-        java.lang.Object ref = senderId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          senderId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <pre>
-       *a node should not have a value though this is not enforced
-       * </pre>
-       *
-       * <code>required string senderId = 1;</code>
-       */
-      public Builder setSenderId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        senderId_ = value;
-        onChanged();
+        bitField0_ |= 0x00000001;
         return this;
       }
       /**
-       * <pre>
-       *a node should not have a value though this is not enforced
-       * </pre>
-       *
-       * <code>required string senderId = 1;</code>
+       * <code>required .Message message = 1;</code>
        */
-      public Builder clearSenderId() {
+      public Builder setMessage(
+          routing.Pipe.Message.Builder builderForValue) {
+        if (messageBuilder_ == null) {
+          message_ = builderForValue.build();
+          onChanged();
+        } else {
+          messageBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .Message message = 1;</code>
+       */
+      public Builder mergeMessage(routing.Pipe.Message value) {
+        if (messageBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              message_ != null &&
+              message_ != routing.Pipe.Message.getDefaultInstance()) {
+            message_ =
+              routing.Pipe.Message.newBuilder(message_).mergeFrom(value).buildPartial();
+          } else {
+            message_ = value;
+          }
+          onChanged();
+        } else {
+          messageBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>required .Message message = 1;</code>
+       */
+      public Builder clearMessage() {
+        if (messageBuilder_ == null) {
+          message_ = null;
+          onChanged();
+        } else {
+          messageBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000001);
-        senderId_ = getDefaultInstance().getSenderId();
-        onChanged();
         return this;
       }
       /**
-       * <pre>
-       *a node should not have a value though this is not enforced
-       * </pre>
-       *
-       * <code>required string senderId = 1;</code>
+       * <code>required .Message message = 1;</code>
        */
-      public Builder setSenderIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
-        senderId_ = value;
+      public routing.Pipe.Message.Builder getMessageBuilder() {
+        bitField0_ |= 0x00000001;
         onChanged();
-        return this;
-      }
-
-      private java.lang.Object payload_ = "";
-      /**
-       * <code>required string payload = 2;</code>
-       */
-      public boolean hasPayload() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+        return getMessageFieldBuilder().getBuilder();
       }
       /**
-       * <code>required string payload = 2;</code>
+       * <code>required .Message message = 1;</code>
        */
-      public java.lang.String getPayload() {
-        java.lang.Object ref = payload_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            payload_ = s;
-          }
-          return s;
+      public routing.Pipe.MessageOrBuilder getMessageOrBuilder() {
+        if (messageBuilder_ != null) {
+          return messageBuilder_.getMessageOrBuilder();
         } else {
-          return (java.lang.String) ref;
+          return message_ == null ?
+              routing.Pipe.Message.getDefaultInstance() : message_;
         }
       }
       /**
-       * <code>required string payload = 2;</code>
+       * <code>required .Message message = 1;</code>
        */
-      public com.google.protobuf.ByteString
-          getPayloadBytes() {
-        java.lang.Object ref = payload_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          payload_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          routing.Pipe.Message, routing.Pipe.Message.Builder, routing.Pipe.MessageOrBuilder> 
+          getMessageFieldBuilder() {
+        if (messageBuilder_ == null) {
+          messageBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              routing.Pipe.Message, routing.Pipe.Message.Builder, routing.Pipe.MessageOrBuilder>(
+                  getMessage(),
+                  getParentForChildren(),
+                  isClean());
+          message_ = null;
         }
-      }
-      /**
-       * <code>required string payload = 2;</code>
-       */
-      public Builder setPayload(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        payload_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string payload = 2;</code>
-       */
-      public Builder clearPayload() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        payload_ = getDefaultInstance().getPayload();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string payload = 2;</code>
-       */
-      public Builder setPayloadBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
-        payload_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object receiverId_ = "";
-      /**
-       * <code>required string receiverId = 3;</code>
-       */
-      public boolean hasReceiverId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required string receiverId = 3;</code>
-       */
-      public java.lang.String getReceiverId() {
-        java.lang.Object ref = receiverId_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            receiverId_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string receiverId = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getReceiverIdBytes() {
-        java.lang.Object ref = receiverId_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          receiverId_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string receiverId = 3;</code>
-       */
-      public Builder setReceiverId(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        receiverId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string receiverId = 3;</code>
-       */
-      public Builder clearReceiverId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        receiverId_ = getDefaultInstance().getReceiverId();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string receiverId = 3;</code>
-       */
-      public Builder setReceiverIdBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        receiverId_ = value;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object timestamp_ = "";
-      /**
-       * <code>required string timestamp = 4;</code>
-       */
-      public boolean hasTimestamp() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>required string timestamp = 4;</code>
-       */
-      public java.lang.String getTimestamp() {
-        java.lang.Object ref = timestamp_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            timestamp_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string timestamp = 4;</code>
-       */
-      public com.google.protobuf.ByteString
-          getTimestampBytes() {
-        java.lang.Object ref = timestamp_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          timestamp_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string timestamp = 4;</code>
-       */
-      public Builder setTimestamp(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        timestamp_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string timestamp = 4;</code>
-       */
-      public Builder clearTimestamp() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        timestamp_ = getDefaultInstance().getTimestamp();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required string timestamp = 4;</code>
-       */
-      public Builder setTimestampBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        timestamp_ = value;
-        onChanged();
-        return this;
+        return messageBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -9723,39 +9200,38 @@ public final class Internal {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\023raft/internal.proto\022\nraft.proto\"\236\001\n\024Ap" +
-      "pendEntriesRequest\022\014\n\004term\030\001 \002(\005\022\020\n\010lead" +
-      "erId\030\002 \002(\005\022\024\n\014prevLogIndex\030\003 \002(\005\022\023\n\013prev" +
-      "LogTerm\030\004 \002(\005\022\024\n\014leaderCommit\030\005 \002(\005\022%\n\007e" +
-      "ntries\030\006 \003(\0132\024.raft.proto.LogEntry\"Z\n\025Ap" +
-      "pendEntriesResponse\022\014\n\004term\030\001 \002(\005\022\017\n\007suc" +
-      "cess\030\002 \002(\010\022\016\n\006nodeId\030\003 \002(\005\022\022\n\nmatchIndex" +
-      "\030\004 \002(\005\"\326\001\n\010LogEntry\022\014\n\004term\030\001 \002(\005\022\r\n\005ind" +
-      "ex\030\002 \002(\005\022.\n\013userPayload\030\003 \001(\0132\027.raft.pro" +
-      "to.UserPayloadH\000\0224\n\016messagePayload\030\004 \001(\013",
-      "2\032.raft.proto.MessagePayLoadH\000\022<\n\022messag" +
-      "eReadPayload\030\005 \001(\0132\036.raft.proto.MessageR" +
-      "eadPayloadH\000B\t\n\007payload\"[\n\013VoteRequest\022\014" +
-      "\n\004term\030\001 \002(\005\022\023\n\013candidateId\030\002 \002(\005\022\024\n\014las" +
-      "tLogIndex\030\003 \002(\005\022\023\n\013lastLogTerm\030\004 \002(\005\"1\n\014" +
-      "VoteResponse\022\014\n\004term\030\001 \002(\005\022\023\n\013voteGrante" +
-      "d\030\002 \002(\010\"%\n\023ConnectionActiveAck\022\016\n\006nodeId" +
-      "\030\001 \002(\005\"a\n\025ForwardMessageRequest\022\020\n\010sende" +
-      "rId\030\001 \002(\t\022\017\n\007payload\030\002 \002(\t\022\022\n\nreceiverId" +
-      "\030\003 \002(\t\022\021\n\ttimestamp\030\004 \002(\t\"\207\003\n\016InternalPa",
-      "cket\022@\n\024appendEntriesRequest\030\001 \001(\0132 .raf" +
-      "t.proto.AppendEntriesRequestH\000\022B\n\025append" +
-      "EntriesResponse\030\002 \001(\0132!.raft.proto.Appen" +
-      "dEntriesResponseH\000\022.\n\013voteRequest\030\003 \001(\0132" +
-      "\027.raft.proto.VoteRequestH\000\0220\n\014voteRespon" +
-      "se\030\004 \001(\0132\030.raft.proto.VoteResponseH\000\022>\n\023" +
-      "connectionActiveAck\030\005 \001(\0132\037.raft.proto.C" +
-      "onnectionActiveAckH\000\022B\n\025forwardMessageRe" +
-      "quest\030\006 \001(\0132!.raft.proto.ForwardMessageR" +
-      "equestH\000B\t\n\007payload\"\036\n\013UserPayload\022\017\n\007pa",
-      "yload\030\001 \002(\014\"!\n\016MessagePayLoad\022\017\n\007payload" +
-      "\030\001 \002(\014\":\n\022MessageReadPayload\022\r\n\005uname\030\001 " +
-      "\002(\t\022\025\n\rlastSeenIndex\030\002 \002(\005B\002H\001"
+      "\n\023raft/internal.proto\022\nraft.proto\032\npipe." +
+      "proto\"\236\001\n\024AppendEntriesRequest\022\014\n\004term\030\001" +
+      " \002(\005\022\020\n\010leaderId\030\002 \002(\005\022\024\n\014prevLogIndex\030\003" +
+      " \002(\005\022\023\n\013prevLogTerm\030\004 \002(\005\022\024\n\014leaderCommi" +
+      "t\030\005 \002(\005\022%\n\007entries\030\006 \003(\0132\024.raft.proto.Lo" +
+      "gEntry\"Z\n\025AppendEntriesResponse\022\014\n\004term\030" +
+      "\001 \002(\005\022\017\n\007success\030\002 \002(\010\022\016\n\006nodeId\030\003 \002(\005\022\022" +
+      "\n\nmatchIndex\030\004 \002(\005\"\326\001\n\010LogEntry\022\014\n\004term\030" +
+      "\001 \002(\005\022\r\n\005index\030\002 \002(\005\022.\n\013userPayload\030\003 \001(" +
+      "\0132\027.raft.proto.UserPayloadH\000\0224\n\016messageP",
+      "ayload\030\004 \001(\0132\032.raft.proto.MessagePayLoad" +
+      "H\000\022<\n\022messageReadPayload\030\005 \001(\0132\036.raft.pr" +
+      "oto.MessageReadPayloadH\000B\t\n\007payload\"[\n\013V" +
+      "oteRequest\022\014\n\004term\030\001 \002(\005\022\023\n\013candidateId\030" +
+      "\002 \002(\005\022\024\n\014lastLogIndex\030\003 \002(\005\022\023\n\013lastLogTe" +
+      "rm\030\004 \002(\005\"1\n\014VoteResponse\022\014\n\004term\030\001 \002(\005\022\023" +
+      "\n\013voteGranted\030\002 \002(\010\"%\n\023ConnectionActiveA" +
+      "ck\022\016\n\006nodeId\030\001 \002(\005\"2\n\025ForwardMessageRequ" +
+      "est\022\031\n\007message\030\001 \002(\0132\010.Message\"\207\003\n\016Inter" +
+      "nalPacket\022@\n\024appendEntriesRequest\030\001 \001(\0132",
+      " .raft.proto.AppendEntriesRequestH\000\022B\n\025a" +
+      "ppendEntriesResponse\030\002 \001(\0132!.raft.proto." +
+      "AppendEntriesResponseH\000\022.\n\013voteRequest\030\003" +
+      " \001(\0132\027.raft.proto.VoteRequestH\000\0220\n\014voteR" +
+      "esponse\030\004 \001(\0132\030.raft.proto.VoteResponseH" +
+      "\000\022>\n\023connectionActiveAck\030\005 \001(\0132\037.raft.pr" +
+      "oto.ConnectionActiveAckH\000\022B\n\025forwardMess" +
+      "ageRequest\030\006 \001(\0132!.raft.proto.ForwardMes" +
+      "sageRequestH\000B\t\n\007payload\"\036\n\013UserPayload\022" +
+      "\017\n\007payload\030\001 \002(\014\"!\n\016MessagePayLoad\022\017\n\007pa",
+      "yload\030\001 \002(\014\":\n\022MessageReadPayload\022\r\n\005una" +
+      "me\030\001 \002(\t\022\025\n\rlastSeenIndex\030\002 \002(\005B\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9768,6 +9244,7 @@ public final class Internal {
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          routing.Pipe.getDescriptor(),
         }, assigner);
     internal_static_raft_proto_AppendEntriesRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
@@ -9810,7 +9287,7 @@ public final class Internal {
     internal_static_raft_proto_ForwardMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_ForwardMessageRequest_descriptor,
-        new java.lang.String[] { "SenderId", "Payload", "ReceiverId", "Timestamp", });
+        new java.lang.String[] { "Message", });
     internal_static_raft_proto_InternalPacket_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_raft_proto_InternalPacket_fieldAccessorTable = new
@@ -9835,6 +9312,7 @@ public final class Internal {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_MessageReadPayload_descriptor,
         new java.lang.String[] { "Uname", "LastSeenIndex", });
+    routing.Pipe.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -57,26 +57,26 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 * @param msg
 	 */
 	public void handleMessage(Route msg, Channel channel) {
+		Logger.getGlobal().info("server received message from client");
 		if (msg == null) {
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
 		}
 		
 		currentNodeId = NodeMonitor.getInstance().getNodeConf().getNodeId();
-		
 		currentLeaderId = RaftNode.getInstance().getState().getCurrentLeader();
+		
+		Logger.getGlobal().info("server state - nodeId: " + currentNodeId + ", leaderID: " + currentLeaderId);
 		
 		if (currentNodeId == currentLeaderId) {
 			//Append entries needs to be called 
-			System.out.println("Leader is going to handle");
-		}else {
+			Logger.getGlobal().info("Leader is going to handle");
+			RaftNode.getInstance().addMessage(msg.getMessage());
+		} else {
 			ForwardMessageRequest request = 
 					ForwardMessageRequest
 					.newBuilder()
-					.setSenderId(msg.getMessage().getSenderId())
-					.setPayload(msg.getMessage().getPayload())
-					.setReceiverId(msg.getMessage().getReceiverId())
-					.setTimestamp(msg.getMessage().getTimestamp())
+					.setMessage(msg.getMessage())
 					.build();
 			
 			InternalPacket packet = 
