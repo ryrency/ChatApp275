@@ -45,9 +45,12 @@ public class MessageMongoDB {
 		try {
 			Logger.getGlobal().info("connecting to mongodb for messages");
 			NodeConf conf = RaftNode.getInstance().getState().getNodeConf();
-			mongoClient = new MongoClient(conf.getHost(), conf.getMongoPort());
+			mongoClient = new MongoClient("127.0.0.1", conf.getMongoPort());
 			database = mongoClient.getDatabase(DB_NAME);
 			dbCollection = database.getCollection(COLLECTION_NAME);
+			
+			//todo: remove this
+			dbCollection.drop();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;

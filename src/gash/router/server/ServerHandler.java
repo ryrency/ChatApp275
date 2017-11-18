@@ -94,29 +94,34 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 				leaderRemoteNode.getChannel().writeAndFlush(packet);
 			}	
 		}
+		
+		
 
 		System.out.println("---> " + msg.getId() + ": " + msg.getPath());
 		
-		try {
-			String clazz = routing.get("/"+msg.getPath().toString().toLowerCase());
-			if(clazz != null) {
-				RouteResource routeResource = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
-				Route response = routeResource.process(msg);
-				if(response!=null) {
-					channel.writeAndFlush(response).sync();
-				}
-				
-			}
-			else {
-				// TODO add logging
-				System.out.println("ERROR: unknown path - " + msg.getPath());
-			}
-			
-		}
-		catch (Exception ex) {
-			// TODO add logging
-			System.out.println("ERROR: processing request - " + ex.getMessage());
-		}
+		//todo: remove this NOW!
+		channel.writeAndFlush(msg);
+		
+//		try {
+//			String clazz = routing.get("/"+msg.getPath().toString().toLowerCase());
+//			if(clazz != null) {
+//				RouteResource routeResource = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
+//				Route response = routeResource.process(msg);
+//				if(response!=null) {
+//					channel.writeAndFlush(response).sync();
+//				}
+//				
+//			}
+//			else {
+//				// TODO add logging
+//				System.out.println("ERROR: unknown path - " + msg.getPath());
+//			}
+//			
+//		}
+//		catch (Exception ex) {
+//			// TODO add logging
+//			System.out.println("ERROR: processing request - " + ex.getMessage());
+//		}
 
 		System.out.flush();
 

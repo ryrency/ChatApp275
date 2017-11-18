@@ -65,7 +65,7 @@ public class RaftNode {
 	private NodeType nodeType;
 	private State state;
 	private LogEntry lastLogEntry = null;
-	private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(3);
+	private ScheduledExecutor executor = new ScheduledExecutor(3);
 	private Map<Integer, Runnable> appendEntriesTask = new ConcurrentHashMap<Integer, Runnable>();
 	private Map<Integer, ScheduledFuture<Void>> appendEntriesFutures = new ConcurrentHashMap<Integer, ScheduledFuture<Void>>();
 	
@@ -405,7 +405,6 @@ public class RaftNode {
 			setNodeType(NodeType.Leader);
 		} else {
 			Logger.getGlobal().info(state.getNodeConf().getNodeId() + " has lost the election.");
-			NodeState.getInstance().setState(NodeState.FOLLOWER);
 			setNodeType(NodeType.Follower);
 		}
 	}
@@ -699,6 +698,23 @@ public class RaftNode {
 					applyLogs(entries);
 					state.setLastApplied(entries.get(entries.size() - 1).getIndex());
 					saveState();
+					
+					//todo: send client proper message using route in pipe.proto
+					// if logs have been applied send, message to active clients as well
+					for (LogEntry entry : entries) {
+						if (entry.hasMessagePayload()) {
+							if (ClientChannelCache.getInstance().getClientChannelMap().containsKey("username")) {
+								Channel channel = ClientChannelCache.getInstance().getClientChannelMap().get("username").getClienChannel();
+								if (channel.isActive()) {
+									Logger.getGlobal().info("flushing to client channel");
+									channel.writeAndFlush(entry);
+								} else {
+									Logger.getGlobal().info("channel closed, cannot flush to client");
+								}
+							}
+						}
+					}
+					
 					Logger.getGlobal().info("logs applied successfully, size: " + entries.size());
 				} else {
 					Logger.getGlobal().info("no logs to apply");

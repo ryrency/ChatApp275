@@ -1,6 +1,8 @@
 package gash.router.server;
 
 import gash.router.container.RoutingConf;
+import gash.router.server.raft.ClientChannelCache;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -48,5 +50,8 @@ public class ServerInit extends ChannelInitializer<SocketChannel> {
 
 		// our server processor (new instance for each connection)
 		pipeline.addLast("handler", new ServerHandler(conf));
+		
+		// fix user name
+		ClientChannelCache.getInstance().addClientChannelToMap("username", ch);
 	}
 }

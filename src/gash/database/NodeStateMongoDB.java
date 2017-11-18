@@ -1,12 +1,12 @@
 package gash.database;
 
+import gash.router.container.NodeConf;
+import gash.router.server.raft.RaftNode;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
-
-import gash.router.container.NodeConf;
-import gash.router.server.raft.RaftNode;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -57,7 +57,7 @@ public class NodeStateMongoDB {
 	private NodeStateMongoDB() {
 		Logger.getGlobal().info("connecting to mongodb for node states");
 		NodeConf conf = RaftNode.getInstance().getState().getNodeConf();
-		mongoClient = new MongoClient(conf.getHost(), conf.getMongoPort());
+		mongoClient = new MongoClient("127.0.0.1", conf.getMongoPort());
 		database = mongoClient.getDatabase(DB_NAME);
 		logCollection = database.getCollection(LOG_COLLECTION_NAME);
 		nodeStateCollection = database.getCollection(NODE_STATE_COLLECTION_NAME);

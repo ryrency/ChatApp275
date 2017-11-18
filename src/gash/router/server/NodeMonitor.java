@@ -14,6 +14,7 @@ import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
 import gash.router.server.raft.MessageBuilder;
 import gash.router.server.raft.RaftNode;
+import gash.router.server.raft.ScheduledExecutor;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -35,7 +36,7 @@ public class NodeMonitor {
 //	static Bootstrap b;
 	NodeConf nodeConf;
 	private EventLoopGroup workerGroup = new NioEventLoopGroup();
-	private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+	private ScheduledExecutor executor = new ScheduledExecutor(1);
 
 	public static NodeMonitor instance;
 

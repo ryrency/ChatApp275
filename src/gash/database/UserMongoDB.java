@@ -38,7 +38,7 @@ public class UserMongoDB {
 			// TODO Auto-generated constructor stub
 			try {
 			NodeConf conf = RaftNode.getInstance().getState().getNodeConf();
-			mongoClient = new MongoClient(conf.getHost(), conf.getMongoPort());
+			mongoClient = new MongoClient("127.0.0.1", conf.getMongoPort());
 			database = mongoClient.getDatabase(DB_NAME);
 			dbCollection = database.getCollection(COLLECTION_NAME);
 			}
