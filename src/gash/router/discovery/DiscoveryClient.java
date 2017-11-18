@@ -2,6 +2,8 @@ package gash.router.discovery;
 
 import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
+import gash.router.server.NodeMonitor;
+import gash.utility.NetworkUtility;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -14,9 +16,15 @@ import io.netty.util.internal.SocketUtils;
 import routing.Pipe.NetworkDiscoveryPacket;
 import routing.Pipe.Route;
 
+import java.net.Inet4Address;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
 
-public final class DiscoveryClient implements Runnable {
+public final class DiscoveryClient {
 
     // track requests
     private static long curID = 0;
@@ -27,8 +35,8 @@ public final class DiscoveryClient implements Runnable {
         this.conf = conf;
     }
 
-    @Override
-    public void run() {
+   
+    public void doBroadcast() {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
@@ -42,14 +50,11 @@ public final class DiscoveryClient implements Runnable {
             // construct the networkDiscoveryPacket to send
             NetworkDiscoveryPacket.Builder ndpb = NetworkDiscoveryPacket.newBuilder();
             ndpb.setMode(NetworkDiscoveryPacket.Mode.REQUEST);
-            ndpb.setSender(NetworkDiscoveryPacket.Sender.INTERNAL_SERVER_NODE);
+            ndpb.setSender(NetworkDiscoveryPacket.Sender.EXTERNAL_SERVER_NODE);
             ndpb.setGroupTag(conf.getGroupTag());
-            //ndpb.setGroupTag("weCAN");
-            ndpb.setNodeAddress(InetAddress.getLocalHost().getHostAddress());
+            ndpb.setNodeAddress(NetworkUtility.getLocalHostAddress());
             ndpb.setNodePort(conf.getNetworkDiscoveryPort());
-            //ndpb.setNodePort(8887);
             ndpb.setSecret(conf.getSecret());
-            //ndpb.setSecret("secret");
 
             Route.Builder rb = Route.newBuilder();
             rb.setId(nextId());
@@ -59,14 +64,16 @@ public final class DiscoveryClient implements Runnable {
             // Broadcast the NetworkDiscovery request to internal discovery port.
             ch.writeAndFlush(new DatagramPacket(
                     Unpooled.copiedBuffer(rb.build().toByteArray()),
-                    SocketUtils.socketAddress("255.255.255.255", conf.getNetworkDiscoveryPort()))).sync();
+                    SocketUtils.socketAddress(NetworkUtility.getBroadcastAddress(), conf.getNetworkDiscoveryPort()))).sync();
+            System.out.println("Broadcast done!");
 
             // DiscoveryClientHandler will close the DatagramChannel when a
             // response is received.  If the channel is not closed within 5 seconds,
             // print an error message and quit.
-            if (!ch.closeFuture().await(5000)) {
-                System.err.println("NetworkDiscovery request timed out.");
-            }
+//            if (!ch.closeFuture().await(5000)) {
+//                System.err.println("NetworkDiscovery request timed out.");
+//            }
+            ch.closeFuture();
         } catch (Exception e) {
             System.out.println("Failed to read route." + e);
         } finally {
@@ -83,5 +90,7 @@ public final class DiscoveryClient implements Runnable {
     private static synchronized long nextId() {
         return ++curID;
     }
+    
+   
 }
 

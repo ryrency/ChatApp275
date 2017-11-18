@@ -13,11 +13,11 @@ public class NetworkDiscoveryResource implements RouteResource {
 	}
 
 	@Override
-	public Route process(Route msg, RoutingConf conf ){
+	public Route process(Route msg){
 		Route response = null;
 		if(msg.hasNetworkDiscoveryPacket()) {
 			
-		response = MessageBuilder.buildNetworkDiscoveryResponse(RaftNode.getInstance().getState().getNodeConf());
+		response = MessageBuilder.buildNetworkDiscoveryResponse(msg,RaftNode.getInstance().getState().getNodeConf());
 		}
 		return response;
 	}

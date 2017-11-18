@@ -3991,11 +3991,11 @@ public final class Pipe {
         getGnameBytes();
 
     /**
-     * <code>required int64 gid = 2;</code>
+     * <code>optional int64 gid = 2;</code>
      */
     boolean hasGid();
     /**
-     * <code>required int64 gid = 2;</code>
+     * <code>optional int64 gid = 2;</code>
      */
     long getGid();
 
@@ -4007,6 +4007,20 @@ public final class Pipe {
      * <code>required .Group.ActionType action = 3;</code>
      */
     routing.Pipe.Group.ActionType getAction();
+
+    /**
+     * <code>optional string username = 4;</code>
+     */
+    boolean hasUsername();
+    /**
+     * <code>optional string username = 4;</code>
+     */
+    java.lang.String getUsername();
+    /**
+     * <code>optional string username = 4;</code>
+     */
+    com.google.protobuf.ByteString
+        getUsernameBytes();
   }
   /**
    * Protobuf type {@code Group}
@@ -4024,6 +4038,7 @@ public final class Pipe {
       gname_ = "";
       gid_ = 0L;
       action_ = 0;
+      username_ = "";
     }
 
     @java.lang.Override
@@ -4076,6 +4091,12 @@ public final class Pipe {
               }
               break;
             }
+            case 34: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000008;
+              username_ = bs;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -4113,6 +4134,10 @@ public final class Pipe {
        * <code>DELETE = 1;</code>
        */
       DELETE(1),
+      /**
+       * <code>ADDUSER = 2;</code>
+       */
+      ADDUSER(2),
       ;
 
       /**
@@ -4123,6 +4148,10 @@ public final class Pipe {
        * <code>DELETE = 1;</code>
        */
       public static final int DELETE_VALUE = 1;
+      /**
+       * <code>ADDUSER = 2;</code>
+       */
+      public static final int ADDUSER_VALUE = 2;
 
 
       public final int getNumber() {
@@ -4141,6 +4170,7 @@ public final class Pipe {
         switch (value) {
           case 0: return CREATE;
           case 1: return DELETE;
+          case 2: return ADDUSER;
           default: return null;
         }
       }
@@ -4236,13 +4266,13 @@ public final class Pipe {
     public static final int GID_FIELD_NUMBER = 2;
     private long gid_;
     /**
-     * <code>required int64 gid = 2;</code>
+     * <code>optional int64 gid = 2;</code>
      */
     public boolean hasGid() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required int64 gid = 2;</code>
+     * <code>optional int64 gid = 2;</code>
      */
     public long getGid() {
       return gid_;
@@ -4264,6 +4294,48 @@ public final class Pipe {
       return result == null ? routing.Pipe.Group.ActionType.CREATE : result;
     }
 
+    public static final int USERNAME_FIELD_NUMBER = 4;
+    private volatile java.lang.Object username_;
+    /**
+     * <code>optional string username = 4;</code>
+     */
+    public boolean hasUsername() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional string username = 4;</code>
+     */
+    public java.lang.String getUsername() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          username_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string username = 4;</code>
+     */
+    public com.google.protobuf.ByteString
+        getUsernameBytes() {
+      java.lang.Object ref = username_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        username_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -4271,10 +4343,6 @@ public final class Pipe {
       if (isInitialized == 0) return false;
 
       if (!hasGname()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasGid()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -4297,6 +4365,9 @@ public final class Pipe {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeEnum(3, action_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, username_);
+      }
       unknownFields.writeTo(output);
     }
 
@@ -4315,6 +4386,9 @@ public final class Pipe {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(3, action_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, username_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4346,6 +4420,11 @@ public final class Pipe {
       if (hasAction()) {
         result = result && action_ == other.action_;
       }
+      result = result && (hasUsername() == other.hasUsername());
+      if (hasUsername()) {
+        result = result && getUsername()
+            .equals(other.getUsername());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -4369,6 +4448,10 @@ public final class Pipe {
       if (hasAction()) {
         hash = (37 * hash) + ACTION_FIELD_NUMBER;
         hash = (53 * hash) + action_;
+      }
+      if (hasUsername()) {
+        hash = (37 * hash) + USERNAME_FIELD_NUMBER;
+        hash = (53 * hash) + getUsername().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -4505,6 +4588,8 @@ public final class Pipe {
         bitField0_ = (bitField0_ & ~0x00000002);
         action_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
+        username_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -4541,6 +4626,10 @@ public final class Pipe {
           to_bitField0_ |= 0x00000004;
         }
         result.action_ = action_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.username_ = username_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -4594,6 +4683,11 @@ public final class Pipe {
         if (other.hasAction()) {
           setAction(other.getAction());
         }
+        if (other.hasUsername()) {
+          bitField0_ |= 0x00000008;
+          username_ = other.username_;
+          onChanged();
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -4601,9 +4695,6 @@ public final class Pipe {
 
       public final boolean isInitialized() {
         if (!hasGname()) {
-          return false;
-        }
-        if (!hasGid()) {
           return false;
         }
         if (!hasAction()) {
@@ -4709,19 +4800,19 @@ public final class Pipe {
 
       private long gid_ ;
       /**
-       * <code>required int64 gid = 2;</code>
+       * <code>optional int64 gid = 2;</code>
        */
       public boolean hasGid() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required int64 gid = 2;</code>
+       * <code>optional int64 gid = 2;</code>
        */
       public long getGid() {
         return gid_;
       }
       /**
-       * <code>required int64 gid = 2;</code>
+       * <code>optional int64 gid = 2;</code>
        */
       public Builder setGid(long value) {
         bitField0_ |= 0x00000002;
@@ -4730,7 +4821,7 @@ public final class Pipe {
         return this;
       }
       /**
-       * <code>required int64 gid = 2;</code>
+       * <code>optional int64 gid = 2;</code>
        */
       public Builder clearGid() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -4771,6 +4862,82 @@ public final class Pipe {
       public Builder clearAction() {
         bitField0_ = (bitField0_ & ~0x00000004);
         action_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object username_ = "";
+      /**
+       * <code>optional string username = 4;</code>
+       */
+      public boolean hasUsername() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional string username = 4;</code>
+       */
+      public java.lang.String getUsername() {
+        java.lang.Object ref = username_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            username_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string username = 4;</code>
+       */
+      public com.google.protobuf.ByteString
+          getUsernameBytes() {
+        java.lang.Object ref = username_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          username_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string username = 4;</code>
+       */
+      public Builder setUsername(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        username_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string username = 4;</code>
+       */
+      public Builder clearUsername() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        username_ = getDefaultInstance().getUsername();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string username = 4;</code>
+       */
+      public Builder setUsernameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        username_ = value;
         onChanged();
         return this;
       }
@@ -8892,6 +9059,14 @@ public final class Pipe {
        * <code>RESPONSE = 1;</code>
        */
       RESPONSE(1),
+      /**
+       * <pre>
+       * Use this mode to ask other cluster to remove one of your nodes which is not up now. Or which is not the leader now. Teams must remove the node (details in packet) from their UDP discovery data structure.
+       * </pre>
+       *
+       * <code>REMOVE_NODE = 2;</code>
+       */
+      REMOVE_NODE(2),
       ;
 
       /**
@@ -8902,6 +9077,14 @@ public final class Pipe {
        * <code>RESPONSE = 1;</code>
        */
       public static final int RESPONSE_VALUE = 1;
+      /**
+       * <pre>
+       * Use this mode to ask other cluster to remove one of your nodes which is not up now. Or which is not the leader now. Teams must remove the node (details in packet) from their UDP discovery data structure.
+       * </pre>
+       *
+       * <code>REMOVE_NODE = 2;</code>
+       */
+      public static final int REMOVE_NODE_VALUE = 2;
 
 
       public final int getNumber() {
@@ -8920,6 +9103,7 @@ public final class Pipe {
         switch (value) {
           case 0: return REQUEST;
           case 1: return RESPONSE;
+          case 2: return REMOVE_NODE;
           default: return null;
         }
       }
@@ -11770,36 +11954,37 @@ public final class Pipe {
       "e\030\001 \002(\t\022\r\n\005email\030\002 \001(\t\022\020\n\010password\030\003 \001(\t" +
       "\022\030\n\020recentActiveTime\030\004 \001(\t\022 \n\006action\030\005 \002" +
       "(\0162\020.User.ActionType\"2\n\nActionType\022\014\n\010RE" +
-      "GISTER\020\000\022\n\n\006ACCESS\020\001\022\n\n\006DELETE\020\002\"l\n\005Grou" +
-      "p\022\r\n\005gname\030\001 \002(\t\022\013\n\003gid\030\002 \002(\003\022!\n\006action\030" +
-      "\003 \002(\0162\021.Group.ActionType\"$\n\nActionType\022\n" +
-      "\n\006CREATE\020\000\022\n\n\006DELETE\020\001\"\246\002\n\007Message\022\033\n\004ty",
-      "pe\030\001 \002(\0162\r.Message.Type\022\020\n\010senderId\030\002 \002(" +
-      "\t\022\017\n\007payload\030\003 \002(\t\022\022\n\nreceiverId\030\004 \002(\t\022\021" +
-      "\n\ttimestamp\030\005 \002(\t\022\037\n\006status\030\006 \001(\0162\017.Mess" +
-      "age.Status\022#\n\006action\030\007 \002(\0162\023.Message.Act" +
-      "ionType\".\n\nActionType\022\010\n\004POST\020\000\022\n\n\006UPDAT" +
-      "E\020\001\022\n\n\006DELETE\020\002\"\035\n\004Type\022\n\n\006SINGLE\020\000\022\t\n\005G" +
-      "ROUP\020\001\"\037\n\006Status\022\n\n\006ACTIVE\020\000\022\t\n\005STALE\020\001\"" +
-      "_\n\017MessagesRequest\022#\n\004type\030\001 \002(\0162\025.Messa" +
-      "gesRequest.Type\022\n\n\002id\030\002 \002(\t\"\033\n\004Type\022\010\n\004U" +
-      "SER\020\000\022\t\n\005GROUP\020\001\"}\n\020MessagesResponse\022$\n\004",
-      "type\030\001 \002(\0162\026.MessagesResponse.Type\022\n\n\002id" +
-      "\030\002 \001(\t\022\032\n\010messages\030\003 \003(\0132\010.Message\"\033\n\004Ty" +
-      "pe\022\010\n\004USER\020\000\022\t\n\005GROUP\020\001\"\331\002\n\026NetworkDisco" +
-      "veryPacket\022*\n\004mode\030\001 \002(\0162\034.NetworkDiscov" +
-      "eryPacket.Mode\022D\n\006sender\030\002 \002(\0162\036.Network" +
-      "DiscoveryPacket.Sender:\024INTERNAL_SERVER_" +
-      "NODE\022\020\n\010groupTag\030\003 \001(\t\022\016\n\006nodeId\030\004 \001(\t\022\023" +
-      "\n\013nodeAddress\030\005 \002(\t\022\020\n\010nodePort\030\006 \002(\003\022\016\n" +
-      "\006secret\030\007 \002(\t\"Q\n\006Sender\022\030\n\024EXTERNAL_SERV" +
-      "ER_NODE\020\000\022\030\n\024INTERNAL_SERVER_NODE\020\001\022\023\n\017E",
-      "ND_USER_CLIENT\020\002\"!\n\004Mode\022\013\n\007REQUEST\020\000\022\014\n" +
-      "\010RESPONSE\020\001\"Y\n\006Header\022\032\n\004type\030\001 \002(\0162\014.He" +
-      "ader.Type\"3\n\004Type\022\014\n\010INTERNAL\020\000\022\021\n\rINTER" +
-      "_CLUSTER\020\001\022\n\n\006CLIENT\020\002\"?\n\010Response\022\017\n\007su" +
-      "ccess\030\001 \002(\010\022\017\n\007message\030\002 \001(\t\022\021\n\terrorCod" +
-      "e\030\003 \001(\tB\013\n\007routingH\001"
+      "GISTER\020\000\022\n\n\006ACCESS\020\001\022\n\n\006DELETE\020\002\"\213\001\n\005Gro" +
+      "up\022\r\n\005gname\030\001 \002(\t\022\013\n\003gid\030\002 \001(\003\022!\n\006action" +
+      "\030\003 \002(\0162\021.Group.ActionType\022\020\n\010username\030\004 " +
+      "\001(\t\"1\n\nActionType\022\n\n\006CREATE\020\000\022\n\n\006DELETE\020",
+      "\001\022\013\n\007ADDUSER\020\002\"\246\002\n\007Message\022\033\n\004type\030\001 \002(\016" +
+      "2\r.Message.Type\022\020\n\010senderId\030\002 \002(\t\022\017\n\007pay" +
+      "load\030\003 \002(\t\022\022\n\nreceiverId\030\004 \002(\t\022\021\n\ttimest" +
+      "amp\030\005 \002(\t\022\037\n\006status\030\006 \001(\0162\017.Message.Stat" +
+      "us\022#\n\006action\030\007 \002(\0162\023.Message.ActionType\"" +
+      ".\n\nActionType\022\010\n\004POST\020\000\022\n\n\006UPDATE\020\001\022\n\n\006D" +
+      "ELETE\020\002\"\035\n\004Type\022\n\n\006SINGLE\020\000\022\t\n\005GROUP\020\001\"\037" +
+      "\n\006Status\022\n\n\006ACTIVE\020\000\022\t\n\005STALE\020\001\"_\n\017Messa" +
+      "gesRequest\022#\n\004type\030\001 \002(\0162\025.MessagesReque" +
+      "st.Type\022\n\n\002id\030\002 \002(\t\"\033\n\004Type\022\010\n\004USER\020\000\022\t\n",
+      "\005GROUP\020\001\"}\n\020MessagesResponse\022$\n\004type\030\001 \002" +
+      "(\0162\026.MessagesResponse.Type\022\n\n\002id\030\002 \001(\t\022\032" +
+      "\n\010messages\030\003 \003(\0132\010.Message\"\033\n\004Type\022\010\n\004US" +
+      "ER\020\000\022\t\n\005GROUP\020\001\"\352\002\n\026NetworkDiscoveryPack" +
+      "et\022*\n\004mode\030\001 \002(\0162\034.NetworkDiscoveryPacke" +
+      "t.Mode\022D\n\006sender\030\002 \002(\0162\036.NetworkDiscover" +
+      "yPacket.Sender:\024INTERNAL_SERVER_NODE\022\020\n\010" +
+      "groupTag\030\003 \001(\t\022\016\n\006nodeId\030\004 \001(\t\022\023\n\013nodeAd" +
+      "dress\030\005 \002(\t\022\020\n\010nodePort\030\006 \002(\003\022\016\n\006secret\030" +
+      "\007 \002(\t\"Q\n\006Sender\022\030\n\024EXTERNAL_SERVER_NODE\020",
+      "\000\022\030\n\024INTERNAL_SERVER_NODE\020\001\022\023\n\017END_USER_" +
+      "CLIENT\020\002\"2\n\004Mode\022\013\n\007REQUEST\020\000\022\014\n\010RESPONS" +
+      "E\020\001\022\017\n\013REMOVE_NODE\020\002\"Y\n\006Header\022\032\n\004type\030\001" +
+      " \002(\0162\014.Header.Type\"3\n\004Type\022\014\n\010INTERNAL\020\000" +
+      "\022\021\n\rINTER_CLUSTER\020\001\022\n\n\006CLIENT\020\002\"?\n\010Respo" +
+      "nse\022\017\n\007success\030\001 \002(\010\022\017\n\007message\030\002 \001(\t\022\021\n" +
+      "\terrorCode\030\003 \001(\tB\013\n\007routingH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -11830,7 +12015,7 @@ public final class Pipe {
     internal_static_Group_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Group_descriptor,
-        new java.lang.String[] { "Gname", "Gid", "Action", });
+        new java.lang.String[] { "Gname", "Gid", "Action", "Username", });
     internal_static_Message_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Message_fieldAccessorTable = new

@@ -10,6 +10,7 @@ import com.sun.corba.se.impl.ior.NewObjectKeyTemplateBase;
 import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
 import gash.router.server.NodeMonitor;
+import gash.utility.NetworkUtility;
 import raft.proto.AppendEntries;
 import raft.proto.AppendEntries.*;
 import raft.proto.AppendEntries.AppendEntriesResponse.IsUpdated;
@@ -22,6 +23,7 @@ import routing.Pipe.Message;
 import routing.Pipe.NetworkDiscoveryPacket;
 import routing.Pipe.Route;
 import raft.proto.InternalNodeAdd.*;
+import routing.Pipe.MessagesRequest;
 
 public class MessageBuilder {
 
@@ -170,15 +172,20 @@ public class MessageBuilder {
 		return routeMsg.build();
 	}
 	
-	public static Route prepareMessageResponse(FindIterable<Document> dbresult) {
+	public static Route prepareMessageResponse(MessagesRequest.Type type ,FindIterable<Document> dbresult) {
 		Route.Builder routeMsg = Route.newBuilder();
 		routeMsg.setId(1); // NEED TO CHECK WHAT ID TO PASS
 		routeMsg.setPath(routeMsg.getPath().MESSAGES_RESPONSE);
 
 		Pipe.MessagesResponse.Builder msgResponse = Pipe.MessagesResponse.newBuilder();
-		msgResponse.setType(msgResponse.getType().USER);
+		if(type == MessagesRequest.Type.GROUP) {
+			msgResponse.setType(Pipe.MessagesResponse.Type.GROUP);
+		}
+		else {
+			msgResponse.setType(Pipe.MessagesResponse.Type.USER);
+		}
 
-		ArrayList Mess = new ArrayList<Message>();
+		ArrayList<Message> messageList = new ArrayList<Message>();
 
 		Pipe.Message.Builder msg = Pipe.Message.newBuilder();
 		for (Document documentRow : dbresult) {
@@ -192,26 +199,26 @@ public class MessageBuilder {
 			msg.setPayload(documentRow.getString("payload"));
 			msg.setReceiverId(documentRow.getString("receiverID"));
 			msg.setTimestamp(documentRow.getString("timestamp"));
-			Mess.add(msg);
+			messageList.add(msg.build());
 		}
-		msgResponse.addAllMessages(Mess);
+		msgResponse.addAllMessages(messageList);
 		routeMsg.setMessagesResponse(msgResponse);
 		routeMsg.setMessage(msg);
 		return routeMsg.build();
 	}
 
-	public static Route buildNetworkDiscoveryResponse(NodeConf conf) {
+	public static Route buildNetworkDiscoveryResponse(Route msg,NodeConf nodeConf) {
 		Route.Builder rb = Route.newBuilder();
 		try {
 		NetworkDiscoveryPacket.Builder ndpb = NetworkDiscoveryPacket.newBuilder();
         ndpb.setMode(NetworkDiscoveryPacket.Mode.RESPONSE);
-        ndpb.setSender(NetworkDiscoveryPacket.Sender.EXTERNAL_SERVER_NODE);
-        ndpb.setGroupTag(conf.getGroupTag());
+        ndpb.setSender(msg.getNetworkDiscoveryPacket().getSender());
+        ndpb.setGroupTag(nodeConf.getGroupTag());
         //ndpb.setGroupTag("weCAN");
-        ndpb.setNodeAddress(NodeMonitor.getLocalHostAddress());
-        ndpb.setNodePort(conf.getClientPort());
+        ndpb.setNodeAddress(NetworkUtility.getLocalHostAddress());
+        ndpb.setNodePort(nodeConf.getClientPort());
         //ndpb.setNodePort(8887);
-        ndpb.setSecret(conf.getSecret());
+        ndpb.setSecret(nodeConf.getSecret());
         //ndpb.setSecret("secret");
 
         
@@ -227,4 +234,6 @@ public class MessageBuilder {
 	}
 		return rb.build();
 	}
+	
+
 }

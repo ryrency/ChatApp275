@@ -15,12 +15,14 @@
  */
 package gash.router.server;
 
+import java.beans.Beans;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 import gash.router.container.RoutingConf;
 import gash.router.server.raft.ClientChannelCache;
 import gash.router.server.raft.RaftNode;
+import gash.router.server.resources.RouteResource;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -57,6 +59,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 * @param msg
 	 */
 	public void handleMessage(Route msg, Channel channel) {
+		System.out.println("*** ServerHandler*** fn:HandleMessage***");
+
 		if (msg == null) {
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
@@ -90,36 +94,33 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 				leaderRemoteNode.getChannel().writeAndFlush(packet);
 			}	
 		}
+
+		System.out.println("---> " + msg.getId() + ": " + msg.getPath());
 		
-//		System.out.println("---> " + msg.getId() + ": " + msg.getPath() + ", " + msg.getMessage());
-//		if(NodeState.getInstance().getState() == NodeState.LEADER) {
-//			if (msg.hasMessage())
-//			{
-//				leader.handleClientRequest(msg);
-//			   
-//
-//			}
-//			else if (msg.hasUser()) {
-//				/*Rency - Call leader to do user functions*/
-//				leader.handleUsers(msg);
-//			}
-//			else if (msg.hasMessagesRequest()) {
-//				/*Pull messages from server*/
-//				leader.handleMessageRequest(msg);
-//				}
-//			else if (msg.hasGroup()) {{
-//				/*
-//				 * to implement group!!
-//				 */
-//			}
-//				
-//		}
-//		else if(NodeState.getInstance().getState() == NodeState.FOLLOWER) {
-//			// TO be implemented later ******************
-//		}
-//
-//		System.out.flush();
-//		}
+		try {
+			String clazz = routing.get("/"+msg.getPath().toString().toLowerCase());
+			if(clazz != null) {
+				RouteResource routeResource = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
+				Route response = routeResource.process(msg);
+				if(response!=null) {
+					channel.writeAndFlush(response).sync();
+				}
+				
+			}
+			else {
+				// TODO add logging
+				System.out.println("ERROR: unknown path - " + msg.getPath());
+			}
+			
+		}
+		catch (Exception ex) {
+			// TODO add logging
+			System.out.println("ERROR: processing request - " + ex.getMessage());
+		}
+
+		System.out.flush();
+
+
 	}
 
 	/**
@@ -134,7 +135,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 */
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, Route msg) throws Exception {
-		System.out.println("-------Jsingh-----");
+		System.out.println("***ServerHandler*** fn:ChannelRead***");
 		handleMessage(msg, ctx.channel());
 	}
 

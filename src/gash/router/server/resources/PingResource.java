@@ -36,7 +36,7 @@ public class PingResource implements RouteResource {
 	}
 
 	@Override
-	public Route process(Route msg, RoutingConf conf ){ 
+	public Route process(Route msg){ 
 //		logger.info(body);
 //		return "success";
 		return null;

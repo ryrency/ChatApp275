@@ -41,5 +41,5 @@ public interface RouteResource {
 	 *            the string representation of the request
 	 * @return The string representation of the response
 	 */
-	Route process(Route msg, RoutingConf conf);
+	Route process(Route msg);
 }
