@@ -10,6 +10,7 @@ import gash.router.container.NodeConf;
 import gash.router.server.raft.RaftNode;
 
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bson.Document;
@@ -17,6 +18,7 @@ import org.bson.Document;
 import com.mongodb.client.model.Filters;
 
 import raft.proto.Work.WorkMessage;
+import routing.Pipe.Message;
 
 public class MessageMongoDB {
 
@@ -154,6 +156,40 @@ public class MessageMongoDB {
 		} finally {
 		}
 	}
+	
+	//todo(parag): all fields in messages should be saved
+	public boolean commitMessage(Message message) {
+		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
+		try {
+			Document document = new Document();
+			document.append(MESSAGETYPE, message.getType().getNumber());
+			document.append(SENDER_ID, message.getSenderId());
+			document.append(RECEIVER_ID, message.getReceiverId());
+			document.append(PAYLOAD, message.getPayload());
+			document.append(TIMESTAMP, message.getTimestamp());
+			document.append(STATUS, message.getStatus().getNumber());
+			document.append(READ, 0);
+			dbCollection.insertOne(document);
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	//todo:parag
+	public boolean markMessagesRead(String uname, int lastSeenIndex) {
+		System.out.println("***MongoDB*** markMessagesRead");
+		try {
+			//implement here
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
 	public boolean postData1() {
 		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
@@ -217,7 +253,6 @@ public class MessageMongoDB {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
-		} finally {
 		}
 	}
 

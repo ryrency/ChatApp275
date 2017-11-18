@@ -1,6 +1,8 @@
 package gash.router.server.raft;
 
+import gash.database.MessageMongoDB;
 import gash.database.NodeStateMongoDB;
+import gash.database.UserMongoDB;
 import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
 import gash.router.discovery.DiscoveryServer;
@@ -9,7 +11,6 @@ import gash.router.server.RemoteNode;
 import io.netty.channel.Channel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,15 +20,21 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import com.mongodb.client.model.UpdateOptions;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import raft.proto.Internal.AppendEntriesRequest;
 import raft.proto.Internal.AppendEntriesResponse;
 import raft.proto.Internal.InternalPacket;
 import raft.proto.Internal.LogEntry;
+import raft.proto.Internal.MessagePayLoad;
+import raft.proto.Internal.MessageReadPayload;
+import raft.proto.Internal.UserPayload;
 import raft.proto.Internal.VoteRequest;
 import raft.proto.Internal.VoteResponse;
-import sun.rmi.runtime.Log;
+import routing.Pipe.Message;
+import routing.Pipe.Message.Status;
+import routing.Pipe.User;
+import routing.Pipe.User.ActionType;
 
 
 //todo: all nodes must be present in remote nodes so that we know how many votes to expect
@@ -171,6 +178,7 @@ public class RaftNode {
 		//reset state variables
 		state.resetNextIndices();
 		state.resetmatchIndices();
+		state.resetLogIndexTermMap();
 		sendAppendEntriesRequests();
 		
 		//todo: start discovery servers
@@ -182,7 +190,7 @@ public class RaftNode {
 	}
 	
 	private void scheduleLogCommitTask() {
-		executor.schedule(logCommitTask, TimerRoutine.getLogCommitInterval(), TimeUnit.MICROSECONDS);
+		executor.schedule(logCommitTask, TimerRoutine.getLogCommitInterval(), TimeUnit.MILLISECONDS);
 	}
  	
 	/********************************************************************************/
@@ -543,7 +551,7 @@ public class RaftNode {
 						request.getEntriesList().get(0).getIndex() : request.getLeaderCommit();
 						
 				int newCommitIndex = Math.min(request.getLeaderCommit(), lastEntryCommitIndex);
-				Logger.getGlobal().info("updating follower's commit index to: " + state.getCommitIndex());
+				Logger.getGlobal().info("updating follower's commit index to: " + newCommitIndex);
 				state.setCommitIndex(newCommitIndex);
 				
 				sendAppendEntriesResponse(true, request.getLeaderId());
@@ -656,30 +664,43 @@ public class RaftNode {
 			// TODO Auto-generated method stub
 			
 			// 1. update commit indices for the leader
+			
 			if (nodeType == NodeType.Leader) {
 				
-				generateDummyLogs();
+//				generateDummyUsers();
 				
-				List<Integer> matchIndices = (List<Integer>)state.getMatchIndices().values();
+				List<Integer> matchIndices = new ArrayList<Integer>(state.getMatchIndices().values());
 				Collections.sort(matchIndices);
 				int N = matchIndices.get(matchIndices.size()/2);
 				
 				while (N > state.getCommitIndex()) {
 					if (state.getLogIndexTermMap().containsKey(N) && 
 							state.getLogIndexTermMap().get(N) == state.getCurrentTerm()) {
-						
-						Logger.getGlobal().info("updating commit index to : " + N);
 						state.setCommitIndex(N);
 						break;
-						
 					}
+					
+					N--;
 				}
 			}
 			
 			//2. apply logs to new commit index
 			if (state.getLastApplied() < state.getCommitIndex()) {
+				Logger.getGlobal().info("going to apply logs");
 				// apply logs here
+				List<LogEntry> entries = 
+						NodeStateMongoDB
+						.getInstance()
+						.getLogEntriesBetween(state.getLastApplied(), state.getCommitIndex());
 				
+				if (entries.size() > 0) {
+					applyLogs(entries);
+					state.setLastApplied(entries.get(entries.size() - 1).getIndex());
+					saveState();
+					Logger.getGlobal().info("logs applied successfully, size: " + entries.size());
+				} else {
+					Logger.getGlobal().info("no logs to apply");
+				}
 			}
 			
 			// reschedule task
@@ -718,48 +739,176 @@ public class RaftNode {
 	}
 	
 	/********************************************************************************/
+	/* public apis to commit messages, users, and mark messages as read */
+	/********************************************************************************/
+	public void addUser(User user) {
+		if (nodeType != NodeType.Leader) return;
+		
+		UserPayload payload = 
+				UserPayload
+				.newBuilder()
+				.setPayload(user.toByteString())
+				.build();
+		
+		int nextIndex = getNextLogIndex();
+		
+		LogEntry logEntry = LogEntry
+				.newBuilder()
+				.setIndex(nextIndex)
+				.setTerm(state.getCurrentTerm())
+				.setUserPayload(payload)
+				.build();
+	
+		addLog(logEntry);
+	}
+	
+	public void addMessage(Message message) {
+		if (nodeType != NodeType.Leader) return;
+		
+		MessagePayLoad payload = 
+				MessagePayLoad
+				.newBuilder()
+				.setPayload(message.toByteString())
+				.build();
+		
+		int nextIndex = getNextLogIndex();
+		
+		LogEntry logEntry = LogEntry
+				.newBuilder()
+				.setIndex(nextIndex)
+				.setTerm(state.getCurrentTerm())
+				.setMessagePayload(payload)
+				.build();
+	
+		addLog(logEntry);
+	}
+	
+	public void markMessagesRead(String uname, int lastSeenIndex) {
+		if (nodeType != NodeType.Leader) return;
+		
+		MessageReadPayload payload = 
+				MessageReadPayload
+				.newBuilder()
+				.setUname(uname)
+				.setLastSeenIndex(lastSeenIndex)
+				.build();
+		
+		int nextIndex = getNextLogIndex();
+		
+		LogEntry logEntry = LogEntry
+				.newBuilder()
+				.setIndex(nextIndex)
+				.setTerm(state.getCurrentTerm())
+				.setMessageReadPayload(payload)
+				.build();
+	
+		addLog(logEntry);
+	}
+	
+	/********************************************************************************/
+	/* apis to commit messages, users, and mark messages as read */
+	/********************************************************************************/
+	private void generateDummyUsers() {
+		Logger.getGlobal().info("going to create dummy users");
+		Message m1 = 
+				Message
+				.newBuilder()
+				.setAction(routing.Pipe.Message.ActionType.POST)
+				.setPayload("test message")
+				.setReceiverId("recId")
+				.setSenderId("senId")
+				.setStatus(Status.ACTIVE)
+				.setTimestamp("timestamp")
+				.setType(Message.Type.SINGLE)
+				.build();
+		
+		Message m2 = 
+				Message
+				.newBuilder()
+				.setAction(routing.Pipe.Message.ActionType.POST)
+				.setPayload("test message")
+				.setReceiverId("recId")
+				.setSenderId("senId")
+				.setStatus(Status.ACTIVE)
+				.setTimestamp("timestamp")
+				.setType(Message.Type.SINGLE)
+				.build();
+		
+		addMessage(m1);
+		addMessage(m2);
+	}
+	
+	private void applyLog(LogEntry entry) {
+		Logger.getGlobal().info("going to apply log");
+		try {
+			if (entry.hasUserPayload()) {
+				commitUser(User.parseFrom(entry.getUserPayload().getPayload()));
+				
+			} else if (entry.hasMessagePayload()) {
+				commitMessage(Message.parseFrom(entry.getMessagePayload().getPayload()));
+				
+			} else if (entry.hasMessageReadPayload()) {
+				commitMessagesRead(
+						entry.getMessageReadPayload().getUname(), 
+						entry.getMessageReadPayload().getLastSeenIndex()
+				);
+			}
+			
+			Logger.getGlobal().info("log applied to db: " + entry.toString());
+			
+		} catch(InvalidProtocolBufferException e) {
+			Logger.getGlobal().info("failed to apply log to db: " + entry.toString());
+			e.printStackTrace();
+		}
+	}
+	
+	private void applyLogs(List<LogEntry> entries) {
+		for (LogEntry logEntry : entries) {
+			applyLog(logEntry);
+		}
+	}
+	
+	private void commitUser(User user) {
+		UserMongoDB.getInstance().commitUser(user);
+	}
+	
+	private void commitMessage(Message message) {
+		MessageMongoDB.getInstance().commitMessage(message);
+	}
+	
+	private void commitMessagesRead(String uname, int lastSeenIndex) {
+		MessageMongoDB.getInstance().markMessagesRead(uname, lastSeenIndex);
+	}
+	
+	/********************************************************************************/
 	/* add logs */
 	/********************************************************************************/
 	// get next index for creating new logs
-	private int getNextLogIndex() {
+	private synchronized int getNextLogIndex() {
 		LogEntry entry = getLastLogEntry();
 		int nextLogIndex = entry != null ? entry.getIndex() + 1 : DEFAULT_LOG_INDEX;
 		return nextLogIndex;
 	}
 	
-	public void addLogs(List<LogEntry> entries) {
+	private synchronized void addLog(LogEntry logEntry) {
+		Logger.getGlobal().info("adding log: " + logEntry.toString());
+		List<LogEntry> entries = new ArrayList<LogEntry>();
+		entries.add(logEntry);
+		addLogs(entries);
+		Logger.getGlobal().info("added log");
+	}
+	
+	private void addLogs(List<LogEntry> entries) {
 		Logger.getGlobal().info("adding new entries to logs, size: " + entries.size());
 		
 		if (nodeType == NodeType.Leader && entries.size() > 0) {
 			NodeStateMongoDB.getInstance().commitLogEntries(entries);
 			lastLogEntry = entries.get(entries.size() - 1);
+			
+			for (LogEntry entry : entries) {
+				state.getLogIndexTermMap().put(entry.getIndex(), entry.getTerm());
+			}
 		}
-	}
-	
-	//todo: this method should be removed
-	private void generateDummyLogs() {
-		int nextLogIndex = getNextLogIndex();
-		
-		LogEntry entry1 = 
-				LogEntry
-				.newBuilder()
-				.setTerm(state.getCurrentTerm())
-				.setIndex(nextLogIndex++)
-				.setCommand("dummy command")
-				.build();
-		
-		LogEntry entry2 = 
-				LogEntry
-				.newBuilder()
-				.setTerm(state.getCurrentTerm())
-				.setIndex(nextLogIndex++)
-				.setCommand("dummy command")
-				.build();
-		
-		List<LogEntry> entries = new ArrayList<LogEntry>();
-		entries.add(entry1);
-		entries.add(entry2);
-		addLogs(entries);
 	}
 	
 	/********************************************************************************/

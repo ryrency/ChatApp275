@@ -17,6 +17,7 @@ import org.bson.Document;
 import com.mongodb.client.model.Filters;
 
 import routing.Pipe.Route;
+import routing.Pipe.User;
 
 public class UserMongoDB {
 
@@ -131,8 +132,7 @@ public class UserMongoDB {
 		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
 		try {
 			Document document = new Document();
-			document.append(USER_NAME,
-					clientMessage.getUser().getUname());
+			document.append(USER_NAME, clientMessage.getUser().getUname());
 			Date date = new Date(Long.parseLong(clientMessage.getUser().getRecentActiveTime().replace(".", "")));
 //			document.append(TIMESTAMP, date);
 			dbCollection.insertOne(document);
@@ -142,6 +142,21 @@ public class UserMongoDB {
 			e.printStackTrace();
 			return false;
 		} finally {
+		}
+	}
+	
+	//todo: store all fields
+	public boolean commitUser(User user) {
+		System.out.println("***MongoDB*** commitUser");
+		try {
+			Document document = new Document();
+			document.append(USER_NAME, user.getUname());
+			dbCollection.insertOne(document);
+
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 	}
 

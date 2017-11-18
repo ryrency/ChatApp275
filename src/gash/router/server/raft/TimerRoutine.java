@@ -31,7 +31,7 @@ public class TimerRoutine {
 	}
 	
 	public static long getLogCommitInterval() {
-		return 500L;
+		return 3000L;
 	}
 
 	int randomWithRange(int min, int max) {

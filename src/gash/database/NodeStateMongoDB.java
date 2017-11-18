@@ -10,9 +10,14 @@ import gash.router.server.raft.RaftNode;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.Binary;
 
 import raft.proto.Internal.LogEntry;
+import raft.proto.Internal.MessagePayLoad;
+import raft.proto.Internal.MessageReadPayload;
+import raft.proto.Internal.UserPayload;
 
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -32,7 +37,11 @@ public class NodeStateMongoDB {
 	
 	final static String LOG_TERM = "term";
 	final static String LOG_INDEX = "index";
-	final static String LOG_COMMAND = "command";
+	final static String LOG_PAYLOAD = "payload";
+	final static String LOG_PAYLOAD_TYPE = "payload_type";
+	final static int PAYLOAD_TYPE_USER = 0;
+	final static int PAYLOAD_TYPE_MESSAGE = 1;
+	final static int PAYLOAD_TYPE_MESSAGES_READ = 2;
 	
 	private static final int ID_IDX = 1;
 	
@@ -133,14 +142,34 @@ public class NodeStateMongoDB {
 	
 	private LogEntry mapDocumentToLogEntry(Document lastLogDocument) {
 		if (lastLogDocument == null) return null;
-		LogEntry entry = LogEntry.
-				newBuilder()
-				.setTerm(lastLogDocument.getInteger(LOG_TERM))
-				.setIndex(lastLogDocument.getInteger(LOG_INDEX))
-				.setCommand(lastLogDocument.getString(LOG_COMMAND))
-				.build();
 		
-		return entry;
+		LogEntry.Builder builder = 
+				LogEntry
+				.newBuilder()
+				.setTerm(lastLogDocument.getInteger(LOG_TERM))
+				.setIndex(lastLogDocument.getInteger(LOG_INDEX));
+		
+		int type = lastLogDocument.getInteger(LOG_PAYLOAD_TYPE);
+		Binary payload = (Binary)lastLogDocument.get(LOG_PAYLOAD);
+		
+		try {
+			if (type == PAYLOAD_TYPE_MESSAGE) {
+				MessagePayLoad messagePayLoad = MessagePayLoad.parseFrom(payload.getData());
+				return builder.setMessagePayload(messagePayLoad).build();
+				
+			} else if (type == PAYLOAD_TYPE_USER) {
+				UserPayload userPayload = UserPayload.parseFrom(payload.getData());
+				return builder.setUserPayload(userPayload).build();
+				
+			} else {
+				MessageReadPayload messageReadPayload = MessageReadPayload.parseFrom(payload.getData());
+				return builder.setMessageReadPayload(messageReadPayload).build();
+			}
+			
+		} catch(InvalidProtocolBufferException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	private Document mapLogEntryToDocument(LogEntry entry) {
@@ -148,7 +177,16 @@ public class NodeStateMongoDB {
 		Document document = new Document();
 		document.put(LOG_TERM, entry.getTerm());
 		document.put(LOG_INDEX, entry.getIndex());
-		document.put(LOG_COMMAND, entry.getCommand());
+		document.put(LOG_PAYLOAD_TYPE, getLogType(entry));
+		
+		if (entry.hasUserPayload()) {
+			document.put(LOG_PAYLOAD, new Binary(entry.getUserPayload().toByteArray()));
+		} else if (entry.hasMessagePayload()) {
+			document.put(LOG_PAYLOAD, new Binary(entry.getMessagePayload().toByteArray()));
+		} else {
+			document.put(LOG_PAYLOAD, new Binary(entry.getMessageReadPayload().toByteArray()));
+		}
+		
 		return document;
 	}
 	
@@ -177,7 +215,7 @@ public class NodeStateMongoDB {
 			logCollection.deleteMany(Filters.gte(LOG_INDEX, fromIndex));
 		} catch (Exception ex) {
 			ex.printStackTrace();
-		} 
+		}
 	}
 	
 	public void commitLogEntries(List<LogEntry> entries) {
@@ -188,6 +226,41 @@ public class NodeStateMongoDB {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} 
+	}
+	
+	
+	private int getLogType(LogEntry entry) {
+		if (entry.hasUserPayload()) {
+			return PAYLOAD_TYPE_USER;
+		} else if (entry.hasMessagePayload()) {
+			return PAYLOAD_TYPE_MESSAGE;
+		} else if (entry.hasMessageReadPayload()) {
+			return PAYLOAD_TYPE_MESSAGES_READ;
+		} else {
+			return -1;
+		}
+	}
+	
+	public List<LogEntry> getLogEntriesBetween(int fromIndex, int toIndex) {
+		List<LogEntry> entries = new ArrayList<LogEntry>();
+		
+		try {
+			FindIterable<Document> documents = logCollection.find(
+					Filters.and(Filters.gt(LOG_INDEX, fromIndex), Filters.lte(LOG_INDEX, toIndex)));
+			
+			Iterator<Document> iterator = documents.iterator();
+			while (iterator.hasNext()) {
+				Document document = iterator.next();
+				LogEntry entry = mapDocumentToLogEntry(document);
+				entries.add(entry);
+			}
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		} 
+		
+		return entries;
 	}
 	
 }

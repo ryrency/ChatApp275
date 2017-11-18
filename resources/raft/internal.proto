@@ -22,7 +22,11 @@ message AppendEntriesResponse{
 message LogEntry {
 	required int32 term = 1;
     required int32 index = 2;
-    required string command = 3;
+    oneof payload{
+	 	UserPayload userPayload = 3;
+	 	MessagePayLoad messagePayload = 4;
+	 	MessageReadPayload messageReadPayload = 5;
+	}
 }
 
 // Request votes
@@ -50,4 +54,17 @@ message InternalPacket {
 	 	VoteResponse voteResponse = 4; 
 	 	ConnectionActiveAck connectionActiveAck = 5;
 	}
+}
+
+message UserPayload {
+	required bytes payload = 1;
+}
+
+message MessagePayLoad {
+	required bytes payload = 1;
+}
+
+message MessageReadPayload {
+	required string uname = 1;
+	required int32 lastSeenIndex = 2;
 }
