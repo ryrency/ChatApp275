@@ -36,7 +36,7 @@ public class MessageResource implements RouteResource {
 	}
 
 	@Override
-	public Route process(Route msg, RoutingConf conf ) {
+	public Route process(Route msg) {
 //		if (body == null || body.trim().length() == 0)
 //			throw new RuntimeException("Missing/Null data");
 //

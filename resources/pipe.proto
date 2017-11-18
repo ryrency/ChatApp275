@@ -13,7 +13,7 @@ message Route {
         MESSAGES_REQUEST = 5;
         MESSAGES_RESPONSE = 6;
         HEADER = 7;
-	    RESPONSE = 8;
+		RESPONSE = 8;
     }
 
     //a node should not have a value though this is not enforced
@@ -24,12 +24,11 @@ message Route {
 	    NetworkDiscoveryPacket networkDiscoveryPacket = 3;
 	    User user = 4;
 	    Message message = 5;
-        Group group = 6;   
-	    MessagesRequest messagesRequest = 7;
-    		MessagesResponse messagesResponse = 8;
-	    Response response=9;
+	    Group group = 6;
+    	    MessagesRequest messagesRequest = 7;
+    	    MessagesResponse messagesResponse = 8;
+    	    Response response=9;
     }
-    
     optional Header header = 10;
 }
 
@@ -53,10 +52,12 @@ message Group {
     enum ActionType {
         CREATE = 0;
         DELETE = 1;
+        ADDUSER = 2;
     }
     required string gname = 1;
-    required int64 gid = 2;
+    optional int64 gid = 2;
     required ActionType action = 3;
+    optional string username = 4;
 }
 
 message Message {
@@ -121,6 +122,7 @@ message NetworkDiscoveryPacket {
     enum Mode {
         REQUEST = 0;
         RESPONSE = 1;
+	REMOVE_NODE = 2; // Use this mode to ask other cluster to remove one of your nodes which is not up now. Or which is not the leader now. Teams must remove the node (details in packet) from their UDP discovery data structure.
     }
 
     required Mode mode = 1;

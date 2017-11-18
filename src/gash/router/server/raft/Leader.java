@@ -164,7 +164,7 @@ public class Leader extends Service implements Runnable {
 			dbresults = messageMongoDB.getUnreadMessage(userName);
 		}
 
-		MessageBuilder.prepareMessageResponse(dbresults);
+//		MessageBuilder.prepareMessageResponse(dbresults);
 		/* CODE TO SEND DATA TO CLIENT */
 
 	}

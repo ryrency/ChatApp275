@@ -17,8 +17,12 @@ package gash.router.discovery;
 
 import gash.router.container.NodeConf;
 import gash.router.container.RoutingConf;
+import gash.router.server.ExternalNode;
+import gash.router.server.NodeMonitor;
+import gash.router.server.RemoteNode;
 import gash.router.server.resources.NetworkDiscoveryResource;
 import gash.router.server.resources.RouteResource;
+import gash.utility.NetworkUtility;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -35,6 +39,7 @@ import routing.Pipe.Route;
 
 import java.beans.Beans;
 import java.util.HashMap;
+import routing.Pipe.NetworkDiscoveryPacket;
 
 /**
  * The networkDiscovery handler processes json messages that are delimited by a 'newline'
@@ -75,12 +80,21 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 
 		try {
 			System.out.println("/" + msg.getPath().toString().toLowerCase());
+			if(!msg.getNetworkDiscoveryPacket().getNodeAddress().equals(NetworkUtility.getLocalHostAddress()) && msg.getNetworkDiscoveryPacket().getMode()==NetworkDiscoveryPacket.Mode.REQUEST && msg.getNetworkDiscoveryPacket().getSecret().equals(nodeConf.getSecret())) {
 			String clazz = routing.get("/" + msg.getPath().toString().toLowerCase());
 			if (clazz != null) {
 				RouteResource rsc = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
 //				NetworkDiscoveryResource rsc = new NetworkDiscoveryResource();
 				try {
-					Route response = rsc.process(msg, conf);
+					
+					if(msg.hasNetworkDiscoveryPacket()) {
+						if(msg.getNetworkDiscoveryPacket().getSender()==NetworkDiscoveryPacket.Sender.EXTERNAL_SERVER_NODE) {
+							NetworkDiscoveryPacket networkDiscoveryPacket = msg.getNetworkDiscoveryPacket();
+							NodeMonitor.getInstance().addExternalNode(new ExternalNode(networkDiscoveryPacket.getGroupTag(),networkDiscoveryPacket.getNodeAddress(), (int)networkDiscoveryPacket.getNodePort()));
+							NodeMonitor.getInstance().printExternalMap();
+						}
+					}
+					Route response = rsc.process(msg);
 					System.out.println("---> reply: " + response + " to: " + msg.getNetworkDiscoveryPacket().getNodeAddress());
 					if (response != null) {
 
@@ -98,6 +112,10 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 			} else {
 				// TODO add logging
 				System.out.println("ERROR: unknown path - " + msg.getPath());
+			}
+			}
+			else {
+				System.out.println("****Discarding Above Message****");
 			}
 		} catch (Exception ex) {
 			// TODO add logging
