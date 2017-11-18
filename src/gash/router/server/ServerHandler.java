@@ -59,12 +59,9 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 * @param msg
 	 */
 	public void handleMessage(Route msg, Channel channel) {
-<<<<<<< HEAD
 		Logger.getGlobal().info("server received message from client");
-=======
-		System.out.println("*** ServerHandler*** fn:HandleMessage***");
 
->>>>>>> f6e72389f22be501a86fdd2ca9d695e2817e5aa9
+		System.out.println("*** ServerHandler*** fn:HandleMessage***");
 		if (msg == null) {
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
