@@ -32,20 +32,20 @@ class MessageClient:
         # socket_address = self.__get_server_socket_address()
         # parts = socket_address.split(":")
         # self.host = "192.168.0.13"
-        self.host = "192.168.0.13"
-        self.port = 4267
+        self.host = "127.0.0.1"
+        self.port = 4168
         
-        try:
-            self.network_discover.connectUDP()
-            self.network_discover.sendNetworkDiscoveryPacket()
-            self.network_discover.receiveNetworkDiscoveryPacket() #Protobuf received need to extract host and port to form TCP connection  
-        except Exception as ex:
-            print "Ex-udp-network-discover -" 
-            import traceback
-            exc_info = sys.exc_info()
-            traceback.print_exception(*exc_info)
-        # finally:
-        #     self.connect()
+        # try:
+        #     self.network_discover.connectUDP()
+        #     self.network_discover.sendNetworkDiscoveryPacket()
+        #     self.network_discover.receiveNetworkDiscoveryPacket() #Protobuf received need to extract host and port to form TCP connection  
+        # except Exception as ex:
+        #     print "Ex-udp-network-discover -" 
+        #     import traceback
+        #     exc_info = sys.exc_info()
+        #     traceback.print_exception(*exc_info)
+        # # finally:
+        self.connect()
 
     def __get_server_socket_address(self):
         socket_address = urllib2.urlopen(TCP_IP + ":" + str(TCP_PORT)).read()
@@ -159,7 +159,7 @@ class MessageClient:
                 if not self.s:
                     print "sorry socket not connected, please try again"
                 else:
-                    self.sendMessage(self, "user1", "Text Message 1", "user2")
+                    self.sendMessage("user1", "Text Message 1", "user2")
         except KeyboardInterrupt:
             sys.exit(1)
 
