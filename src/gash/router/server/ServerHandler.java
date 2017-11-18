@@ -59,13 +59,16 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 * @param msg
 	 */
 	public void handleMessage(Route msg, Channel channel) {
-		Logger.getGlobal().info("server received message from client");
-
-		System.out.println("*** ServerHandler*** fn:HandleMessage***");
+		
 		if (msg == null) {
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
 		}
+		if(msg.hasMessage()) {
+		Logger.getGlobal().info("server received message from client");
+
+		System.out.println("*** ServerHandler*** fn:HandleMessage***");
+		
 		
 		currentNodeId = NodeMonitor.getInstance().getNodeConf().getNodeId();
 		currentLeaderId = RaftNode.getInstance().getState().getCurrentLeader();
@@ -94,6 +97,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 				leaderRemoteNode.getChannel().writeAndFlush(packet);
 			}	
 		}
+		}
+		else {
 
 		System.out.println("---> " + msg.getId() + ": " + msg.getPath());
 		
@@ -119,6 +124,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 		}
 
 		System.out.flush();
+		}
 
 
 	}
