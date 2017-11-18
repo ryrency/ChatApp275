@@ -44,6 +44,8 @@ public class WorkHandler extends SimpleChannelInboundHandler<InternalPacket> {
 			.getNodeMap()
 			.get(nodeId)
 			.setChannel(channel);
+		} else if (packet.hasForwardMessageRequest()) {
+			Logger.getGlobal().info("Call interface function");
 		}
 	}
 

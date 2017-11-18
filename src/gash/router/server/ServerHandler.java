@@ -15,23 +15,18 @@
  */
 package gash.router.server;
 
-import java.beans.Beans;
 import java.util.HashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import gash.router.container.RoutingConf;
-
-import gash.router.server.raft.NodeState;
-import gash.router.server.resources.RouteResource;
+import gash.router.server.raft.ClientChannelCache;
+import gash.router.server.raft.RaftNode;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import routing.Pipe.MessagesResponse;
-import routing.Pipe.MessagesResponseOrBuilder;
+import raft.proto.Internal.ForwardMessageRequest;
+import raft.proto.Internal.InternalPacket;
 import routing.Pipe.Route;
-
 /**
  * The message handler processes json messages that are delimited by a 'newline'
  * 
@@ -41,9 +36,13 @@ import routing.Pipe.Route;
  * 
  */
 public class ServerHandler extends SimpleChannelInboundHandler<Route> {
-	protected static Logger logger = LoggerFactory.getLogger("connect");
 
 	private HashMap<String, String> routing;
+	String uname = "user1";
+
+	int currentNodeId;
+	int currentLeaderId;
+	RemoteNode leaderRemoteNode;
 
 	public ServerHandler(RoutingConf conf) {
 		if (conf != null)
@@ -58,14 +57,40 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 	 * @param msg
 	 */
 	public void handleMessage(Route msg, Channel channel) {
-		//todo(shefali): reimplement this
+		if (msg == null) {
+			System.out.println("ERROR: Unexpected content - " + msg);
+			return;
+		}
 		
-//		if (msg == null) {
-//			// TODO add logging
-//			System.out.println("ERROR: Unexpected content - " + msg);
-//			return;
-//		}
-//
+		currentNodeId = NodeMonitor.getInstance().getNodeConf().getNodeId();
+		
+		currentLeaderId = RaftNode.getInstance().getState().getCurrentLeader();
+		
+		if (currentNodeId == currentLeaderId) {
+			//Append entries needs to be called 
+			System.out.println("Leader is going to handle");
+		}else {
+			ForwardMessageRequest request = 
+					ForwardMessageRequest
+					.newBuilder()
+					.setSenderId(msg.getMessage().getSenderId())
+					.setPayload(msg.getMessage().getPayload())
+					.setReceiverId(msg.getMessage().getReceiverId())
+					.setTimestamp(msg.getMessage().getTimestamp())
+					.build();
+			
+			InternalPacket packet = 
+					InternalPacket
+					.newBuilder()
+					.setForwardMessageRequest(request)
+					.build();
+	
+			leaderRemoteNode = NodeMonitor.getInstance().getNodeMap().get(currentLeaderId);
+			if (leaderRemoteNode.isActive()) { 
+				leaderRemoteNode.getChannel().writeAndFlush(packet);
+			}	
+		}
+		
 //		System.out.println("---> " + msg.getId() + ": " + msg.getPath() + ", " + msg.getMessage());
 //		if(NodeState.getInstance().getState() == NodeState.LEADER) {
 //			if (msg.hasMessage())
@@ -115,7 +140,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		logger.error("Unexpected exception from downstream.", cause);
+		System.out.println("Unexpected exception from downstream." + cause);
+//		ClientChannelCache.getInstance().deleteClientChannelFromMap(uname);
 		ctx.close();
 	}
 
