@@ -5135,17 +5135,45 @@ public final class Internal {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .Message message = 1;</code>
+     * <code>optional .Message message = 1;</code>
      */
     boolean hasMessage();
     /**
-     * <code>required .Message message = 1;</code>
+     * <code>optional .Message message = 1;</code>
      */
     routing.Pipe.Message getMessage();
     /**
-     * <code>required .Message message = 1;</code>
+     * <code>optional .Message message = 1;</code>
      */
     routing.Pipe.MessageOrBuilder getMessageOrBuilder();
+
+    /**
+     * <code>optional .User user = 2;</code>
+     */
+    boolean hasUser();
+    /**
+     * <code>optional .User user = 2;</code>
+     */
+    routing.Pipe.User getUser();
+    /**
+     * <code>optional .User user = 2;</code>
+     */
+    routing.Pipe.UserOrBuilder getUserOrBuilder();
+
+    /**
+     * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+     */
+    boolean hasMessageReadPayload();
+    /**
+     * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+     */
+    raft.proto.Internal.MessageReadPayload getMessageReadPayload();
+    /**
+     * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+     */
+    raft.proto.Internal.MessageReadPayloadOrBuilder getMessageReadPayloadOrBuilder();
+
+    public raft.proto.Internal.ForwardMessageRequest.PayloadCase getPayloadCase();
   }
   /**
    * Protobuf type {@code raft.proto.ForwardMessageRequest}
@@ -5191,15 +5219,44 @@ public final class Internal {
             }
             case 10: {
               routing.Pipe.Message.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000001) == 0x00000001)) {
-                subBuilder = message_.toBuilder();
+              if (payloadCase_ == 1) {
+                subBuilder = ((routing.Pipe.Message) payload_).toBuilder();
               }
-              message_ = input.readMessage(routing.Pipe.Message.PARSER, extensionRegistry);
+              payload_ =
+                  input.readMessage(routing.Pipe.Message.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(message_);
-                message_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom((routing.Pipe.Message) payload_);
+                payload_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000001;
+              payloadCase_ = 1;
+              break;
+            }
+            case 18: {
+              routing.Pipe.User.Builder subBuilder = null;
+              if (payloadCase_ == 2) {
+                subBuilder = ((routing.Pipe.User) payload_).toBuilder();
+              }
+              payload_ =
+                  input.readMessage(routing.Pipe.User.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((routing.Pipe.User) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 2;
+              break;
+            }
+            case 26: {
+              raft.proto.Internal.MessageReadPayload.Builder subBuilder = null;
+              if (payloadCase_ == 3) {
+                subBuilder = ((raft.proto.Internal.MessageReadPayload) payload_).toBuilder();
+              }
+              payload_ =
+                  input.readMessage(raft.proto.Internal.MessageReadPayload.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom((raft.proto.Internal.MessageReadPayload) payload_);
+                payload_ = subBuilder.buildPartial();
+              }
+              payloadCase_ = 3;
               break;
             }
           }
@@ -5227,25 +5284,122 @@ public final class Internal {
     }
 
     private int bitField0_;
+    private int payloadCase_ = 0;
+    private java.lang.Object payload_;
+    public enum PayloadCase
+        implements com.google.protobuf.Internal.EnumLite {
+      MESSAGE(1),
+      USER(2),
+      MESSAGEREADPAYLOAD(3),
+      PAYLOAD_NOT_SET(0);
+      private final int value;
+      private PayloadCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static PayloadCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static PayloadCase forNumber(int value) {
+        switch (value) {
+          case 1: return MESSAGE;
+          case 2: return USER;
+          case 3: return MESSAGEREADPAYLOAD;
+          case 0: return PAYLOAD_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    public PayloadCase
+    getPayloadCase() {
+      return PayloadCase.forNumber(
+          payloadCase_);
+    }
+
     public static final int MESSAGE_FIELD_NUMBER = 1;
-    private routing.Pipe.Message message_;
     /**
-     * <code>required .Message message = 1;</code>
+     * <code>optional .Message message = 1;</code>
      */
     public boolean hasMessage() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
+      return payloadCase_ == 1;
     }
     /**
-     * <code>required .Message message = 1;</code>
+     * <code>optional .Message message = 1;</code>
      */
     public routing.Pipe.Message getMessage() {
-      return message_ == null ? routing.Pipe.Message.getDefaultInstance() : message_;
+      if (payloadCase_ == 1) {
+         return (routing.Pipe.Message) payload_;
+      }
+      return routing.Pipe.Message.getDefaultInstance();
     }
     /**
-     * <code>required .Message message = 1;</code>
+     * <code>optional .Message message = 1;</code>
      */
     public routing.Pipe.MessageOrBuilder getMessageOrBuilder() {
-      return message_ == null ? routing.Pipe.Message.getDefaultInstance() : message_;
+      if (payloadCase_ == 1) {
+         return (routing.Pipe.Message) payload_;
+      }
+      return routing.Pipe.Message.getDefaultInstance();
+    }
+
+    public static final int USER_FIELD_NUMBER = 2;
+    /**
+     * <code>optional .User user = 2;</code>
+     */
+    public boolean hasUser() {
+      return payloadCase_ == 2;
+    }
+    /**
+     * <code>optional .User user = 2;</code>
+     */
+    public routing.Pipe.User getUser() {
+      if (payloadCase_ == 2) {
+         return (routing.Pipe.User) payload_;
+      }
+      return routing.Pipe.User.getDefaultInstance();
+    }
+    /**
+     * <code>optional .User user = 2;</code>
+     */
+    public routing.Pipe.UserOrBuilder getUserOrBuilder() {
+      if (payloadCase_ == 2) {
+         return (routing.Pipe.User) payload_;
+      }
+      return routing.Pipe.User.getDefaultInstance();
+    }
+
+    public static final int MESSAGEREADPAYLOAD_FIELD_NUMBER = 3;
+    /**
+     * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+     */
+    public boolean hasMessageReadPayload() {
+      return payloadCase_ == 3;
+    }
+    /**
+     * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+     */
+    public raft.proto.Internal.MessageReadPayload getMessageReadPayload() {
+      if (payloadCase_ == 3) {
+         return (raft.proto.Internal.MessageReadPayload) payload_;
+      }
+      return raft.proto.Internal.MessageReadPayload.getDefaultInstance();
+    }
+    /**
+     * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+     */
+    public raft.proto.Internal.MessageReadPayloadOrBuilder getMessageReadPayloadOrBuilder() {
+      if (payloadCase_ == 3) {
+         return (raft.proto.Internal.MessageReadPayload) payload_;
+      }
+      return raft.proto.Internal.MessageReadPayload.getDefaultInstance();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -5254,13 +5408,23 @@ public final class Internal {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasMessage()) {
-        memoizedIsInitialized = 0;
-        return false;
+      if (hasMessage()) {
+        if (!getMessage().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
-      if (!getMessage().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
+      if (hasUser()) {
+        if (!getUser().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      if (hasMessageReadPayload()) {
+        if (!getMessageReadPayload().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
       }
       memoizedIsInitialized = 1;
       return true;
@@ -5268,8 +5432,14 @@ public final class Internal {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, getMessage());
+      if (payloadCase_ == 1) {
+        output.writeMessage(1, (routing.Pipe.Message) payload_);
+      }
+      if (payloadCase_ == 2) {
+        output.writeMessage(2, (routing.Pipe.User) payload_);
+      }
+      if (payloadCase_ == 3) {
+        output.writeMessage(3, (raft.proto.Internal.MessageReadPayload) payload_);
       }
       unknownFields.writeTo(output);
     }
@@ -5279,9 +5449,17 @@ public final class Internal {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (payloadCase_ == 1) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getMessage());
+          .computeMessageSize(1, (routing.Pipe.Message) payload_);
+      }
+      if (payloadCase_ == 2) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, (routing.Pipe.User) payload_);
+      }
+      if (payloadCase_ == 3) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(3, (raft.proto.Internal.MessageReadPayload) payload_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5300,10 +5478,24 @@ public final class Internal {
       raft.proto.Internal.ForwardMessageRequest other = (raft.proto.Internal.ForwardMessageRequest) obj;
 
       boolean result = true;
-      result = result && (hasMessage() == other.hasMessage());
-      if (hasMessage()) {
-        result = result && getMessage()
-            .equals(other.getMessage());
+      result = result && getPayloadCase().equals(
+          other.getPayloadCase());
+      if (!result) return false;
+      switch (payloadCase_) {
+        case 1:
+          result = result && getMessage()
+              .equals(other.getMessage());
+          break;
+        case 2:
+          result = result && getUser()
+              .equals(other.getUser());
+          break;
+        case 3:
+          result = result && getMessageReadPayload()
+              .equals(other.getMessageReadPayload());
+          break;
+        case 0:
+        default:
       }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
@@ -5316,9 +5508,21 @@ public final class Internal {
       }
       int hash = 41;
       hash = (19 * hash) + getDescriptor().hashCode();
-      if (hasMessage()) {
-        hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
-        hash = (53 * hash) + getMessage().hashCode();
+      switch (payloadCase_) {
+        case 1:
+          hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
+          hash = (53 * hash) + getMessage().hashCode();
+          break;
+        case 2:
+          hash = (37 * hash) + USER_FIELD_NUMBER;
+          hash = (53 * hash) + getUser().hashCode();
+          break;
+        case 3:
+          hash = (37 * hash) + MESSAGEREADPAYLOAD_FIELD_NUMBER;
+          hash = (53 * hash) + getMessageReadPayload().hashCode();
+          break;
+        case 0:
+        default:
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -5434,17 +5638,12 @@ public final class Internal {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getMessageFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
-        if (messageBuilder_ == null) {
-          message_ = null;
-        } else {
-          messageBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000001);
+        payloadCase_ = 0;
+        payload_ = null;
         return this;
       }
 
@@ -5469,15 +5668,29 @@ public final class Internal {
         raft.proto.Internal.ForwardMessageRequest result = new raft.proto.Internal.ForwardMessageRequest(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
+        if (payloadCase_ == 1) {
+          if (messageBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = messageBuilder_.build();
+          }
         }
-        if (messageBuilder_ == null) {
-          result.message_ = message_;
-        } else {
-          result.message_ = messageBuilder_.build();
+        if (payloadCase_ == 2) {
+          if (userBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = userBuilder_.build();
+          }
+        }
+        if (payloadCase_ == 3) {
+          if (messageReadPayloadBuilder_ == null) {
+            result.payload_ = payload_;
+          } else {
+            result.payload_ = messageReadPayloadBuilder_.build();
+          }
         }
         result.bitField0_ = to_bitField0_;
+        result.payloadCase_ = payloadCase_;
         onBuilt();
         return result;
       }
@@ -5519,8 +5732,22 @@ public final class Internal {
 
       public Builder mergeFrom(raft.proto.Internal.ForwardMessageRequest other) {
         if (other == raft.proto.Internal.ForwardMessageRequest.getDefaultInstance()) return this;
-        if (other.hasMessage()) {
-          mergeMessage(other.getMessage());
+        switch (other.getPayloadCase()) {
+          case MESSAGE: {
+            mergeMessage(other.getMessage());
+            break;
+          }
+          case USER: {
+            mergeUser(other.getUser());
+            break;
+          }
+          case MESSAGEREADPAYLOAD: {
+            mergeMessageReadPayload(other.getMessageReadPayload());
+            break;
+          }
+          case PAYLOAD_NOT_SET: {
+            break;
+          }
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5528,11 +5755,20 @@ public final class Internal {
       }
 
       public final boolean isInitialized() {
-        if (!hasMessage()) {
-          return false;
+        if (hasMessage()) {
+          if (!getMessage().isInitialized()) {
+            return false;
+          }
         }
-        if (!getMessage().isInitialized()) {
-          return false;
+        if (hasUser()) {
+          if (!getUser().isInitialized()) {
+            return false;
+          }
+        }
+        if (hasMessageReadPayload()) {
+          if (!getMessageReadPayload().isInitialized()) {
+            return false;
+          }
         }
         return true;
       }
@@ -5554,124 +5790,429 @@ public final class Internal {
         }
         return this;
       }
+      private int payloadCase_ = 0;
+      private java.lang.Object payload_;
+      public PayloadCase
+          getPayloadCase() {
+        return PayloadCase.forNumber(
+            payloadCase_);
+      }
+
+      public Builder clearPayload() {
+        payloadCase_ = 0;
+        payload_ = null;
+        onChanged();
+        return this;
+      }
+
       private int bitField0_;
 
-      private routing.Pipe.Message message_ = null;
       private com.google.protobuf.SingleFieldBuilderV3<
           routing.Pipe.Message, routing.Pipe.Message.Builder, routing.Pipe.MessageOrBuilder> messageBuilder_;
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       public boolean hasMessage() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
+        return payloadCase_ == 1;
       }
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       public routing.Pipe.Message getMessage() {
         if (messageBuilder_ == null) {
-          return message_ == null ? routing.Pipe.Message.getDefaultInstance() : message_;
+          if (payloadCase_ == 1) {
+            return (routing.Pipe.Message) payload_;
+          }
+          return routing.Pipe.Message.getDefaultInstance();
         } else {
-          return messageBuilder_.getMessage();
+          if (payloadCase_ == 1) {
+            return messageBuilder_.getMessage();
+          }
+          return routing.Pipe.Message.getDefaultInstance();
         }
       }
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       public Builder setMessage(routing.Pipe.Message value) {
         if (messageBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
           }
-          message_ = value;
+          payload_ = value;
           onChanged();
         } else {
           messageBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000001;
+        payloadCase_ = 1;
         return this;
       }
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       public Builder setMessage(
           routing.Pipe.Message.Builder builderForValue) {
         if (messageBuilder_ == null) {
-          message_ = builderForValue.build();
+          payload_ = builderForValue.build();
           onChanged();
         } else {
           messageBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000001;
+        payloadCase_ = 1;
         return this;
       }
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       public Builder mergeMessage(routing.Pipe.Message value) {
         if (messageBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              message_ != null &&
-              message_ != routing.Pipe.Message.getDefaultInstance()) {
-            message_ =
-              routing.Pipe.Message.newBuilder(message_).mergeFrom(value).buildPartial();
+          if (payloadCase_ == 1 &&
+              payload_ != routing.Pipe.Message.getDefaultInstance()) {
+            payload_ = routing.Pipe.Message.newBuilder((routing.Pipe.Message) payload_)
+                .mergeFrom(value).buildPartial();
           } else {
-            message_ = value;
+            payload_ = value;
           }
           onChanged();
         } else {
-          messageBuilder_.mergeFrom(value);
+          if (payloadCase_ == 1) {
+            messageBuilder_.mergeFrom(value);
+          }
+          messageBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000001;
+        payloadCase_ = 1;
         return this;
       }
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       public Builder clearMessage() {
         if (messageBuilder_ == null) {
-          message_ = null;
-          onChanged();
+          if (payloadCase_ == 1) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
         } else {
+          if (payloadCase_ == 1) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
           messageBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       public routing.Pipe.Message.Builder getMessageBuilder() {
-        bitField0_ |= 0x00000001;
-        onChanged();
         return getMessageFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       public routing.Pipe.MessageOrBuilder getMessageOrBuilder() {
-        if (messageBuilder_ != null) {
+        if ((payloadCase_ == 1) && (messageBuilder_ != null)) {
           return messageBuilder_.getMessageOrBuilder();
         } else {
-          return message_ == null ?
-              routing.Pipe.Message.getDefaultInstance() : message_;
+          if (payloadCase_ == 1) {
+            return (routing.Pipe.Message) payload_;
+          }
+          return routing.Pipe.Message.getDefaultInstance();
         }
       }
       /**
-       * <code>required .Message message = 1;</code>
+       * <code>optional .Message message = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           routing.Pipe.Message, routing.Pipe.Message.Builder, routing.Pipe.MessageOrBuilder> 
           getMessageFieldBuilder() {
         if (messageBuilder_ == null) {
+          if (!(payloadCase_ == 1)) {
+            payload_ = routing.Pipe.Message.getDefaultInstance();
+          }
           messageBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               routing.Pipe.Message, routing.Pipe.Message.Builder, routing.Pipe.MessageOrBuilder>(
-                  getMessage(),
+                  (routing.Pipe.Message) payload_,
                   getParentForChildren(),
                   isClean());
-          message_ = null;
+          payload_ = null;
         }
+        payloadCase_ = 1;
+        onChanged();;
         return messageBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          routing.Pipe.User, routing.Pipe.User.Builder, routing.Pipe.UserOrBuilder> userBuilder_;
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      public boolean hasUser() {
+        return payloadCase_ == 2;
+      }
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      public routing.Pipe.User getUser() {
+        if (userBuilder_ == null) {
+          if (payloadCase_ == 2) {
+            return (routing.Pipe.User) payload_;
+          }
+          return routing.Pipe.User.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 2) {
+            return userBuilder_.getMessage();
+          }
+          return routing.Pipe.User.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      public Builder setUser(routing.Pipe.User value) {
+        if (userBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          userBuilder_.setMessage(value);
+        }
+        payloadCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      public Builder setUser(
+          routing.Pipe.User.Builder builderForValue) {
+        if (userBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          userBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      public Builder mergeUser(routing.Pipe.User value) {
+        if (userBuilder_ == null) {
+          if (payloadCase_ == 2 &&
+              payload_ != routing.Pipe.User.getDefaultInstance()) {
+            payload_ = routing.Pipe.User.newBuilder((routing.Pipe.User) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 2) {
+            userBuilder_.mergeFrom(value);
+          }
+          userBuilder_.setMessage(value);
+        }
+        payloadCase_ = 2;
+        return this;
+      }
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      public Builder clearUser() {
+        if (userBuilder_ == null) {
+          if (payloadCase_ == 2) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 2) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          userBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      public routing.Pipe.User.Builder getUserBuilder() {
+        return getUserFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      public routing.Pipe.UserOrBuilder getUserOrBuilder() {
+        if ((payloadCase_ == 2) && (userBuilder_ != null)) {
+          return userBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 2) {
+            return (routing.Pipe.User) payload_;
+          }
+          return routing.Pipe.User.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .User user = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          routing.Pipe.User, routing.Pipe.User.Builder, routing.Pipe.UserOrBuilder> 
+          getUserFieldBuilder() {
+        if (userBuilder_ == null) {
+          if (!(payloadCase_ == 2)) {
+            payload_ = routing.Pipe.User.getDefaultInstance();
+          }
+          userBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              routing.Pipe.User, routing.Pipe.User.Builder, routing.Pipe.UserOrBuilder>(
+                  (routing.Pipe.User) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 2;
+        onChanged();;
+        return userBuilder_;
+      }
+
+      private com.google.protobuf.SingleFieldBuilderV3<
+          raft.proto.Internal.MessageReadPayload, raft.proto.Internal.MessageReadPayload.Builder, raft.proto.Internal.MessageReadPayloadOrBuilder> messageReadPayloadBuilder_;
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      public boolean hasMessageReadPayload() {
+        return payloadCase_ == 3;
+      }
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      public raft.proto.Internal.MessageReadPayload getMessageReadPayload() {
+        if (messageReadPayloadBuilder_ == null) {
+          if (payloadCase_ == 3) {
+            return (raft.proto.Internal.MessageReadPayload) payload_;
+          }
+          return raft.proto.Internal.MessageReadPayload.getDefaultInstance();
+        } else {
+          if (payloadCase_ == 3) {
+            return messageReadPayloadBuilder_.getMessage();
+          }
+          return raft.proto.Internal.MessageReadPayload.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      public Builder setMessageReadPayload(raft.proto.Internal.MessageReadPayload value) {
+        if (messageReadPayloadBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          payload_ = value;
+          onChanged();
+        } else {
+          messageReadPayloadBuilder_.setMessage(value);
+        }
+        payloadCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      public Builder setMessageReadPayload(
+          raft.proto.Internal.MessageReadPayload.Builder builderForValue) {
+        if (messageReadPayloadBuilder_ == null) {
+          payload_ = builderForValue.build();
+          onChanged();
+        } else {
+          messageReadPayloadBuilder_.setMessage(builderForValue.build());
+        }
+        payloadCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      public Builder mergeMessageReadPayload(raft.proto.Internal.MessageReadPayload value) {
+        if (messageReadPayloadBuilder_ == null) {
+          if (payloadCase_ == 3 &&
+              payload_ != raft.proto.Internal.MessageReadPayload.getDefaultInstance()) {
+            payload_ = raft.proto.Internal.MessageReadPayload.newBuilder((raft.proto.Internal.MessageReadPayload) payload_)
+                .mergeFrom(value).buildPartial();
+          } else {
+            payload_ = value;
+          }
+          onChanged();
+        } else {
+          if (payloadCase_ == 3) {
+            messageReadPayloadBuilder_.mergeFrom(value);
+          }
+          messageReadPayloadBuilder_.setMessage(value);
+        }
+        payloadCase_ = 3;
+        return this;
+      }
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      public Builder clearMessageReadPayload() {
+        if (messageReadPayloadBuilder_ == null) {
+          if (payloadCase_ == 3) {
+            payloadCase_ = 0;
+            payload_ = null;
+            onChanged();
+          }
+        } else {
+          if (payloadCase_ == 3) {
+            payloadCase_ = 0;
+            payload_ = null;
+          }
+          messageReadPayloadBuilder_.clear();
+        }
+        return this;
+      }
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      public raft.proto.Internal.MessageReadPayload.Builder getMessageReadPayloadBuilder() {
+        return getMessageReadPayloadFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      public raft.proto.Internal.MessageReadPayloadOrBuilder getMessageReadPayloadOrBuilder() {
+        if ((payloadCase_ == 3) && (messageReadPayloadBuilder_ != null)) {
+          return messageReadPayloadBuilder_.getMessageOrBuilder();
+        } else {
+          if (payloadCase_ == 3) {
+            return (raft.proto.Internal.MessageReadPayload) payload_;
+          }
+          return raft.proto.Internal.MessageReadPayload.getDefaultInstance();
+        }
+      }
+      /**
+       * <code>optional .raft.proto.MessageReadPayload messageReadPayload = 3;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          raft.proto.Internal.MessageReadPayload, raft.proto.Internal.MessageReadPayload.Builder, raft.proto.Internal.MessageReadPayloadOrBuilder> 
+          getMessageReadPayloadFieldBuilder() {
+        if (messageReadPayloadBuilder_ == null) {
+          if (!(payloadCase_ == 3)) {
+            payload_ = raft.proto.Internal.MessageReadPayload.getDefaultInstance();
+          }
+          messageReadPayloadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              raft.proto.Internal.MessageReadPayload, raft.proto.Internal.MessageReadPayload.Builder, raft.proto.Internal.MessageReadPayloadOrBuilder>(
+                  (raft.proto.Internal.MessageReadPayload) payload_,
+                  getParentForChildren(),
+                  isClean());
+          payload_ = null;
+        }
+        payloadCase_ = 3;
+        onChanged();;
+        return messageReadPayloadBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -8508,15 +9049,6 @@ public final class Internal {
      */
     com.google.protobuf.ByteString
         getUnameBytes();
-
-    /**
-     * <code>required int32 lastSeenIndex = 2;</code>
-     */
-    boolean hasLastSeenIndex();
-    /**
-     * <code>required int32 lastSeenIndex = 2;</code>
-     */
-    int getLastSeenIndex();
   }
   /**
    * Protobuf type {@code raft.proto.MessageReadPayload}
@@ -8531,7 +9063,6 @@ public final class Internal {
     }
     private MessageReadPayload() {
       uname_ = "";
-      lastSeenIndex_ = 0;
     }
 
     @java.lang.Override
@@ -8566,11 +9097,6 @@ public final class Internal {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
               uname_ = bs;
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              lastSeenIndex_ = input.readInt32();
               break;
             }
           }
@@ -8640,21 +9166,6 @@ public final class Internal {
       }
     }
 
-    public static final int LASTSEENINDEX_FIELD_NUMBER = 2;
-    private int lastSeenIndex_;
-    /**
-     * <code>required int32 lastSeenIndex = 2;</code>
-     */
-    public boolean hasLastSeenIndex() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required int32 lastSeenIndex = 2;</code>
-     */
-    public int getLastSeenIndex() {
-      return lastSeenIndex_;
-    }
-
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -8662,10 +9173,6 @@ public final class Internal {
       if (isInitialized == 0) return false;
 
       if (!hasUname()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasLastSeenIndex()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -8678,9 +9185,6 @@ public final class Internal {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 1, uname_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt32(2, lastSeenIndex_);
-      }
       unknownFields.writeTo(output);
     }
 
@@ -8691,10 +9195,6 @@ public final class Internal {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, uname_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, lastSeenIndex_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -8718,11 +9218,6 @@ public final class Internal {
         result = result && getUname()
             .equals(other.getUname());
       }
-      result = result && (hasLastSeenIndex() == other.hasLastSeenIndex());
-      if (hasLastSeenIndex()) {
-        result = result && (getLastSeenIndex()
-            == other.getLastSeenIndex());
-      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -8737,10 +9232,6 @@ public final class Internal {
       if (hasUname()) {
         hash = (37 * hash) + UNAME_FIELD_NUMBER;
         hash = (53 * hash) + getUname().hashCode();
-      }
-      if (hasLastSeenIndex()) {
-        hash = (37 * hash) + LASTSEENINDEX_FIELD_NUMBER;
-        hash = (53 * hash) + getLastSeenIndex();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -8862,8 +9353,6 @@ public final class Internal {
         super.clear();
         uname_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        lastSeenIndex_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -8892,10 +9381,6 @@ public final class Internal {
           to_bitField0_ |= 0x00000001;
         }
         result.uname_ = uname_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.lastSeenIndex_ = lastSeenIndex_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -8943,9 +9428,6 @@ public final class Internal {
           uname_ = other.uname_;
           onChanged();
         }
-        if (other.hasLastSeenIndex()) {
-          setLastSeenIndex(other.getLastSeenIndex());
-        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
@@ -8953,9 +9435,6 @@ public final class Internal {
 
       public final boolean isInitialized() {
         if (!hasUname()) {
-          return false;
-        }
-        if (!hasLastSeenIndex()) {
           return false;
         }
         return true;
@@ -9052,38 +9531,6 @@ public final class Internal {
   }
   bitField0_ |= 0x00000001;
         uname_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int lastSeenIndex_ ;
-      /**
-       * <code>required int32 lastSeenIndex = 2;</code>
-       */
-      public boolean hasLastSeenIndex() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required int32 lastSeenIndex = 2;</code>
-       */
-      public int getLastSeenIndex() {
-        return lastSeenIndex_;
-      }
-      /**
-       * <code>required int32 lastSeenIndex = 2;</code>
-       */
-      public Builder setLastSeenIndex(int value) {
-        bitField0_ |= 0x00000002;
-        lastSeenIndex_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int32 lastSeenIndex = 2;</code>
-       */
-      public Builder clearLastSeenIndex() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        lastSeenIndex_ = 0;
         onChanged();
         return this;
       }
@@ -9217,21 +9664,23 @@ public final class Internal {
       "\002 \002(\005\022\024\n\014lastLogIndex\030\003 \002(\005\022\023\n\013lastLogTe" +
       "rm\030\004 \002(\005\"1\n\014VoteResponse\022\014\n\004term\030\001 \002(\005\022\023" +
       "\n\013voteGranted\030\002 \002(\010\"%\n\023ConnectionActiveA" +
-      "ck\022\016\n\006nodeId\030\001 \002(\005\"2\n\025ForwardMessageRequ" +
-      "est\022\031\n\007message\030\001 \002(\0132\010.Message\"\207\003\n\016Inter" +
-      "nalPacket\022@\n\024appendEntriesRequest\030\001 \001(\0132",
-      " .raft.proto.AppendEntriesRequestH\000\022B\n\025a" +
-      "ppendEntriesResponse\030\002 \001(\0132!.raft.proto." +
-      "AppendEntriesResponseH\000\022.\n\013voteRequest\030\003" +
-      " \001(\0132\027.raft.proto.VoteRequestH\000\0220\n\014voteR" +
-      "esponse\030\004 \001(\0132\030.raft.proto.VoteResponseH" +
-      "\000\022>\n\023connectionActiveAck\030\005 \001(\0132\037.raft.pr" +
-      "oto.ConnectionActiveAckH\000\022B\n\025forwardMess" +
-      "ageRequest\030\006 \001(\0132!.raft.proto.ForwardMes" +
-      "sageRequestH\000B\t\n\007payload\"\036\n\013UserPayload\022" +
-      "\017\n\007payload\030\001 \002(\014\"!\n\016MessagePayLoad\022\017\n\007pa",
-      "yload\030\001 \002(\014\":\n\022MessageReadPayload\022\r\n\005una" +
-      "me\030\001 \002(\t\022\025\n\rlastSeenIndex\030\002 \002(\005B\002H\001"
+      "ck\022\016\n\006nodeId\030\001 \002(\005\"\224\001\n\025ForwardMessageReq" +
+      "uest\022\033\n\007message\030\001 \001(\0132\010.MessageH\000\022\025\n\004use" +
+      "r\030\002 \001(\0132\005.UserH\000\022<\n\022messageReadPayload\030\003",
+      " \001(\0132\036.raft.proto.MessageReadPayloadH\000B\t" +
+      "\n\007payload\"\207\003\n\016InternalPacket\022@\n\024appendEn" +
+      "triesRequest\030\001 \001(\0132 .raft.proto.AppendEn" +
+      "triesRequestH\000\022B\n\025appendEntriesResponse\030" +
+      "\002 \001(\0132!.raft.proto.AppendEntriesResponse" +
+      "H\000\022.\n\013voteRequest\030\003 \001(\0132\027.raft.proto.Vot" +
+      "eRequestH\000\0220\n\014voteResponse\030\004 \001(\0132\030.raft." +
+      "proto.VoteResponseH\000\022>\n\023connectionActive" +
+      "Ack\030\005 \001(\0132\037.raft.proto.ConnectionActiveA" +
+      "ckH\000\022B\n\025forwardMessageRequest\030\006 \001(\0132!.ra",
+      "ft.proto.ForwardMessageRequestH\000B\t\n\007payl" +
+      "oad\"\036\n\013UserPayload\022\017\n\007payload\030\001 \002(\014\"!\n\016M" +
+      "essagePayLoad\022\017\n\007payload\030\001 \002(\014\"#\n\022Messag" +
+      "eReadPayload\022\r\n\005uname\030\001 \002(\tB\002H\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -9287,7 +9736,7 @@ public final class Internal {
     internal_static_raft_proto_ForwardMessageRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_ForwardMessageRequest_descriptor,
-        new java.lang.String[] { "Message", });
+        new java.lang.String[] { "Message", "User", "MessageReadPayload", "Payload", });
     internal_static_raft_proto_InternalPacket_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_raft_proto_InternalPacket_fieldAccessorTable = new
@@ -9311,7 +9760,7 @@ public final class Internal {
     internal_static_raft_proto_MessageReadPayload_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_raft_proto_MessageReadPayload_descriptor,
-        new java.lang.String[] { "Uname", "LastSeenIndex", });
+        new java.lang.String[] { "Uname", });
     routing.Pipe.getDescriptor();
   }
 

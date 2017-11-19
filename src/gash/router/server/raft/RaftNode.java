@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import raft.proto.Internal;
 import raft.proto.Internal.AppendEntriesRequest;
 import raft.proto.Internal.AppendEntriesResponse;
 import raft.proto.Internal.InternalPacket;
@@ -31,6 +32,7 @@ import raft.proto.Internal.MessageReadPayload;
 import raft.proto.Internal.UserPayload;
 import raft.proto.Internal.VoteRequest;
 import raft.proto.Internal.VoteResponse;
+import routing.Pipe;
 import routing.Pipe.Message;
 import routing.Pipe.Message.Status;
 import routing.Pipe.User;
@@ -698,23 +700,6 @@ public class RaftNode {
 					applyLogs(entries);
 					state.setLastApplied(entries.get(entries.size() - 1).getIndex());
 					saveState();
-					
-					//todo: send client proper message using route in pipe.proto
-					// if logs have been applied send, message to active clients as well
-					for (LogEntry entry : entries) {
-						if (entry.hasMessagePayload()) {
-							if (ClientChannelCache.getInstance().getClientChannelMap().containsKey("username")) {
-								Channel channel = ClientChannelCache.getInstance().getClientChannelMap().get("username").getClienChannel();
-								if (channel.isActive()) {
-									Logger.getGlobal().info("flushing to client channel");
-									channel.writeAndFlush(entry);
-								} else {
-									Logger.getGlobal().info("channel closed, cannot flush to client");
-								}
-							}
-						}
-					}
-					
 					Logger.getGlobal().info("logs applied successfully, size: " + entries.size());
 				} else {
 					Logger.getGlobal().info("no logs to apply");
@@ -755,72 +740,158 @@ public class RaftNode {
 		
 		return task;
 	}
+
+	/********************************************************************************/
+	/* send unread messages to client */
+	/********************************************************************************/
+	public void pushUnreadMessagesToClient(String uname) {
+		executor.submit(new Runnable() {
+			@Override
+			public void run() {
+				List<Message> messages = MessageMongoDB.getInstance().getUnreadMessages(uname);
+				Channel channel = null;
+				if (ClientChannelCache.getInstance().getClientChannelMap().containsKey(uname)) {
+					channel = ClientChannelCache.getInstance().getClientChannelMap().get(uname).getClienChannel();
+				}
+
+				if (messages.size() > 0 && channel != null && channel.isActive()) {
+					Pipe.MessagesResponse response
+							= Pipe
+							.MessagesResponse
+							.newBuilder()
+							.addAllMessages(messages)
+							.setType(Pipe.MessagesResponse.Type.USER)
+							.build();
+
+					Pipe.Route route
+							= Pipe
+							.Route
+							.newBuilder()
+							.setId(0)
+							.setPath(Pipe.Route.Path.MESSAGES_RESPONSE)
+							.setMessagesResponse(response)
+							.build();
+
+					channel.writeAndFlush(route);
+
+					//also mark messages read
+					markMessagesRead(uname);
+				}
+			}
+		});
+	}
 	
 	/********************************************************************************/
 	/* public apis to commit messages, users, and mark messages as read */
 	/********************************************************************************/
 	public void addUser(User user) {
-		if (nodeType != NodeType.Leader) return;
-		
-		UserPayload payload = 
-				UserPayload
-				.newBuilder()
-				.setPayload(user.toByteString())
-				.build();
-		
-		int nextIndex = getNextLogIndex();
-		
-		LogEntry logEntry = LogEntry
-				.newBuilder()
-				.setIndex(nextIndex)
-				.setTerm(state.getCurrentTerm())
-				.setUserPayload(payload)
-				.build();
-	
-		addLog(logEntry);
+		if (nodeType == NodeType.Leader) {
+			UserPayload payload =
+					UserPayload
+							.newBuilder()
+							.setPayload(user.toByteString())
+							.build();
+
+			int nextIndex = getNextLogIndex();
+
+			LogEntry logEntry = LogEntry
+					.newBuilder()
+					.setIndex(nextIndex)
+					.setTerm(state.getCurrentTerm())
+					.setUserPayload(payload)
+					.build();
+
+			addLog(logEntry);
+		} else {
+			Internal.ForwardMessageRequest request =
+					Internal.ForwardMessageRequest
+							.newBuilder()
+							.setUser(user)
+							.build();
+
+			InternalPacket packet =
+					InternalPacket
+							.newBuilder()
+							.setForwardMessageRequest(request)
+							.build();
+
+			RemoteNode leaderRemoteNode = NodeMonitor.getInstance().getNodeMap().get(state.getCurrentLeader());
+			if (leaderRemoteNode.isActive()) leaderRemoteNode.getChannel().writeAndFlush(packet);
+		}
 	}
 	
 	public void addMessage(Message message) {
-		if (nodeType != NodeType.Leader) return;
-		
-		MessagePayLoad payload = 
-				MessagePayLoad
-				.newBuilder()
-				.setPayload(message.toByteString())
-				.build();
-		
-		int nextIndex = getNextLogIndex();
-		
-		LogEntry logEntry = LogEntry
-				.newBuilder()
-				.setIndex(nextIndex)
-				.setTerm(state.getCurrentTerm())
-				.setMessagePayload(payload)
-				.build();
-	
-		addLog(logEntry);
+		if (nodeType == NodeType.Leader) {
+			MessagePayLoad payload =
+					MessagePayLoad
+							.newBuilder()
+							.setPayload(message.toByteString())
+							.build();
+
+			int nextIndex = getNextLogIndex();
+
+			LogEntry logEntry = LogEntry
+					.newBuilder()
+					.setIndex(nextIndex)
+					.setTerm(state.getCurrentTerm())
+					.setMessagePayload(payload)
+					.build();
+
+			addLog(logEntry);
+		} else {
+			Internal.ForwardMessageRequest request =
+					Internal.ForwardMessageRequest
+							.newBuilder()
+							.setMessage(message)
+							.build();
+
+			InternalPacket packet =
+					InternalPacket
+							.newBuilder()
+							.setForwardMessageRequest(request)
+							.build();
+
+			RemoteNode leaderRemoteNode = NodeMonitor.getInstance().getNodeMap().get(state.getCurrentLeader());
+			if (leaderRemoteNode.isActive()) leaderRemoteNode.getChannel().writeAndFlush(packet);
+		}
 	}
 	
-	public void markMessagesRead(String uname, int lastSeenIndex) {
-		if (nodeType != NodeType.Leader) return;
-		
-		MessageReadPayload payload = 
+	public void markMessagesRead(String uname) {
+		MessageReadPayload payload =
 				MessageReadPayload
-				.newBuilder()
-				.setUname(uname)
-				.setLastSeenIndex(lastSeenIndex)
-				.build();
-		
-		int nextIndex = getNextLogIndex();
-		
-		LogEntry logEntry = LogEntry
-				.newBuilder()
-				.setIndex(nextIndex)
-				.setTerm(state.getCurrentTerm())
-				.setMessageReadPayload(payload)
-				.build();
-	
-		addLog(logEntry);
+						.newBuilder()
+						.setUname(uname)
+						.build();
+
+		if (nodeType == NodeType.Leader) {
+
+			int nextIndex = getNextLogIndex();
+
+			LogEntry logEntry = LogEntry
+					.newBuilder()
+					.setIndex(nextIndex)
+					.setTerm(state.getCurrentTerm())
+					.setMessageReadPayload(payload)
+					.build();
+
+			addLog(logEntry);
+
+		} else {
+			Internal.ForwardMessageRequest request =
+					Internal.ForwardMessageRequest
+							.newBuilder()
+							.setMessageReadPayload(payload)
+							.build();
+
+			InternalPacket packet =
+					InternalPacket
+							.newBuilder()
+							.setForwardMessageRequest(request)
+							.build();
+
+			RemoteNode leaderRemoteNode = NodeMonitor.getInstance().getNodeMap().get(state.getCurrentLeader());
+			if (leaderRemoteNode.isActive()) leaderRemoteNode.getChannel().writeAndFlush(packet);
+		}
 	}
 	
 	/********************************************************************************/
@@ -867,8 +938,7 @@ public class RaftNode {
 				
 			} else if (entry.hasMessageReadPayload()) {
 				commitMessagesRead(
-						entry.getMessageReadPayload().getUname(), 
-						entry.getMessageReadPayload().getLastSeenIndex()
+						entry.getMessageReadPayload().getUname()
 				);
 			}
 			
@@ -892,10 +962,29 @@ public class RaftNode {
 	
 	private void commitMessage(Message message) {
 		MessageMongoDB.getInstance().commitMessage(message);
+		if (ClientChannelCache.getInstance().getClientChannelMap().containsKey(message.getReceiverId())) {
+			Channel channel = ClientChannelCache.getInstance().getClientChannelMap().get(message.getReceiverId()).getClienChannel();
+			if (channel.isActive()) {
+				Logger.getGlobal().info("sending message to receiver: " + message.toString());
+
+				Pipe.Route route
+						= Pipe
+						.Route
+						.newBuilder()
+						.setId(0)
+						.setPath(Pipe.Route.Path.MESSAGE)
+						.setMessage(message)
+						.build();
+
+				channel.writeAndFlush(route);
+			} else {
+				Logger.getGlobal().info("channel closed, cannot flush to client");
+			}
+		}
 	}
 	
-	private void commitMessagesRead(String uname, int lastSeenIndex) {
-		MessageMongoDB.getInstance().markMessagesRead(uname, lastSeenIndex);
+	private void commitMessagesRead(String uname) {
+		MessageMongoDB.getInstance().markMessagesRead(uname);
 	}
 	
 	/********************************************************************************/

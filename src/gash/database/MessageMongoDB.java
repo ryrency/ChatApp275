@@ -9,7 +9,9 @@ import com.mongodb.client.MongoDatabase;
 import gash.router.container.NodeConf;
 import gash.router.server.raft.RaftNode;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -17,6 +19,7 @@ import org.bson.Document;
 
 import com.mongodb.client.model.Filters;
 
+import raft.proto.Internal;
 import raft.proto.Work.WorkMessage;
 import routing.Pipe.Message;
 
@@ -182,8 +185,7 @@ public class MessageMongoDB {
 	}
 	
 	//todo:parag
-	public boolean markMessagesRead(String uname, int lastSeenIndex) {
-		System.out.println("***MongoDB*** markMessagesRead");
+	public boolean markMessagesRead(String uname) {
 		try {
 			//implement here
 
@@ -192,6 +194,60 @@ public class MessageMongoDB {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+	public List<Message> getUnreadMessages(String uname) {
+		List<Message> messages = new ArrayList<Message>();
+
+		try {
+			FindIterable<Document> documents
+					= dbCollection.find(
+					Filters.and(Filters.eq(RECEIVER_ID, uname), Filters.eq(READ, 0))
+			);
+
+			Iterator<Document> iterator = documents.iterator();
+			while (iterator.hasNext()) {
+				Document document = iterator.next();
+				Message message = mapDocumentToMessage(document);
+				messages.add(message);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return null;
+		}
+
+		return messages;
+	}
+
+	private Document mapMessageToDocument(Message message) {
+		Document document = new Document();
+		document.append(MESSAGETYPE, message.getType().getNumber());
+		document.append(SENDER_ID, message.getSenderId());
+		document.append(RECEIVER_ID, message.getReceiverId());
+		document.append(PAYLOAD, message.getPayload());
+		document.append(TIMESTAMP, message.getTimestamp());
+		document.append(STATUS, message.getStatus().getNumber());
+		document.append(READ, 0);
+		return document;
+	}
+
+	private Message mapDocumentToMessage(Document document) {
+		Message.Type type = Message.Type.forNumber(document.getInteger(MESSAGETYPE));
+		Message.Status status = Message.Status.forNumber(document.getInteger(STATUS));
+
+		Message message =
+				Message.newBuilder()
+						.setType(type)
+						.setAction(Message.ActionType.POST)
+						.setSenderId(document.getString(SENDER_ID))
+						.setReceiverId(document.getString(RECEIVER_ID))
+						.setPayload(document.getString(PAYLOAD))
+						.setTimestamp(document.getString(TIMESTAMP))
+						.setStatus(status)
+						.build();
+
+		return message;
 	}
 
 	public boolean postData1() {
@@ -272,14 +328,5 @@ public class MessageMongoDB {
 		}
 
 		return result;
-
 	}
-
-	/*
-	 * public boolean setRead(String key) { try { dbCollection.updateOne({
-	 * "receiverID":key },{ $set:{ "read": 1 } }); } catch(Exception e) {
-	 * e.printStackTrace();
-	 * 
-	 * }
-	 */
 }

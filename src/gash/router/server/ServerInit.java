@@ -50,8 +50,5 @@ public class ServerInit extends ChannelInitializer<SocketChannel> {
 
 		// our server processor (new instance for each connection)
 		pipeline.addLast("handler", new ServerHandler(conf));
-		
-		// fix user name
-		ClientChannelCache.getInstance().addClientChannelToMap("username", ch);
 	}
 }

@@ -3,6 +3,9 @@ import sys
 import socket
 from pipe_pb2 import Route
 from pipe_pb2 import Message
+from pipe_pb2 import User
+from pipe_pb2 import _ROUTE_PATH
+from pipe_pb2 import MessagesResponse
 from pipe_pb2 import NetworkDiscoveryPacket
 from encoder_decoder import LengthFieldProtoEncoder, LengthFieldProtoDncoder
 from network_discovery import NetworkDiscover
@@ -15,7 +18,7 @@ import time
 # This is currently port and IP oof Nginx server
 TCP_IP = 'http://10.0.0.10'
 TCP_PORT = 4467
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 1024 * 1024
 
 
 
@@ -27,24 +30,11 @@ class MessageClient:
         self.network_discover = NetworkDiscover()
         self.s = None
         self.socket_connect = None
+        self.uname = None
 
-        #todo - should fail if the http connection fails here, then should not continue
-        # socket_address = self.__get_server_socket_address()
-        # parts = socket_address.split(":")
-        # self.host = "192.168.0.13"
         self.host = "127.0.0.1"
-        self.port = 4168
-        
-        # try:
-        #     self.network_discover.connectUDP()
-        #     self.network_discover.sendNetworkDiscoveryPacket()
-        #     self.network_discover.receiveNetworkDiscoveryPacket() #Protobuf received need to extract host and port to form TCP connection  
-        # except Exception as ex:
-        #     print "Ex-udp-network-discover -" 
-        #     import traceback
-        #     exc_info = sys.exc_info()
-        #     traceback.print_exception(*exc_info)
-        # # finally:
+        self.port = 4368
+
         self.connect()
 
     def __get_server_socket_address(self):
@@ -57,9 +47,13 @@ class MessageClient:
         self.s.connect((self.host, self.port))
         print "client connected to server: " + self.__get_server_path()
 
+        self.uname = raw_input("Please enter your username: ")
+
         # listen to incoming data on a new thread
         thread = Process(target = self.listen)
         thread.start()
+
+        self.create_user(self.uname)
    
     def listen(self):
         while True:
@@ -70,8 +64,9 @@ class MessageClient:
                     self.close()
                     break
 
-                print "data length: ", len(data)
-                print "data reply: ", data
+                #route = self.decoder.decode(data)
+                print "received new messages: " + data
+
             except socket.timeout:
                 self.close()
                 print "connection timed out with: " + self.__get_server_path()
@@ -80,10 +75,8 @@ class MessageClient:
                 self.close()
                 print "connection closed with: " + self.__get_server_path()
                 break
-    
-
  
-    def sendMessage(self, senderId, payload, receiverId):
+    def send_message(self, senderId, payload, receiverId):
         route = Route()
         route.id = 1
         route.path = route.MESSAGE
@@ -104,7 +97,7 @@ class MessageClient:
         
         self.send(route)
 
-    def createUser(self, username, password, emailId):
+    def create_user(self, username):
         
         route = Route()
         route.id = 1
@@ -112,8 +105,6 @@ class MessageClient:
         
         userDetail = User()
         userDetail.uname = username
-        userDetail.email = emailId
-        userDetail.password = password
         ts = time.time()
         userDetail.recentActiveTime = str(ts)
         userDetail.action = userDetail.REGISTER
@@ -121,14 +112,6 @@ class MessageClient:
         route.user.MergeFrom(userDetail)
         
         self.send(route)
-
-#     def post_message(self, message):
-#         r = Route()
-#         r.id = "1"
-#         r.path = "/message"
-#         r.payload = message
-# 
-#         self.send(r)
 
     def send(self, route):
         message = self.encoder.encode(route)
@@ -140,26 +123,19 @@ class MessageClient:
 
     def __get_server_path(self):
         return self.host + ":" + str(self.port)
-    
 
-
-    # cli for message client #
-    def __get_usage(self):
-        return "message client supports following commands - \n" + \
-               "ping\n" + \
-               "send 'message'\n" + \
-               "close\n"
 
     def start_cli(self):
-        print self.__get_usage()
-
         try:
             while True:
-                cmd = raw_input("Enter your command:\n")
+                receiver_id = raw_input("Enter username you want to send hi:\n")
                 if not self.s:
                     print "sorry socket not connected, please try again"
                 else:
-                    self.sendMessage("user1", "Text Message 1", "user2")
+
+                    message = "Hi " + receiver_id
+                    self.send_message(self.uname, message, receiver_id)
+                    print "sent message to " + receiver_id + " - "  + message
         except KeyboardInterrupt:
             sys.exit(1)
 

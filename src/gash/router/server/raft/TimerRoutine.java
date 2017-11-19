@@ -27,11 +27,11 @@ public class TimerRoutine {
 	}
 	
 	public static long getHeartbeatSendDelay() {
-		return 1000L;
+		return 500L;
 	}
 	
 	public static long getLogCommitInterval() {
-		return 3000L;
+		return 500L;
 	}
 
 	int randomWithRange(int min, int max) {

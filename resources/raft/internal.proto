@@ -48,7 +48,11 @@ message ConnectionActiveAck {
 }
 
 message ForwardMessageRequest{    
-    required Message message = 1;
+    oneof payload{
+    	 	Message message = 1;
+    	 	User user = 2;
+    	 	MessageReadPayload messageReadPayload = 3;
+    	}
 }
 message InternalPacket {
 	oneof payload{
@@ -71,5 +75,4 @@ message MessagePayLoad {
 
 message MessageReadPayload {
 	required string uname = 1;
-	required int32 lastSeenIndex = 2;
 }

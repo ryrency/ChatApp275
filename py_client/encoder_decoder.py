@@ -15,7 +15,6 @@ class LengthFieldProtoEncoder:
 
     def encode(self, route, msg_type='tcp'):
         msg = route.SerializeToString()
-        print(msg)
         if (msg_type=='tcp'):
             msg = self.convert_int_to_bytes_string(len(msg)) + msg
         return msg
@@ -29,7 +28,5 @@ class LengthFieldProtoDncoder:
       
         routeMsg = Route()
         routeMsg.ParseFromString(msg)
-
-        print (routeMsg) 
         return routeMsg
 

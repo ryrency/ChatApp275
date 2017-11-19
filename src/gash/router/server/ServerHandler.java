@@ -40,11 +40,6 @@ import routing.Pipe.Route;
 public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 
 	private HashMap<String, String> routing;
-	String uname = "user1";
-
-	int currentNodeId;
-	int currentLeaderId;
-	RemoteNode leaderRemoteNode;
 
 	public ServerHandler(RoutingConf conf) {
 		if (conf != null)
@@ -64,45 +59,26 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 			System.out.println("ERROR: Unexpected content - " + msg);
 			return;
 		}
-		if(msg.hasMessage()) {
-		Logger.getGlobal().info("server received message from client");
 
-		System.out.println("*** ServerHandler*** fn:HandleMessage***");
-		
-		
-		currentNodeId = NodeMonitor.getInstance().getNodeConf().getNodeId();
-		currentLeaderId = RaftNode.getInstance().getState().getCurrentLeader();
-		
-		Logger.getGlobal().info("server state - nodeId: " + currentNodeId + ", leaderID: " + currentLeaderId);
-		
-		if (currentNodeId == currentLeaderId) {
-			//Append entries needs to be called 
-			Logger.getGlobal().info("Leader is going to handle");
+		if(msg.hasUser()) {
+			Logger.getGlobal().info("server received user register request" + msg.getUser());
+
+			//save the channel in cache
+			ClientChannelCache
+					.getInstance()
+					.addClientChannelToMap(msg.getUser().getUname(), channel);
+
+			RaftNode.getInstance().addUser(msg.getUser());
+
+			RaftNode.getInstance().pushUnreadMessagesToClient(msg.getUser().getUname());
+
+		} else if(msg.hasMessage()) {
+			Logger.getGlobal().info("server received message from client" + msg.getMessage());
 			RaftNode.getInstance().addMessage(msg.getMessage());
-		} else {
-			ForwardMessageRequest request = 
-					ForwardMessageRequest
-					.newBuilder()
-					.setMessage(msg.getMessage())
-					.build();
-			
-			InternalPacket packet = 
-					InternalPacket
-					.newBuilder()
-					.setForwardMessageRequest(request)
-					.build();
-	
-			leaderRemoteNode = NodeMonitor.getInstance().getNodeMap().get(currentLeaderId);
-			if (leaderRemoteNode.isActive()) { 
-				leaderRemoteNode.getChannel().writeAndFlush(packet);
-			}	
-		}
 
 		} else {
 		System.out.println("---> " + msg.getId() + ": " + msg.getPath());
-		
-		//todo: remove this NOW!
-		channel.writeAndFlush(msg);
+
 		
 //		try {
 //			String clazz = routing.get("/"+msg.getPath().toString().toLowerCase());

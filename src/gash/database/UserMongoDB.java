@@ -6,6 +6,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
+import com.mongodb.client.model.UpdateOptions;
 import gash.router.container.NodeConf;
 import gash.router.server.raft.RaftNode;
 
@@ -16,6 +17,7 @@ import org.bson.Document;
 
 import com.mongodb.client.model.Filters;
 
+import org.bson.conversions.Bson;
 import routing.Pipe.Route;
 import routing.Pipe.User;
 
@@ -151,7 +153,10 @@ public class UserMongoDB {
 		try {
 			Document document = new Document();
 			document.append(USER_NAME, user.getUname());
-			dbCollection.insertOne(document);
+
+			Bson filter = Filters.eq(USER_NAME, user.getUname());
+			UpdateOptions options = new UpdateOptions().upsert(true);
+			dbCollection.replaceOne(filter, document, options);
 
 			return true;
 		} catch (Exception e) {

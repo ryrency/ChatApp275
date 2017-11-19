@@ -19,8 +19,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='pipe.proto',
   package='',
   syntax='proto2',
-  serialized_pb=_b('\n\npipe.proto\"\xb4\x03\n\x05Route\x12\n\n\x02id\x18\x01 \x02(\x03\x12\x19\n\x04path\x18\x02 \x02(\x0e\x32\x0b.Route.Path\x12\x39\n\x16networkDiscoveryPacket\x18\x03 \x01(\x0b\x32\x17.NetworkDiscoveryPacketH\x00\x12\x15\n\x04user\x18\x04 \x01(\x0b\x32\x05.UserH\x00\x12\x1b\n\x07message\x18\x05 \x01(\x0b\x32\x08.MessageH\x00\x12\x15\n\x05group\x18\x06 \x01(\x0b\x32\x06.Group\x12)\n\x0fmessagesRequest\x18\x07 \x01(\x0b\x32\x10.MessagesRequest\x12*\n\x10messagesResponse\x18\x08 \x01(\x0b\x32\x10.MessagesRequest\x12\x17\n\x06header\x18\t \x01(\x0b\x32\x07.Header\"\x82\x01\n\x04Path\x12\x08\n\x04PING\x10\x00\x12\x15\n\x11NETWORK_DISCOVERY\x10\x01\x12\x08\n\x04USER\x10\x02\x12\x0b\n\x07MESSAGE\x10\x03\x12\t\n\x05GROUP\x10\x04\x12\x14\n\x10MESSAGES_REQUEST\x10\x05\x12\x15\n\x11MESSAGES_RESPONSE\x10\x06\x12\n\n\x06HEADER\x10\x07\x42\t\n\x07payload\"\xa6\x01\n\x04User\x12\r\n\x05uname\x18\x01 \x02(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x18\n\x10recentActiveTime\x18\x04 \x01(\t\x12 \n\x06\x61\x63tion\x18\x05 \x02(\x0e\x32\x10.User.ActionType\"2\n\nActionType\x12\x0c\n\x08REGISTER\x10\x00\x12\n\n\x06\x41\x43\x43\x45SS\x10\x01\x12\n\n\x06\x44\x45LETE\x10\x02\"l\n\x05Group\x12\r\n\x05gname\x18\x01 \x02(\t\x12\x0b\n\x03gid\x18\x02 \x02(\x03\x12!\n\x06\x61\x63tion\x18\x03 \x02(\x0e\x32\x11.Group.ActionType\"$\n\nActionType\x12\n\n\x06\x43REATE\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01\"\xa6\x02\n\x07Message\x12\x1b\n\x04type\x18\x01 \x02(\x0e\x32\r.Message.Type\x12\x10\n\x08senderId\x18\x02 \x02(\t\x12\x0f\n\x07payload\x18\x03 \x02(\t\x12\x12\n\nreceiverId\x18\x04 \x02(\t\x12\x11\n\ttimestamp\x18\x05 \x02(\t\x12\x1f\n\x06status\x18\x06 \x02(\x0e\x32\x0f.Message.Status\x12#\n\x06\x61\x63tion\x18\x07 \x02(\x0e\x32\x13.Message.ActionType\".\n\nActionType\x12\x08\n\x04POST\x10\x00\x12\n\n\x06UPDATE\x10\x01\x12\n\n\x06\x44\x45LETE\x10\x02\"\x1d\n\x04Type\x12\n\n\x06SINGLE\x10\x00\x12\t\n\x05GROUP\x10\x01\"\x1f\n\x06Status\x12\n\n\x06\x41\x43TIVE\x10\x00\x12\t\n\x05STALE\x10\x01\"_\n\x0fMessagesRequest\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.MessagesRequest.Type\x12\n\n\x02id\x18\x02 \x02(\t\"\x1b\n\x04Type\x12\x08\n\x04USER\x10\x00\x12\t\n\x05GROUP\x10\x01\"}\n\x10MessagesResponse\x12$\n\x04type\x18\x01 \x02(\x0e\x32\x16.MessagesResponse.Type\x12\n\n\x02id\x18\x02 \x02(\t\x12\x1a\n\x08messages\x18\x03 \x03(\x0b\x32\x08.Message\"\x1b\n\x04Type\x12\x08\n\x04USER\x10\x00\x12\t\n\x05GROUP\x10\x01\"\xd9\x02\n\x16NetworkDiscoveryPacket\x12*\n\x04mode\x18\x01 \x02(\x0e\x32\x1c.NetworkDiscoveryPacket.Mode\x12\x44\n\x06sender\x18\x02 \x02(\x0e\x32\x1e.NetworkDiscoveryPacket.Sender:\x14INTERNAL_SERVER_NODE\x12\x10\n\x08groupTag\x18\x03 \x01(\t\x12\x0e\n\x06nodeId\x18\x04 \x01(\t\x12\x13\n\x0bnodeAddress\x18\x05 \x02(\t\x12\x10\n\x08nodePort\x18\x06 \x02(\x03\x12\x0e\n\x06secret\x18\x07 \x02(\t\"Q\n\x06Sender\x12\x18\n\x14\x45XTERNAL_SERVER_NODE\x10\x00\x12\x18\n\x14INTERNAL_SERVER_NODE\x10\x01\x12\x13\n\x0f\x45ND_USER_CLIENT\x10\x02\"!\n\x04Mode\x12\x0b\n\x07REQUEST\x10\x00\x12\x0c\n\x08RESPONSE\x10\x01\"\x16\n\x06Header\x12\x0c\n\x04type\x18\x01 \x02(\tB\x0b\n\x07routingH\x01')
+  serialized_pb=_b('\n\npipe.proto\"\xe8\x03\n\x05Route\x12\n\n\x02id\x18\x01 \x02(\x03\x12\x19\n\x04path\x18\x02 \x02(\x0e\x32\x0b.Route.Path\x12\x39\n\x16networkDiscoveryPacket\x18\x03 \x01(\x0b\x32\x17.NetworkDiscoveryPacketH\x00\x12\x15\n\x04user\x18\x04 \x01(\x0b\x32\x05.UserH\x00\x12\x1b\n\x07message\x18\x05 \x01(\x0b\x32\x08.MessageH\x00\x12\x17\n\x05group\x18\x06 \x01(\x0b\x32\x06.GroupH\x00\x12+\n\x0fmessagesRequest\x18\x07 \x01(\x0b\x32\x10.MessagesRequestH\x00\x12-\n\x10messagesResponse\x18\x08 \x01(\x0b\x32\x11.MessagesResponseH\x00\x12\x1d\n\x08response\x18\t \x01(\x0b\x32\t.ResponseH\x00\x12\x17\n\x06header\x18\n \x01(\x0b\x32\x07.Header\"\x90\x01\n\x04Path\x12\x08\n\x04PING\x10\x00\x12\x15\n\x11NETWORK_DISCOVERY\x10\x01\x12\x08\n\x04USER\x10\x02\x12\x0b\n\x07MESSAGE\x10\x03\x12\t\n\x05GROUP\x10\x04\x12\x14\n\x10MESSAGES_REQUEST\x10\x05\x12\x15\n\x11MESSAGES_RESPONSE\x10\x06\x12\n\n\x06HEADER\x10\x07\x12\x0c\n\x08RESPONSE\x10\x08\x42\t\n\x07payload\"\xa6\x01\n\x04User\x12\r\n\x05uname\x18\x01 \x02(\t\x12\r\n\x05\x65mail\x18\x02 \x01(\t\x12\x10\n\x08password\x18\x03 \x01(\t\x12\x18\n\x10recentActiveTime\x18\x04 \x01(\t\x12 \n\x06\x61\x63tion\x18\x05 \x02(\x0e\x32\x10.User.ActionType\"2\n\nActionType\x12\x0c\n\x08REGISTER\x10\x00\x12\n\n\x06\x41\x43\x43\x45SS\x10\x01\x12\n\n\x06\x44\x45LETE\x10\x02\"\x8b\x01\n\x05Group\x12\r\n\x05gname\x18\x01 \x02(\t\x12\x0b\n\x03gid\x18\x02 \x01(\x03\x12!\n\x06\x61\x63tion\x18\x03 \x02(\x0e\x32\x11.Group.ActionType\x12\x10\n\x08username\x18\x04 \x01(\t\"1\n\nActionType\x12\n\n\x06\x43REATE\x10\x00\x12\n\n\x06\x44\x45LETE\x10\x01\x12\x0b\n\x07\x41\x44\x44USER\x10\x02\"\xa6\x02\n\x07Message\x12\x1b\n\x04type\x18\x01 \x02(\x0e\x32\r.Message.Type\x12\x10\n\x08senderId\x18\x02 \x02(\t\x12\x0f\n\x07payload\x18\x03 \x02(\t\x12\x12\n\nreceiverId\x18\x04 \x02(\t\x12\x11\n\ttimestamp\x18\x05 \x02(\t\x12\x1f\n\x06status\x18\x06 \x01(\x0e\x32\x0f.Message.Status\x12#\n\x06\x61\x63tion\x18\x07 \x02(\x0e\x32\x13.Message.ActionType\".\n\nActionType\x12\x08\n\x04POST\x10\x00\x12\n\n\x06UPDATE\x10\x01\x12\n\n\x06\x44\x45LETE\x10\x02\"\x1d\n\x04Type\x12\n\n\x06SINGLE\x10\x00\x12\t\n\x05GROUP\x10\x01\"\x1f\n\x06Status\x12\n\n\x06\x41\x43TIVE\x10\x00\x12\t\n\x05STALE\x10\x01\"_\n\x0fMessagesRequest\x12#\n\x04type\x18\x01 \x02(\x0e\x32\x15.MessagesRequest.Type\x12\n\n\x02id\x18\x02 \x02(\t\"\x1b\n\x04Type\x12\x08\n\x04USER\x10\x00\x12\t\n\x05GROUP\x10\x01\"}\n\x10MessagesResponse\x12$\n\x04type\x18\x01 \x02(\x0e\x32\x16.MessagesResponse.Type\x12\n\n\x02id\x18\x02 \x01(\t\x12\x1a\n\x08messages\x18\x03 \x03(\x0b\x32\x08.Message\"\x1b\n\x04Type\x12\x08\n\x04USER\x10\x00\x12\t\n\x05GROUP\x10\x01\"\xea\x02\n\x16NetworkDiscoveryPacket\x12*\n\x04mode\x18\x01 \x02(\x0e\x32\x1c.NetworkDiscoveryPacket.Mode\x12\x44\n\x06sender\x18\x02 \x02(\x0e\x32\x1e.NetworkDiscoveryPacket.Sender:\x14INTERNAL_SERVER_NODE\x12\x10\n\x08groupTag\x18\x03 \x01(\t\x12\x0e\n\x06nodeId\x18\x04 \x01(\t\x12\x13\n\x0bnodeAddress\x18\x05 \x02(\t\x12\x10\n\x08nodePort\x18\x06 \x02(\x03\x12\x0e\n\x06secret\x18\x07 \x02(\t\"Q\n\x06Sender\x12\x18\n\x14\x45XTERNAL_SERVER_NODE\x10\x00\x12\x18\n\x14INTERNAL_SERVER_NODE\x10\x01\x12\x13\n\x0f\x45ND_USER_CLIENT\x10\x02\"2\n\x04Mode\x12\x0b\n\x07REQUEST\x10\x00\x12\x0c\n\x08RESPONSE\x10\x01\x12\x0f\n\x0bREMOVE_NODE\x10\x02\"Y\n\x06Header\x12\x1a\n\x04type\x18\x01 \x02(\x0e\x32\x0c.Header.Type\"3\n\x04Type\x12\x0c\n\x08INTERNAL\x10\x00\x12\x11\n\rINTER_CLUSTER\x10\x01\x12\n\n\x06\x43LIENT\x10\x02\"?\n\x08Response\x12\x0f\n\x07success\x18\x01 \x02(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x11\n\terrorCode\x18\x03 \x01(\tB\x0b\n\x07routingH\x01')
 )
+_sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 
 
@@ -62,11 +63,15 @@ _ROUTE_PATH = _descriptor.EnumDescriptor(
       name='HEADER', index=7, number=7,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='RESPONSE', index=8, number=8,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=310,
-  serialized_end=440,
+  serialized_start=348,
+  serialized_end=492,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTE_PATH)
 
@@ -91,8 +96,8 @@ _USER_ACTIONTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=570,
-  serialized_end=620,
+  serialized_start=622,
+  serialized_end=672,
 )
 _sym_db.RegisterEnumDescriptor(_USER_ACTIONTYPE)
 
@@ -110,11 +115,15 @@ _GROUP_ACTIONTYPE = _descriptor.EnumDescriptor(
       name='DELETE', index=1, number=1,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='ADDUSER', index=2, number=2,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=694,
-  serialized_end=730,
+  serialized_start=765,
+  serialized_end=814,
 )
 _sym_db.RegisterEnumDescriptor(_GROUP_ACTIONTYPE)
 
@@ -139,8 +148,8 @@ _MESSAGE_ACTIONTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=917,
-  serialized_end=963,
+  serialized_start=1001,
+  serialized_end=1047,
 )
 _sym_db.RegisterEnumDescriptor(_MESSAGE_ACTIONTYPE)
 
@@ -161,8 +170,8 @@ _MESSAGE_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=965,
-  serialized_end=994,
+  serialized_start=1049,
+  serialized_end=1078,
 )
 _sym_db.RegisterEnumDescriptor(_MESSAGE_TYPE)
 
@@ -183,8 +192,8 @@ _MESSAGE_STATUS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=996,
-  serialized_end=1027,
+  serialized_start=1080,
+  serialized_end=1111,
 )
 _sym_db.RegisterEnumDescriptor(_MESSAGE_STATUS)
 
@@ -205,8 +214,8 @@ _MESSAGESREQUEST_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1097,
-  serialized_end=1124,
+  serialized_start=1181,
+  serialized_end=1208,
 )
 _sym_db.RegisterEnumDescriptor(_MESSAGESREQUEST_TYPE)
 
@@ -227,8 +236,8 @@ _MESSAGESRESPONSE_TYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1097,
-  serialized_end=1124,
+  serialized_start=1181,
+  serialized_end=1208,
 )
 _sym_db.RegisterEnumDescriptor(_MESSAGESRESPONSE_TYPE)
 
@@ -253,8 +262,8 @@ _NETWORKDISCOVERYPACKET_SENDER = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1483,
-  serialized_end=1564,
+  serialized_start=1567,
+  serialized_end=1648,
 )
 _sym_db.RegisterEnumDescriptor(_NETWORKDISCOVERYPACKET_SENDER)
 
@@ -272,13 +281,43 @@ _NETWORKDISCOVERYPACKET_MODE = _descriptor.EnumDescriptor(
       name='RESPONSE', index=1, number=1,
       options=None,
       type=None),
+    _descriptor.EnumValueDescriptor(
+      name='REMOVE_NODE', index=2, number=2,
+      options=None,
+      type=None),
   ],
   containing_type=None,
   options=None,
-  serialized_start=1566,
-  serialized_end=1599,
+  serialized_start=1650,
+  serialized_end=1700,
 )
 _sym_db.RegisterEnumDescriptor(_NETWORKDISCOVERYPACKET_MODE)
+
+_HEADER_TYPE = _descriptor.EnumDescriptor(
+  name='Type',
+  full_name='Header.Type',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='INTERNAL', index=0, number=0,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='INTER_CLUSTER', index=1, number=1,
+      options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='CLIENT', index=2, number=2,
+      options=None,
+      type=None),
+  ],
+  containing_type=None,
+  options=None,
+  serialized_start=1740,
+  serialized_end=1791,
+)
+_sym_db.RegisterEnumDescriptor(_HEADER_TYPE)
 
 
 _ROUTE = _descriptor.Descriptor(
@@ -345,8 +384,15 @@ _ROUTE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='header', full_name='Route.header', index=8,
+      name='response', full_name='Route.response', index=8,
       number=9, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='header', full_name='Route.header', index=9,
+      number=10, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -368,7 +414,7 @@ _ROUTE = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=15,
-  serialized_end=451,
+  serialized_end=503,
 )
 
 
@@ -427,8 +473,8 @@ _USER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=454,
-  serialized_end=620,
+  serialized_start=506,
+  serialized_end=672,
 )
 
 
@@ -448,7 +494,7 @@ _GROUP = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='gid', full_name='Group.gid', index=1,
-      number=2, type=3, cpp_type=2, label=2,
+      number=2, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -457,6 +503,13 @@ _GROUP = _descriptor.Descriptor(
       name='action', full_name='Group.action', index=2,
       number=3, type=14, cpp_type=8, label=2,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='username', full_name='Group.username', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
@@ -473,8 +526,8 @@ _GROUP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=622,
-  serialized_end=730,
+  serialized_start=675,
+  serialized_end=814,
 )
 
 
@@ -522,7 +575,7 @@ _MESSAGE = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='status', full_name='Message.status', index=5,
-      number=6, type=14, cpp_type=8, label=2,
+      number=6, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -549,8 +602,8 @@ _MESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=733,
-  serialized_end=1027,
+  serialized_start=817,
+  serialized_end=1111,
 )
 
 
@@ -588,8 +641,8 @@ _MESSAGESREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1029,
-  serialized_end=1124,
+  serialized_start=1113,
+  serialized_end=1208,
 )
 
 
@@ -609,7 +662,7 @@ _MESSAGESRESPONSE = _descriptor.Descriptor(
       options=None),
     _descriptor.FieldDescriptor(
       name='id', full_name='MessagesResponse.id', index=1,
-      number=2, type=9, cpp_type=9, label=2,
+      number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -634,8 +687,8 @@ _MESSAGESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1126,
-  serialized_end=1251,
+  serialized_start=1210,
+  serialized_end=1335,
 )
 
 
@@ -709,8 +762,8 @@ _NETWORKDISCOVERYPACKET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1254,
-  serialized_end=1599,
+  serialized_start=1338,
+  serialized_end=1700,
 )
 
 
@@ -723,7 +776,53 @@ _HEADER = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='type', full_name='Header.type', index=0,
-      number=1, type=9, cpp_type=9, label=2,
+      number=1, type=14, cpp_type=8, label=2,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _HEADER_TYPE,
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1702,
+  serialized_end=1791,
+)
+
+
+_RESPONSE = _descriptor.Descriptor(
+  name='Response',
+  full_name='Response',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='success', full_name='Response.success', index=0,
+      number=1, type=8, cpp_type=7, label=2,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='message', full_name='Response.message', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='errorCode', full_name='Response.errorCode', index=2,
+      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -740,8 +839,8 @@ _HEADER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1601,
-  serialized_end=1623,
+  serialized_start=1793,
+  serialized_end=1856,
 )
 
 _ROUTE.fields_by_name['path'].enum_type = _ROUTE_PATH
@@ -750,7 +849,8 @@ _ROUTE.fields_by_name['user'].message_type = _USER
 _ROUTE.fields_by_name['message'].message_type = _MESSAGE
 _ROUTE.fields_by_name['group'].message_type = _GROUP
 _ROUTE.fields_by_name['messagesRequest'].message_type = _MESSAGESREQUEST
-_ROUTE.fields_by_name['messagesResponse'].message_type = _MESSAGESREQUEST
+_ROUTE.fields_by_name['messagesResponse'].message_type = _MESSAGESRESPONSE
+_ROUTE.fields_by_name['response'].message_type = _RESPONSE
 _ROUTE.fields_by_name['header'].message_type = _HEADER
 _ROUTE_PATH.containing_type = _ROUTE
 _ROUTE.oneofs_by_name['payload'].fields.append(
@@ -762,6 +862,18 @@ _ROUTE.fields_by_name['user'].containing_oneof = _ROUTE.oneofs_by_name['payload'
 _ROUTE.oneofs_by_name['payload'].fields.append(
   _ROUTE.fields_by_name['message'])
 _ROUTE.fields_by_name['message'].containing_oneof = _ROUTE.oneofs_by_name['payload']
+_ROUTE.oneofs_by_name['payload'].fields.append(
+  _ROUTE.fields_by_name['group'])
+_ROUTE.fields_by_name['group'].containing_oneof = _ROUTE.oneofs_by_name['payload']
+_ROUTE.oneofs_by_name['payload'].fields.append(
+  _ROUTE.fields_by_name['messagesRequest'])
+_ROUTE.fields_by_name['messagesRequest'].containing_oneof = _ROUTE.oneofs_by_name['payload']
+_ROUTE.oneofs_by_name['payload'].fields.append(
+  _ROUTE.fields_by_name['messagesResponse'])
+_ROUTE.fields_by_name['messagesResponse'].containing_oneof = _ROUTE.oneofs_by_name['payload']
+_ROUTE.oneofs_by_name['payload'].fields.append(
+  _ROUTE.fields_by_name['response'])
+_ROUTE.fields_by_name['response'].containing_oneof = _ROUTE.oneofs_by_name['payload']
 _USER.fields_by_name['action'].enum_type = _USER_ACTIONTYPE
 _USER_ACTIONTYPE.containing_type = _USER
 _GROUP.fields_by_name['action'].enum_type = _GROUP_ACTIONTYPE
@@ -781,6 +893,8 @@ _NETWORKDISCOVERYPACKET.fields_by_name['mode'].enum_type = _NETWORKDISCOVERYPACK
 _NETWORKDISCOVERYPACKET.fields_by_name['sender'].enum_type = _NETWORKDISCOVERYPACKET_SENDER
 _NETWORKDISCOVERYPACKET_SENDER.containing_type = _NETWORKDISCOVERYPACKET
 _NETWORKDISCOVERYPACKET_MODE.containing_type = _NETWORKDISCOVERYPACKET
+_HEADER.fields_by_name['type'].enum_type = _HEADER_TYPE
+_HEADER_TYPE.containing_type = _HEADER
 DESCRIPTOR.message_types_by_name['Route'] = _ROUTE
 DESCRIPTOR.message_types_by_name['User'] = _USER
 DESCRIPTOR.message_types_by_name['Group'] = _GROUP
@@ -789,7 +903,7 @@ DESCRIPTOR.message_types_by_name['MessagesRequest'] = _MESSAGESREQUEST
 DESCRIPTOR.message_types_by_name['MessagesResponse'] = _MESSAGESRESPONSE
 DESCRIPTOR.message_types_by_name['NetworkDiscoveryPacket'] = _NETWORKDISCOVERYPACKET
 DESCRIPTOR.message_types_by_name['Header'] = _HEADER
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
+DESCRIPTOR.message_types_by_name['Response'] = _RESPONSE
 
 Route = _reflection.GeneratedProtocolMessageType('Route', (_message.Message,), dict(
   DESCRIPTOR = _ROUTE,
@@ -846,6 +960,13 @@ Header = _reflection.GeneratedProtocolMessageType('Header', (_message.Message,),
   # @@protoc_insertion_point(class_scope:Header)
   ))
 _sym_db.RegisterMessage(Header)
+
+Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), dict(
+  DESCRIPTOR = _RESPONSE,
+  __module__ = 'pipe_pb2'
+  # @@protoc_insertion_point(class_scope:Response)
+  ))
+_sym_db.RegisterMessage(Response)
 
 
 DESCRIPTOR.has_options = True
