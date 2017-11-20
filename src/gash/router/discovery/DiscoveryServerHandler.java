@@ -30,9 +30,10 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.SocketUtils;
+import jdk.internal.dynalink.beans.StaticClass;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import routing.Pipe;
 import routing.Pipe.Route;
@@ -40,6 +41,7 @@ import routing.Pipe.Route;
 import java.beans.Beans;
 import java.util.HashMap;
 import routing.Pipe.NetworkDiscoveryPacket;
+import java.util.logging.*;
 
 /**
  * The networkDiscovery handler processes json messages that are delimited by a 'newline'
@@ -50,10 +52,11 @@ import routing.Pipe.NetworkDiscoveryPacket;
  *
  */
 public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
-	protected static Logger logger = LoggerFactory.getLogger("discovery");
+	//protected static Logger logger = LoggerFactory.getLogger("discovery");
 	RoutingConf conf;
 	NodeConf nodeConf;
 	private HashMap<String, String> routing;
+    static int count = 0; 
 
 	public DiscoveryServerHandler(RoutingConf conf, NodeConf nodeConf) {
 		this.conf = conf;
@@ -84,18 +87,61 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 			String clazz = routing.get("/" + msg.getPath().toString().toLowerCase());
 			if (clazz != null) {
 				RouteResource rsc = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
+				String hostIP = null;
+				int port = 0;
 //				NetworkDiscoveryResource rsc = new NetworkDiscoveryResource();
 				try {
 					
 					if(msg.hasNetworkDiscoveryPacket()) {
 						if(msg.getNetworkDiscoveryPacket().getSender()==NetworkDiscoveryPacket.Sender.EXTERNAL_SERVER_NODE) {
 							NetworkDiscoveryPacket networkDiscoveryPacket = msg.getNetworkDiscoveryPacket();
+							Logger.getGlobal().info("External server node discovery -" + networkDiscoveryPacket.getNodeAddress());
 							NodeMonitor.getInstance().addExternalNode(new ExternalNode(networkDiscoveryPacket.getGroupTag(),networkDiscoveryPacket.getNodeAddress(), (int)networkDiscoveryPacket.getNodePort()));
 							NodeMonitor.getInstance().printExternalMap();
-						}
+							hostIP =  NodeMonitor.getInstance().getNodeConf().getHost();
+							port = NodeMonitor.getInstance().getNodeConf().getInternalPort();
+						}else {
+							int NoOfActiveNodes = NodeMonitor.getInstance().getNodeMap().size() + 1;//1 for leader node
+						    int selectedId;
+						    
+						    Logger.getGlobal().info("No of active nodes -" + NoOfActiveNodes);
+						    selectedId = count % NoOfActiveNodes + 1;
+						    count++;
+
+						    Logger.getGlobal().info("Selected node ID - " + selectedId);   
+						  
+						    if (NodeMonitor.getInstance().getNodeConf().getNodeId() == selectedId) {
+							   Logger.getGlobal().info("Node Detail -" + NodeMonitor.getInstance().getNodeConf().getHost() + "--" + NodeMonitor.getInstance().getNodeConf().getInternalPort());
+							   hostIP =  NodeMonitor.getInstance().getNodeConf().getHost();
+							   port = NodeMonitor.getInstance().getNodeConf().getInternalPort();
+						    }else {
+							   RemoteNode rm = NodeMonitor.getInstance().getNodeMap().get(selectedId);
+							   Logger.getGlobal().info("Node Detail -" + rm.getNodeConf().getInternalSocketServerAddress() + "--" + rm.isActive() + "------"
+										+ rm.getChannel());
+							   hostIP =  rm.getNodeConf().getHost();
+							   port = rm.getNodeConf().getInternalPort();
+							   }
+						   }
 					}
-					Route response = rsc.process(msg);
-					System.out.println("---> reply: " + response + " to: " + msg.getNetworkDiscoveryPacket().getNodeAddress());
+				    
+		            NetworkDiscoveryPacket.Builder ndpb = NetworkDiscoveryPacket.newBuilder();
+		            ndpb.setMode(NetworkDiscoveryPacket.Mode.RESPONSE);
+		            ndpb.setSender(msg.getNetworkDiscoveryPacket().getSender());
+		            ndpb.setGroupTag("groupJPRS");
+		            ndpb.setNodeAddress(hostIP);
+		            ndpb.setNodePort(port);
+		            ndpb.setSecret("secret");
+
+		            Route.Builder responseMsg = Route.newBuilder();
+		            responseMsg.setId(0);
+		            responseMsg.setPath(Route.Path.NETWORK_DISCOVERY);
+		            responseMsg.setNetworkDiscoveryPacket(ndpb);
+		            
+					Logger.getGlobal().info("Discovered node - " + hostIP + "," +  port);
+					Route response = rsc.process(responseMsg.build());
+					
+					Logger.getGlobal().info("---> reply: " + response + " to: " + msg.getNetworkDiscoveryPacket().getNodeAddress());
+					
 					if (response != null) {
 
 						channel.writeAndFlush(new DatagramPacket(
@@ -107,15 +153,15 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 
 					}
 				} catch (Exception e) {
-					logger.error("Failed to read route.", e);
+					Logger.getGlobal().info("Failed to read route." + e);
 				}
 			} else {
 				// TODO add logging
-				System.out.println("ERROR: unknown path - " + msg.getPath());
+				Logger.getGlobal().info("ERROR: unknown path - " + msg.getPath());
 			}
 			}
 			else {
-				System.out.println("****Discarding Above Message****");
+				Logger.getGlobal().info("****Discarding Above Message****");
 			}
 		} catch (Exception ex) {
 			// TODO add logging
@@ -143,7 +189,7 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		logger.error("Unexpected exception from downstream.", cause);
+		//logger.error("Unexpected exception from downstream.", cause);
 		ctx.close();
 	}
 

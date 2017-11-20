@@ -71,8 +71,8 @@ public class RaftNode {
 	
 	private ScheduledFuture<Void> followerTaskFuture = null;
 	private ScheduledFuture<Void> candidateTaskFuture = null;
-	
-	private Thread discoveryServerThread;
+
+	private Thread discoveryThread; 
 	
 	public NodeType getNodeType() {
 		return nodeType;
@@ -185,11 +185,13 @@ public class RaftNode {
 		sendAppendEntriesRequests();
 		
 		//todo: start discovery servers
+		startDiscoveryServer();
 	}
 	
 	private void stopLeader() {
 		cancelAppendEntriesRequests();
 		//todo: stop discovery servers
+		stopDiscoveryServer();
 	}
 	
 	private void scheduleLogCommitTask() {
@@ -622,13 +624,24 @@ public class RaftNode {
 	/* Leader functions: start and stop discovery */
 	/********************************************************************************/
 	private void startDiscoveryServer() {
+		
 		DiscoveryServer udpDiscoveryServer = new DiscoveryServer(state.getConf(), state.getNodeConf());
-		discoveryServerThread = new Thread(udpDiscoveryServer);
-		discoveryServerThread.start();
+		if (discoveryThread == null) {
+			Logger.getGlobal().info("UDP discovery server start");
+			discoveryThread = new Thread(udpDiscoveryServer);
+			discoveryThread.start();
+		}else {
+			Logger.getGlobal().info("UDP discovery server is already started, No action required");
+		}
 	}
 	
 	private void stopDiscoveryServer() {
-		discoveryServerThread.interrupt();
+		//todo implement this
+		Logger.getGlobal().info("UDP discovery server stop");
+		if (discoveryThread != null) {
+			discoveryThread.interrupt();
+		}
+
 	}
 	
 	/********************************************************************************/
