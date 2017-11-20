@@ -16,11 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import raft.proto.Internal;
 import raft.proto.Internal.AppendEntriesRequest;
@@ -36,7 +33,8 @@ import routing.Pipe;
 import routing.Pipe.Message;
 import routing.Pipe.Message.Status;
 import routing.Pipe.User;
-import routing.Pipe.User.ActionType;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 
 //todo: all nodes must be present in remote nodes so that we know how many votes to expect
@@ -74,6 +72,7 @@ public class RaftNode {
 	private ScheduledFuture<Void> followerTaskFuture = null;
 	private ScheduledFuture<Void> candidateTaskFuture = null;
 	
+	private Thread discoveryServerThread;
 	
 	public NodeType getNodeType() {
 		return nodeType;
@@ -624,12 +623,12 @@ public class RaftNode {
 	/********************************************************************************/
 	private void startDiscoveryServer() {
 		DiscoveryServer udpDiscoveryServer = new DiscoveryServer(state.getConf(), state.getNodeConf());
-		Thread discoveryThread = new Thread(udpDiscoveryServer);
-		discoveryThread.start();
+		discoveryServerThread = new Thread(udpDiscoveryServer);
+		discoveryServerThread.start();
 	}
 	
 	private void stopDiscoveryServer() {
-		//todo implement this
+		discoveryServerThread.interrupt();
 	}
 	
 	/********************************************************************************/
@@ -786,6 +785,7 @@ public class RaftNode {
 	/********************************************************************************/
 	public void addUser(User user) {
 		if (nodeType == NodeType.Leader) {
+			Logger.getGlobal().info("going to write user entry to logs");
 			UserPayload payload =
 					UserPayload
 							.newBuilder()
@@ -803,6 +803,7 @@ public class RaftNode {
 
 			addLog(logEntry);
 		} else {
+			Logger.getGlobal().info("forwarding add user request to leader");
 			Internal.ForwardMessageRequest request =
 					Internal.ForwardMessageRequest
 							.newBuilder()
@@ -839,6 +840,7 @@ public class RaftNode {
 
 			addLog(logEntry);
 		} else {
+			Logger.getGlobal().info("forwarding add user request to leader");
 			Internal.ForwardMessageRequest request =
 					Internal.ForwardMessageRequest
 							.newBuilder()
@@ -877,6 +879,7 @@ public class RaftNode {
 			addLog(logEntry);
 
 		} else {
+			Logger.getGlobal().info("forwarding read message request to leader");
 			Internal.ForwardMessageRequest request =
 					Internal.ForwardMessageRequest
 							.newBuilder()
@@ -962,6 +965,7 @@ public class RaftNode {
 	
 	private void commitMessage(Message message) {
 		MessageMongoDB.getInstance().commitMessage(message);
+		
 		if (ClientChannelCache.getInstance().getClientChannelMap().containsKey(message.getReceiverId())) {
 			Channel channel = ClientChannelCache.getInstance().getClientChannelMap().get(message.getReceiverId()).getClienChannel();
 			if (channel.isActive()) {
@@ -977,6 +981,8 @@ public class RaftNode {
 						.build();
 
 				channel.writeAndFlush(route);
+				
+				markMessagesRead(message.getReceiverId());
 			} else {
 				Logger.getGlobal().info("channel closed, cannot flush to client");
 			}

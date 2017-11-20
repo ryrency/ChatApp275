@@ -93,7 +93,8 @@ public class NodeMonitor {
 				
 			rm.setChannel(cf.channel());
 				
-			cf.channel().closeFuture().addListener(new ChannelClosedListener(rm, this));
+			ChannelClosedListener listener = new ChannelClosedListener(rm, this);
+			cf.channel().closeFuture().addListener(listener);
 			
 			sendAddRequestToExistingNode(rm);
 			
@@ -110,7 +111,7 @@ public class NodeMonitor {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				NodeMonitor.this.connectWithNode(rm);
+				connectWithNode(rm);
 				
 			}
 		}, millis, TimeUnit.MILLISECONDS);
@@ -172,11 +173,6 @@ public class NodeMonitor {
 			if (cf.isDone() && !cf.isSuccess()) {
 				System.out.println("Send failed: " + cf.cause());
 			}
-//
-//			if (cf.isDone() && !cf.isSuccess()) {
-//				System.out.println("Comm failed");
-//			}
-//			// System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

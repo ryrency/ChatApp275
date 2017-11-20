@@ -18,7 +18,7 @@ import time
 # This is currently port and IP oof Nginx server
 TCP_IP = 'http://10.0.0.10'
 TCP_PORT = 4467
-BUFFER_SIZE = 1024 * 1024
+BUFFER_SIZE = 4 * 1024 * 1024
 
 
 
@@ -33,7 +33,7 @@ class MessageClient:
         self.uname = None
 
         self.host = "127.0.0.1"
-        self.port = 4368
+        self.port = 4268
 
         self.connect()
 
@@ -64,8 +64,13 @@ class MessageClient:
                     self.close()
                     break
 
-                #route = self.decoder.decode(data)
-                print "received new messages: " + data
+                route = self.decoder.decode(data)
+                if route.path == route.MESSAGE:
+                    self.print_message_received(route.message)
+                elif route.path == route.MESSAGES_RESPONSE:
+                    messages_response = route.messagesResponse
+                    for msg in messages_response.messages:
+                        self.print_message_received(msg)
 
             except socket.timeout:
                 self.close()
@@ -75,7 +80,10 @@ class MessageClient:
                 self.close()
                 print "connection closed with: " + self.__get_server_path()
                 break
- 
+
+    def print_message_received(self, msg):
+        print msg.timestamp + ": new message received from " + msg.senderId + ", message: " + msg.payload
+
     def send_message(self, senderId, payload, receiverId):
         route = Route()
         route.id = 1
@@ -128,16 +136,35 @@ class MessageClient:
     def start_cli(self):
         try:
             while True:
-                receiver_id = raw_input("Enter username you want to send hi:\n")
+                cmd = raw_input("Example message - @username message:\n")
+
                 if not self.s:
                     print "sorry socket not connected, please try again"
                 else:
 
-                    message = "Hi " + receiver_id
-                    self.send_message(self.uname, message, receiver_id)
-                    print "sent message to " + receiver_id + " - "  + message
+                    receiver_id, message = self.__parse_message_command(cmd)
+                    if receiver_id is not None and message is not None:
+                        self.send_message(self.uname, message, receiver_id)
+                        print "sent message to " + receiver_id + " - "  + message
+                    else:
+                        print "cannot send message, invalid format"
         except KeyboardInterrupt:
             sys.exit(1)
+
+    def __parse_message_command(self, cmd):
+        try:
+            words = cmd.split(" ")
+            receiver_id = words[0]
+            if not receiver_id.startswith("@"):
+                return (None, None)
+
+            receiver_id = receiver_id[1:]
+            message = ' '.join([str(x) for x in words[1:]])
+
+            return (receiver_id, message)
+        except:
+            return (None, None)
+
 
 mc = MessageClient(BUFFER_SIZE)
 mc.start_cli()

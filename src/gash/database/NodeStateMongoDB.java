@@ -61,9 +61,6 @@ public class NodeStateMongoDB {
 		database = mongoClient.getDatabase(DB_NAME);
 		logCollection = database.getCollection(LOG_COLLECTION_NAME);
 		nodeStateCollection = database.getCollection(NODE_STATE_COLLECTION_NAME);
-		
-		logCollection.drop();
-		nodeStateCollection.drop();
 	}
 	
 	public static NodeStateMongoDB getInstance() {
@@ -219,6 +216,7 @@ public class NodeStateMongoDB {
 	}
 	
 	public void commitLogEntries(List<LogEntry> entries) {
+		Logger.getGlobal().info("going to commit logs, size: " + entries.size());
 		try {
 			List<Document> documents = new ArrayList<Document>();
 			for (LogEntry entry : entries) documents.add(mapLogEntryToDocument(entry));

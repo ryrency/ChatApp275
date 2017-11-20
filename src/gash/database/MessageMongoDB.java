@@ -51,9 +51,6 @@ public class MessageMongoDB {
 			mongoClient = new MongoClient("127.0.0.1", conf.getMongoPort());
 			database = mongoClient.getDatabase(DB_NAME);
 			dbCollection = database.getCollection(COLLECTION_NAME);
-			
-			//todo: remove this
-			dbCollection.drop();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -110,10 +107,10 @@ public class MessageMongoDB {
 		return result;
 	}
 
-	public boolean delete(String senderId) {
-		System.out.println("***MongoDB*** fn:delete***");
+	public boolean deleteMessages(String receiverId) {
+		Logger.getGlobal().info("Going to delete messages for the user: " + receiverId);
 		try {
-			dbCollection.deleteMany(Filters.eq(SENDER_ID, senderId));
+			dbCollection.deleteMany(Filters.eq(RECEIVER_ID, receiverId));
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -163,18 +160,10 @@ public class MessageMongoDB {
 		}
 	}
 	
-	//todo(parag): all fields in messages should be saved
 	public boolean commitMessage(Message message) {
 		System.out.println("***MongoDB*** fn:storeClientMessagetoDB");
 		try {
-			Document document = new Document();
-			document.append(MESSAGETYPE, message.getType().getNumber());
-			document.append(SENDER_ID, message.getSenderId());
-			document.append(RECEIVER_ID, message.getReceiverId());
-			document.append(PAYLOAD, message.getPayload());
-			document.append(TIMESTAMP, message.getTimestamp());
-			document.append(STATUS, message.getStatus().getNumber());
-			document.append(READ, 0);
+			Document document = mapMessageToDocument(message);
 			dbCollection.insertOne(document);
 
 			return true;
@@ -188,6 +177,10 @@ public class MessageMongoDB {
 	public boolean markMessagesRead(String uname) {
 		try {
 			//implement here
+			Document document = new Document();
+			document.append(READ, 1);
+			Document updateOperationDocument = new Document("$set", document);
+			dbCollection.updateMany(Filters.eq(RECEIVER_ID, uname), updateOperationDocument);
 
 			return true;
 		} catch (Exception e) {
