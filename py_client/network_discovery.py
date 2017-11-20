@@ -18,7 +18,7 @@ class NetworkDiscover:
 
     def connectUDP(self):
         self.socket_connect = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        self.socket_connect.bind(('', UDP_PORT))
+        self.socket_connect.bind(('', 8887))#UDP_PORT
         self.socket_connect.setsockopt(socket.SOL_SOCKET,socket.SO_BROADCAST,1)
         print "connectUDP: Request to server: " + self.__get_udp_path()
 
@@ -46,12 +46,12 @@ class NetworkDiscover:
             msg, server = self.socket_connect.recvfrom(1024)
             print server
             
-            if (server != ('10.0.0.2', UDP_PORT)) and msg: #replace with localhostss
+            if (server != (socket.gethostbyname(socket.gethostname()), UDP_PORT)) and msg:
                break
                        
         self.socket_connect.close()   
-        self.decoder.decode(msg)
-        return msg
+        decodedMsg = self.decoder.decode(msg)
+        return decodedMsg
 
     def __get_udp_path(self):
         return UDP_IP + ":" +  str(UDP_PORT)

@@ -20,8 +20,6 @@ TCP_IP = 'http://10.0.0.10'
 TCP_PORT = 4467
 BUFFER_SIZE = 4 * 1024 * 1024
 
-
-
 class MessageClient:
     def __init__(self, buffer_size):
         self.buffer_size = buffer_size
@@ -33,9 +31,23 @@ class MessageClient:
         self.uname = None
 
         self.host = "127.0.0.1"
-        self.port = 4268
+        self.port = 4168
+        
+        try:
+            self.network_discover.connectUDP()
+            self.network_discover.sendNetworkDiscoveryPacket()
+            self.route = self.network_discover.receiveNetworkDiscoveryPacket()
+            self.host = self.route.networkDiscoveryPacket.nodeAddress
+            self.port = self.route.networkDiscoveryPacket.nodePort
+            print ("Connecting to server ", self.host, self.port)
+        except Exception as ex:
+            print "Ex-udp-network-discover -" 
+            import traceback
+            exc_info = sys.exc_info()
+            traceback.print_exception(*exc_info)
+        finally:
+            self.connect()
 
-        self.connect()
 
     def __get_server_socket_address(self):
         socket_address = urllib2.urlopen(TCP_IP + ":" + str(TCP_PORT)).read()
