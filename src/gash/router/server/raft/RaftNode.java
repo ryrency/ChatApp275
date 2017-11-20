@@ -675,15 +675,21 @@ public class RaftNode {
 				Collections.sort(matchIndices);
 				int N = matchIndices.get(matchIndices.size()/2);
 				
-				while (N > state.getCommitIndex()) {
-					if (state.getLogIndexTermMap().containsKey(N) && 
-							state.getLogIndexTermMap().get(N) == state.getCurrentTerm()) {
-						state.setCommitIndex(N);
-						break;
-					}
-					
-					N--;
-				}
+				Logger.getGlobal().info("match indices: " + matchIndices.toString());
+				Logger.getGlobal().info("new value of N: " + N);
+				
+				state.setCommitIndex(N);
+				
+				
+//				while (N > state.getCommitIndex()) {
+//					LogEntry entry = NodeStateMongoDB.getInstance().getLogEntry(N);
+//					if (entry != null && entry.getTerm() == state.getCurrentTerm()) {
+//						state.setCommitIndex(N);
+//						break;
+//					}
+//					
+//					N--;
+//				}
 			}
 			
 			//2. apply logs to new commit index
