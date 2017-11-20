@@ -1,6 +1,7 @@
 package gash.router.discovery;
 
 import gash.router.container.NodeConf;
+import java.util.logging.*;
 import gash.router.container.RoutingConf;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 public class DiscoveryServer implements Runnable {
 
-    protected static Logger logger = LoggerFactory.getLogger("discovery");
+    //protected static Logger logger = LoggerFactory.getLogger("discovery");
 
     private RoutingConf conf;
     private NodeConf nodeConf;
@@ -26,7 +27,8 @@ public class DiscoveryServer implements Runnable {
 
     @Override
     public void run() {
-        logger.info("Discovery starting");
+    		java.util.logging.Logger.getGlobal().info("JSingh: Discovery starting");
+        //logger.info("");
 
         EventLoopGroup group = new NioEventLoopGroup();
 
@@ -37,17 +39,17 @@ public class DiscoveryServer implements Runnable {
                     .option(ChannelOption.SO_BROADCAST, true)
                     .handler(new DiscoveryInit(conf, nodeConf));
 
-            logger.info("Starting server, listening on port = " + nodeConf.getNetworkDiscoveryPort());
+            java.util.logging.Logger.getGlobal().info("Starting server, listening on port = " + nodeConf.getNetworkDiscoveryPort());
             ChannelFuture f = b.bind(nodeConf.getNetworkDiscoveryPort()).sync();
 
 
-            logger.info(f.channel().localAddress() + " -> open: " + f.channel().isOpen() + ", write: " + f.channel().isWritable() + ", act: " + f.channel().isActive());
+            java.util.logging.Logger.getGlobal().info(f.channel().localAddress() + " -> open: " + f.channel().isOpen() + ", write: " + f.channel().isWritable() + ", act: " + f.channel().isActive());
 
             f.channel().closeFuture().await();
 
         } catch (InterruptedException ex) {
             // on bind().sync()
-            logger.error("Failed to setup handler.", ex);
+            java.util.logging.Logger.getGlobal().info("Failed to setup handler." + ex);
         } finally {
             group.shutdownGracefully();
         }

@@ -18,12 +18,13 @@ class NetworkDiscover:
 
     def connectUDP(self):
         self.socket_connect = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-        self.socket_connect.bind(('', 8887))#UDP_PORT
+        self.socket_connect.bind(('', UDP_PORT))
         self.socket_connect.setsockopt(socket.SOL_SOCKET,socket.SO_BROADCAST,1)
         print "connectUDP: Request to server: " + self.__get_udp_path()
 
 
-    def sendNetworkDiscoveryPacket(self, ip_address = "10.0.0.2", ip_port = UDP_PORT):
+    def sendNetworkDiscoveryPacket(self, ip_address = socket.gethostbyname(socket.gethostname()), ip_port = UDP_PORT):
+        print ("IP address sent in discovery packet - " + ip_address)
         route = Route()
         route.id = 2
         route.path = route.NETWORK_DISCOVERY
