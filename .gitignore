@@ -1,9 +1,1 @@
 /bin/
-
-*.pyc
-
-*.class
-
-*.class
-
-py_client/pipe_pb2.py

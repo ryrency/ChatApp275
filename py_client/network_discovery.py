@@ -24,9 +24,7 @@ class NetworkDiscover:
 
 
     def sendNetworkDiscoveryPacket(self, ip_address = socket.gethostbyname(socket.gethostname()), ip_port = UDP_PORT):
-        #ip_address = "10.0.0.2"
         print ("IP address sent in discovery packet - " + ip_address)
-        
         route = Route()
         route.id = 2
         route.path = route.NETWORK_DISCOVERY
@@ -47,10 +45,7 @@ class NetworkDiscover:
     def receiveNetworkDiscoveryPacket(self):
         while 1:
             msg, server = self.socket_connect.recvfrom(1024)
-            print "Received IP - " 
             print server
-            print "Broadcast IP - " 
-            print (socket.gethostbyname(socket.gethostname()))
             
             if (server != (socket.gethostbyname(socket.gethostname()), UDP_PORT)) and msg:
                break

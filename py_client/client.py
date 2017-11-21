@@ -30,15 +30,15 @@ class MessageClient:
         self.socket_connect = None
         self.uname = None
 
-        self.host = "10.0.0.5"
-        self.port = 4268
+        self.host = "127.0.0.1"
+        self.port = 4168
         
         try:
-#             self.network_discover.connectUDP()
-#             self.network_discover.sendNetworkDiscoveryPacket()
-#             self.route = self.network_discover.receiveNetworkDiscoveryPacket()
-#             self.host = self.route.networkDiscoveryPacket.nodeAddress
-#             self.port = self.route.networkDiscoveryPacket.nodePort
+            self.network_discover.connectUDP()
+            self.network_discover.sendNetworkDiscoveryPacket()
+            self.route = self.network_discover.receiveNetworkDiscoveryPacket()
+            self.host = self.route.networkDiscoveryPacket.nodeAddress
+            self.port = self.route.networkDiscoveryPacket.nodePort
             print ("Connecting to server ", self.host, self.port)
         except Exception as ex:
             print "Ex-udp-network-discover -" 
@@ -156,9 +156,7 @@ class MessageClient:
 
                     receiver_id, message = self.__parse_message_command(cmd)
                     if receiver_id is not None and message is not None:
-                        for i in range(0,2000): 
-                            self.send_message(self.uname, message + str(i), receiver_id)
-                            
+                        self.send_message(self.uname, message, receiver_id)
                         print "sent message to " + receiver_id + " - "  + message
                     else:
                         print "cannot send message, invalid format"
