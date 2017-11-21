@@ -83,7 +83,8 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 
 		try {
 			Logger.getGlobal().info("/" + msg.getPath().toString().toLowerCase());
-			if(!msg.getNetworkDiscoveryPacket().getNodeAddress().equals(NetworkUtility.getLocalHostAddress()) && msg.getNetworkDiscoveryPacket().getMode()==NetworkDiscoveryPacket.Mode.REQUEST && msg.getNetworkDiscoveryPacket().getSecret().equals(nodeConf.getSecret())) {
+			//if(!msg.getNetworkDiscoveryPacket().getNodeAddress().equals(NetworkUtility.getLocalHostAddress()) && 
+					if(msg.getNetworkDiscoveryPacket().getMode()==NetworkDiscoveryPacket.Mode.REQUEST && msg.getNetworkDiscoveryPacket().getSecret().equals(nodeConf.getSecret())) {
 			String clazz = routing.get("/" + msg.getPath().toString().toLowerCase());
 			if (clazz != null) {
 				RouteResource rsc = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
@@ -99,7 +100,7 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 							NodeMonitor.getInstance().addExternalNode(new ExternalNode(networkDiscoveryPacket.getGroupTag(),networkDiscoveryPacket.getNodeAddress(), (int)networkDiscoveryPacket.getNodePort()));
 							NodeMonitor.getInstance().printExternalMap();
 							hostIP =  NodeMonitor.getInstance().getNodeConf().getHost();
-							port = NodeMonitor.getInstance().getNodeConf().getInternalPort();
+							port = NodeMonitor.getInstance().getNodeConf().getClientPort();
 						}else {
 							int NoOfActiveNodes = NodeMonitor.getInstance().getNodeMap().size() + 1;//1 for leader node
 						    int selectedId;
@@ -113,13 +114,18 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 						    if (NodeMonitor.getInstance().getNodeConf().getNodeId() == selectedId) {
 							   Logger.getGlobal().info("JSingh: Node Detail -" + NodeMonitor.getInstance().getNodeConf().getHost() + "--" + NodeMonitor.getInstance().getNodeConf().getInternalPort());
 							   hostIP =  NodeMonitor.getInstance().getNodeConf().getHost();
-							   port = NodeMonitor.getInstance().getNodeConf().getInternalPort();
+							   port = NodeMonitor.getInstance().getNodeConf().getClientPort();
 						    }else {
 							   RemoteNode rm = NodeMonitor.getInstance().getNodeMap().get(selectedId);
+							   while(!rm.isActive()) {
+								   count++;
+								   selectedId=selectedId+1;
+								   rm = NodeMonitor.getInstance().getNodeMap().get(selectedId);
+							   }
 							   Logger.getGlobal().info("JSingh: Node Detail -" + rm.getNodeConf().getInternalSocketServerAddress() + "--" + rm.isActive() + "------"
 										+ rm.getChannel());
 							   hostIP =  rm.getNodeConf().getHost();
-							   port = rm.getNodeConf().getInternalPort();
+							   port = rm.getNodeConf().getClientPort();
 							   }
 						   }
 					}
@@ -139,13 +145,14 @@ public class DiscoveryServerHandler extends SimpleChannelInboundHandler<Route> {
 		            
 					Logger.getGlobal().info("JSingh: Discovered node - " + hostIP + "," +  port);
 					Route response = rsc.process(responseMsg.build());
-					
+					Logger.getGlobal().info("JSingh: " + responseMsg.build());
 					Logger.getGlobal().info("JSingh: ---> reply: " + response + " to: " + msg.getNetworkDiscoveryPacket().getNodeAddress());
+					Logger.getGlobal().info("JSingh: " + msg.getNetworkDiscoveryPacket().getNodeAddress());
 					
 					if (response != null) {
 
 						channel.writeAndFlush(new DatagramPacket(
-								Unpooled.copiedBuffer(response.toByteArray()),
+								Unpooled.copiedBuffer(responseMsg.build().toByteArray()),
 								SocketUtils.socketAddress(
 										msg.getNetworkDiscoveryPacket().getNodeAddress(), 
 										nodeConf.getNetworkDiscoveryPort())))
