@@ -27,6 +27,7 @@ public class MessageRequestResource implements RouteResource {
 		String receiver = msg.getMessagesRequest().getId();
 		FindIterable<Document> documents = UserMongoDB.getInstance().get(receiver);
 		Route response = MessageBuilder.prepareMessageResponse(msg.getMessagesRequest().getType(), documents);
+		UserMongoDB.getInstance().setRead(receiver);
 		return response;
 	}
 
