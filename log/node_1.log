@@ -1,0 +1,872 @@
+Nov 20, 2017 7:32:13 PM gash.router.server.MessageServer startServer
+INFO: Communication starting
+Nov 20, 2017 7:32:13 PM gash.database.NodeStateMongoDB <init>
+INFO: connecting to mongodb for node states
+Nov 20, 2017 7:32:14 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:14 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:14 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:14 PM gash.router.server.NodeMonitor addNode
+INFO: adding new node in config 10.0.0.2:4267
+Nov 20, 2017 7:32:14 PM gash.router.server.NodeMonitor addNode
+INFO: adding new node in config 10.0.0.2:4367
+Nov 20, 2017 7:32:14 PM gash.router.server.NodeMonitor addNode
+INFO: adding new node in config 10.0.0.2:4467
+Nov 20, 2017 7:32:14 PM gash.router.server.MessageServer$StartCommunication run
+INFO: Starting server, listening on port = 4167
+Nov 20, 2017 7:32:14 PM gash.router.server.MessageServer$StartCommunication run
+INFO: Starting server, listening on port = 4168
+Nov 20, 2017 7:32:14 PM gash.router.server.MessageServer$StartCommunication run
+INFO: /0:0:0:0:0:0:0:0:4167 -> open: true, write: true, act: true
+Nov 20, 2017 7:32:14 PM gash.router.server.MessageServer$StartCommunication run
+INFO: /0:0:0:0:0:0:0:0:4168 -> open: true, write: true, act: true
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:15 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:15 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:16 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:16 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:16 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:16 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:16 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:16 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:16 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:16 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:18 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:18 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:20 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:20 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:21 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:21 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:21 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:21 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:21 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:21 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:21 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:21 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:21 PM gash.router.server.WorkHandler handleMessage
+INFO: received connection alive ack from node: 2
+Nov 20, 2017 7:32:22 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 1
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:22 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 3, lastLogIndex: 1, lastVotedTerm: 3
+Nov 20, 2017 7:32:22 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 4
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:24 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 5, lastLogIndex: 1, lastVotedTerm: 5
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:24 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 5
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:24 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:26 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 6
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:26 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:28 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 7
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:28 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:28 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 7, lastLogIndex: 1, lastVotedTerm: 6
+Nov 20, 2017 7:32:28 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:28 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:28 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:29 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 8
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:29 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:30 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:30 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:30 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:30 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:30 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:30 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:30 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:30 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:31 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 9
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:31 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:31 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 9, lastLogIndex: 1, lastVotedTerm: 8
+Nov 20, 2017 7:32:31 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:31 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:31 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:33 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 10
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:33 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:34 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 11
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:34 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:34 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 11, lastLogIndex: 1, lastVotedTerm: 10
+Nov 20, 2017 7:32:34 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:34 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:34 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:36 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 12
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:36 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:37 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:37 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:37 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:37 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:37 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:37 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:37 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:37 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:38 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 13
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:38 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:38 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 13, lastLogIndex: 1, lastVotedTerm: 12
+Nov 20, 2017 7:32:38 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:38 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:38 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:40 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 14
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:40 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:42 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 15
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:42 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:42 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 15, lastLogIndex: 1, lastVotedTerm: 14
+Nov 20, 2017 7:32:42 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:42 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:42 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:44 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 16
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:44 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:46 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 17
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:46 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:46 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 17, lastLogIndex: 1, lastVotedTerm: 16
+Nov 20, 2017 7:32:46 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:46 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:46 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:47 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 18
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:47 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:48 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:48 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:48 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:48 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:48 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:48 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:48 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:48 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:49 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 19
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:49 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:49 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 19, lastLogIndex: 1, lastVotedTerm: 18
+Nov 20, 2017 7:32:49 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:49 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:49 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:51 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 20
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:51 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:52 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 21
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:52 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:52 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 21, lastLogIndex: 1, lastVotedTerm: 20
+Nov 20, 2017 7:32:52 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:52 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:52 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:54 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 22
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:54 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:55 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:55 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:55 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:55 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:55 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:55 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:55 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:55 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:32:56 PM gash.router.server.raft.RaftNode$2 run
+INFO: vote request received from: 2, request: term: 23
+candidateId: 2
+lastLogIndex: 1
+lastLogTerm: 1
+
+Nov 20, 2017 7:32:56 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:56 PM gash.router.server.raft.RaftNode isVoteGranted
+INFO: vote reasons: type: Follower, currTerm: 23, lastLogIndex: 1, lastVotedTerm: 22
+Nov 20, 2017 7:32:56 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:56 PM gash.router.server.raft.RaftNode$2 run
+INFO: granted vote to nodeId: 2
+Nov 20, 2017 7:32:56 PM gash.router.server.raft.RaftNode sendVoteResponse
+INFO: sending vote response to node id: 2
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:32:57 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Sent VoteRequestRPC to 2request: voteRequest {
+  term: 24
+  candidateId: 1
+  lastLogIndex: 1
+  lastLogTerm: 1
+}
+
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:57 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:32:58 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:32:58 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 2
+Nov 20, 2017 7:32:58 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:32:58 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 2
+Nov 20, 2017 7:32:58 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:32:58 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:32:58 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:32:58 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:33:00 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: checking election results
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode checkElectionResult
+INFO: 1 has lost the election.
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:33:00 PM gash.router.server.raft.RaftNode startFollower
+INFO: Starting as follower
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode$6 run
+INFO: follower heartbeat timed out
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode cancelAppendEntriesRequests
+INFO: cancelling append entries requests for all nodes
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode stopDiscoveryServer
+INFO: UDP discovery server stop
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode startCandidate
+INFO: Starting as candidate
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode requestVotes
+INFO: starting to request votes
+Nov 20, 2017 7:33:02 PM gash.database.NodeStateMongoDB saveNodeState
+INFO: node state saved
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode broadcastVoteRequestPacket
+INFO: Channel not active ,server  is down
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of votes = 1
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode isWinner
+INFO: Expected number of votes = 4
+Nov 20, 2017 7:33:02 PM gash.router.server.raft.RaftNode isWinner
+INFO: Total number of YES votes = 1

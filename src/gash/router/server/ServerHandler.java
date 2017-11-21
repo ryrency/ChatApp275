@@ -77,29 +77,30 @@ public class ServerHandler extends SimpleChannelInboundHandler<Route> {
 			RaftNode.getInstance().addMessage(msg.getMessage());
 
 		} else {
-		System.out.println("---> " + msg.getId() + ": " + msg.getPath());
+		Logger.getGlobal().info("Jasmeet---> " + msg.getId() + ": " + msg.getPath());
 
 		
-//		try {
-//			String clazz = routing.get("/"+msg.getPath().toString().toLowerCase());
-//			if(clazz != null) {
-//				RouteResource routeResource = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
-//				Route response = routeResource.process(msg);
-//				if(response!=null) {
-//					channel.writeAndFlush(response).sync();
-//				}
-//				
-//			}
-//			else {
-//				// TODO add logging
-//				System.out.println("ERROR: unknown path - " + msg.getPath());
-//			}
-//			
-//		}
-//		catch (Exception ex) {
-//			// TODO add logging
-//			System.out.println("ERROR: processing request - " + ex.getMessage());
-//		}
+		try {
+			String clazz = routing.get("/"+msg.getPath().toString().toLowerCase());
+			Logger.getGlobal().info("Jasmeet class--->" + clazz);
+			if(clazz != null) {
+				RouteResource routeResource = (RouteResource) Beans.instantiate(RouteResource.class.getClassLoader(), clazz);
+				Route response = routeResource.process(msg);
+				if(response!=null) {
+					channel.writeAndFlush(response);
+				}
+				
+			}
+			else {
+				// TODO add logging
+				Logger.getGlobal().info("Jasmeet---> ERROR: unknown path - " + msg.getPath());
+			}
+			
+		}
+		catch (Exception ex) {
+			// TODO add logging
+			Logger.getGlobal().info("Jasmeet---> ERROR: processing request - " + ex.getMessage());
+		}
 
 		System.out.flush();
 		}
