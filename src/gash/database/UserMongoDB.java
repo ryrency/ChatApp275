@@ -70,7 +70,7 @@ public class UserMongoDB {
 		System.out.println("***UserMongoDB*** fn:get***");
 		FindIterable<Document> result = null;
 		try {
-			result = dbCollection.find(Filters.eq("receiverID", key));
+			result = dbCollection.find(Filters.eq(USER_NAME, key));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
