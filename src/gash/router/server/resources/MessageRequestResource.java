@@ -19,7 +19,7 @@ public class MessageRequestResource implements RouteResource {
 	@Override
 	public String getPath() {
 		// TODO Auto-generated method stub
-		return "/message_request";
+		return "/messages_request";
 	}
 
 	@Override
