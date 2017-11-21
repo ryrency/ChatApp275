@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 import org.bson.Document;
 
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.UpdateResult;
 
 import raft.proto.Internal;
 import raft.proto.Work.WorkMessage;
@@ -68,7 +69,7 @@ public class MessageMongoDB {
 		System.out.println("***MongoDB*** fn:get***");
 		FindIterable<Document> result = null;
 		try {
-			result = dbCollection.find(Filters.eq(RECEIVER_ID, key));
+			result = dbCollection.find(Filters.and(Filters.eq(RECEIVER_ID, key),Filters.eq("Read", 0)));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -77,6 +78,18 @@ public class MessageMongoDB {
 		}
 		return result;
 
+	}
+	
+	public void setRead(String key) {
+		System.out.println("***UserMongoDB*** fn:get***");
+		try {
+			UpdateResult result = dbCollection.updateMany(Filters.eq("receiverID",key), new Document("$set", new Document("Read",1)));
+			System.out.println(result.getModifiedCount() + "messages set read");
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public FindIterable<Document> getNewEntries(Date staleTimeStamp) {

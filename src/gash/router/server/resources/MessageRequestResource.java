@@ -4,6 +4,7 @@ import org.bson.Document;
 
 import com.mongodb.client.FindIterable;
 
+import gash.database.MessageMongoDB;
 import gash.database.UserMongoDB;
 import gash.router.container.RoutingConf;
 import gash.router.server.raft.MessageBuilder;
@@ -25,10 +26,11 @@ public class MessageRequestResource implements RouteResource {
 	public Route process(Route msg) {
 		
 		String receiver = msg.getMessagesRequest().getId();
-		FindIterable<Document> documents = UserMongoDB.getInstance().get(receiver);
+		FindIterable<Document> documents =MessageMongoDB.getInstance().get(receiver);
 		Route response = MessageBuilder.prepareMessageResponse(msg.getMessagesRequest().getType(), documents);
-		UserMongoDB.getInstance().setRead(receiver);
+		MessageMongoDB.getInstance().setRead(receiver);
 		return response;
 	}
+	
 
 }

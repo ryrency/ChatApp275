@@ -70,7 +70,7 @@ public class UserMongoDB {
 		System.out.println("***UserMongoDB*** fn:get***");
 		FindIterable<Document> result = null;
 		try {
-			result = dbCollection.find(Filters.and(Filters.eq("receiverID", key),Filters.eq("Read", 0)));
+			result = dbCollection.find(Filters.eq("receiverID", key));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -81,17 +81,7 @@ public class UserMongoDB {
 
 	}
 	
-	public void setRead(String key) {
-		System.out.println("***UserMongoDB*** fn:get***");
-		try {
-			UpdateResult result = dbCollection.updateMany(Filters.eq("receiverID",key), new Document("$set", new Document("Read",1)));
-			System.out.println(result.getModifiedCount() + "messages set read");
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
+
 
 	/*Get result based on timestamp of user creation */
 //
