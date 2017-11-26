@@ -26,6 +26,6 @@ class LengthFieldProtoDncoder:
 
     def decode(self, msg):
         routeMsg = Route()
-        routeMsg.ParseFromString(msg[4:])
+        routeMsg.ParseFromString(msg)
         return routeMsg
 
