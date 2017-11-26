@@ -1,4 +1,4 @@
-package delete;
+package message.server.raft;
 
 import java.util.Random;
 

@@ -26,7 +26,6 @@ import java.util.logging.SimpleFormatter;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import delete.NodeState;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
